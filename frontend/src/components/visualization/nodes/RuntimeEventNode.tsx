@@ -1,5 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import type { RuntimeGraphNodeData } from '../../../types/graph';
+import { VALIDATION_STATE_LABELS } from '../../../types/validation';
+import { graphNodeValidationClassName } from '../../../utils/nodeValidation';
 
 type RuntimeEventNodeProps = {
   data: RuntimeGraphNodeData;
@@ -15,7 +17,7 @@ const EVENT_LABELS: Record<string, string> = {
 };
 
 function runtimeNodeClassName(data: RuntimeGraphNodeData) {
-  const classNames = ['runtime-node', `runtime-node--${data.event_type}`];
+  const classNames = ['runtime-node', `runtime-node--${data.event_type}`, graphNodeValidationClassName(data)];
 
   if (data.is_active) {
     classNames.push('is-active');
@@ -38,6 +40,7 @@ export function RuntimeEventNode({ data }: RuntimeEventNodeProps) {
         <span>{data.file_path}</span>
         <span>{data.line_number ? `line ${data.line_number}` : 'no line'}</span>
       </div>
+      <div className="node-validation-label">{VALIDATION_STATE_LABELS[data.validation_state]}</div>
       <Handle type="source" position={Position.Right} />
     </div>
   );

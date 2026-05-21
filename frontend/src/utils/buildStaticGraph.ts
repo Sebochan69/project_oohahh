@@ -1,5 +1,6 @@
 import type { StaticAnalysisImport, StaticAnalysisResult } from '../types/analysis';
 import type { StaticGraphData, StaticGraphEdge, StaticGraphNode } from '../types/graph';
+import { DEFAULT_VALIDATION_STATE } from '../types/validation';
 
 function fileNodeId(filePath: string) {
   return `file:${filePath}`;
@@ -83,6 +84,7 @@ export function buildStaticGraph(analysis: StaticAnalysisResult): StaticGraphDat
         file_path: filePath,
         name: filePath,
         type: 'file',
+        validation_state: DEFAULT_VALIDATION_STATE,
         is_entry: file.is_entry,
       },
     });
@@ -100,6 +102,7 @@ export function buildStaticGraph(analysis: StaticAnalysisResult): StaticGraphDat
         line_number: functionItem.line_number,
         name: functionItem.name,
         type: 'function',
+        validation_state: DEFAULT_VALIDATION_STATE,
       },
     });
 
@@ -129,6 +132,7 @@ export function buildStaticGraph(analysis: StaticAnalysisResult): StaticGraphDat
         line_number: classItem.line_number,
         name: classItem.name,
         type: 'class',
+        validation_state: DEFAULT_VALIDATION_STATE,
       },
     });
 
@@ -159,6 +163,7 @@ export function buildStaticGraph(analysis: StaticAnalysisResult): StaticGraphDat
           line_number: importItem.line_number,
           name: importItem.name ? `${importItem.module}.${importItem.name}` : importItem.module,
           type: 'external_module',
+          validation_state: DEFAULT_VALIDATION_STATE,
           import_type: importItem.import_type,
         },
       });
