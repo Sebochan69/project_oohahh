@@ -54,6 +54,8 @@ export type AiRagPipelineNode = {
   type: AiRagPipelineNodeType;
   label: string;
   description?: string;
+  beginner_explanation?: string;
+  engineer_explanation?: string;
   payload?: Record<string, unknown>;
 };
 

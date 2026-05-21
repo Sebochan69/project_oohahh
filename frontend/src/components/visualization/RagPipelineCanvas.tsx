@@ -196,8 +196,8 @@ function buildNodes(
       data: {
         type: node.type,
         label: node.label,
-        beginnerExplanation: node.description ?? explanation.beginner,
-        engineerExplanation: explanation.engineer,
+        beginnerExplanation: node.beginner_explanation ?? node.description ?? explanation.beginner,
+        engineerExplanation: node.engineer_explanation ?? explanation.engineer,
         payload: node.payload ?? derivedPayload(node.type, lesson),
         metadata: {
           lesson_id: lesson.id,

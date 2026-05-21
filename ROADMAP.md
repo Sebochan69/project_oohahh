@@ -16,6 +16,8 @@ V1 establishes the learning loop:
 - Beginner/Engineer mode presentation
 - AI Mentor API and frontend panel with OpenAI/fallback behavior
 - Static backend lifecycle visualization from lesson-defined mock data
+- Static AI/RAG pipeline visualization with hallucination risk overlays from
+  lesson-defined mock data
 - Smoke test and demo flow documentation
 
 ## Current Backend Lifecycle Prototype
