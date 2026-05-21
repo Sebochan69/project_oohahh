@@ -139,8 +139,8 @@ function buildNodes(
       data: {
         type: node.type,
         label: node.label,
-        beginnerExplanation: node.description ?? explanation.beginner,
-        engineerExplanation: node.description ?? explanation.engineer,
+        beginnerExplanation: node.beginner_explanation ?? node.description ?? explanation.beginner,
+        engineerExplanation: node.engineer_explanation ?? node.description ?? explanation.engineer,
         requestPath:
           node.type === 'client' || node.type === 'route'
             ? `${lesson.request_method ?? 'GET'} ${lesson.request_path ?? '(missing path)'}`

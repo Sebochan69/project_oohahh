@@ -73,8 +73,8 @@ Each node should preserve:
 
 ## Lesson Schema Metadata
 
-Future backend lessons can use optional lesson schema fields to describe the
-request lifecycle without requiring execution support yet:
+Backend lessons use optional lesson schema fields to describe the request
+lifecycle without requiring execution support yet:
 
 - `lesson_type: backend_lifecycle`
 - `request_method`
@@ -84,9 +84,11 @@ request lifecycle without requiring execution support yet:
 - `expected_response`
 - `expected_status_code`
 - `lifecycle_nodes`
+- `beginner_explanation` and `engineer_explanation` on lifecycle nodes
 
-The first planning/reference lesson is
-`lessons/backend-lifecycle/fastapi-hello-route.lesson.json`.
+The current static demo lesson is
+`lessons/backend-lifecycle/fastapi-hello-route.lesson.json`, titled
+"FastAPI Request Lifecycle".
 
 ## Beginner Mode Style
 

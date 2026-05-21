@@ -7,6 +7,11 @@ Recommended lesson:
 
 - `lessons/python-foundations/print-welcome-message.lesson.json`
 
+Backend lifecycle demo:
+
+- `lessons/backend-lifecycle/fastapi-hello-route.lesson.json`
+- Detailed presenter path: `docs/backend-lifecycle-demo.md`
+
 ## Setup
 
 1. Start the backend from the repository root:
@@ -100,6 +105,9 @@ Recommended lesson:
   variable creation and update information.
 - Switch to Engineer Mode before stepping through the timeline to show raw event
   payloads.
+- Load "FastAPI Request Lifecycle" to show the static backend track prototype.
+  The visualization should render client, route, validation, service,
+  repository, mock database, response, and error nodes from lesson metadata.
 
 ## Troubleshooting
 
