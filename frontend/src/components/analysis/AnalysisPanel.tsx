@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import { BackendLifecycleCanvas } from '../visualization/BackendLifecycleCanvas';
 import { RuntimeGraphCanvas } from '../visualization/RuntimeGraphCanvas';
 import { StaticGraphCanvas } from '../visualization/StaticGraphCanvas';
 
@@ -8,6 +10,24 @@ export function AnalysisPanel() {
   const isAnalyzing = useWorkspaceStore((state) => state.isAnalyzing);
   const isTracing = useWorkspaceStore((state) => state.isTracing);
   const runtimeGraphData = useWorkspaceStore((state) => state.runtimeGraphData);
+  const [showBackendPrototype, setShowBackendPrototype] = useState(false);
+
+  if (showBackendPrototype) {
+    return (
+      <div className="backend-lifecycle-view">
+        <div className="backend-lifecycle-view__toolbar">
+          <div>
+            <span>V2 prototype</span>
+            <h3>FastAPI request lifecycle</h3>
+          </div>
+          <button type="button" onClick={() => setShowBackendPrototype(false)}>
+            Back to Python graphs
+          </button>
+        </div>
+        <BackendLifecycleCanvas />
+      </div>
+    );
+  }
 
   if (runtimeGraphData && runtimeGraphData.nodes.length > 0) {
     return <RuntimeGraphCanvas graphData={runtimeGraphData} />;
@@ -56,6 +76,9 @@ export function AnalysisPanel() {
           <span>Visualization</span>
           <h3>No graph yet</h3>
           <p>Choose a lesson or write Python, then use Analyze for structure or Run / Verify for execution flow.</p>
+          <button type="button" onClick={() => setShowBackendPrototype(true)}>
+            Show backend lifecycle prototype
+          </button>
         </div>
       </div>
     );

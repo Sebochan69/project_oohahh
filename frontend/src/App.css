@@ -591,6 +591,30 @@ select {
   line-height: 1.55;
 }
 
+.empty-state-card button,
+.backend-lifecycle-view__toolbar button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  border: 1px solid #b8c8d8;
+  border-radius: 7px;
+  background: #123d5a;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+.empty-state-card button:hover,
+.empty-state-card button:focus-visible,
+.backend-lifecycle-view__toolbar button:hover,
+.backend-lifecycle-view__toolbar button:focus-visible {
+  background: #0f3148;
+}
+
 .empty-state-card--error {
   border-color: #fecdd3;
   background: #fff7f7;
@@ -1182,6 +1206,177 @@ select {
   line-height: 1.5;
   padding: 12px;
   white-space: pre-wrap;
+}
+
+.backend-lifecycle-view {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: #f8fafc;
+}
+
+.backend-lifecycle-view__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #d7e0ea;
+  background: #ffffff;
+  padding: 12px 14px;
+}
+
+.backend-lifecycle-view__toolbar span,
+.backend-lifecycle-inspector > span {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b7d91;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.backend-lifecycle-view__toolbar h3,
+.backend-lifecycle-inspector h3 {
+  margin: 0;
+  color: #223047;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.backend-lifecycle-view__toolbar button {
+  margin-top: 0;
+}
+
+.backend-lifecycle-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 28%);
+  background: #f8fafc;
+}
+
+.backend-lifecycle-canvas {
+  min-height: 0;
+}
+
+.backend-lifecycle-canvas .react-flow {
+  min-height: 0;
+}
+
+.backend-lifecycle-node {
+  width: 220px;
+  border: 1px solid #c8d4df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172033;
+  padding: 11px 12px;
+  box-shadow: 0 10px 24px rgba(24, 39, 75, 0.12);
+}
+
+.backend-lifecycle-node--client {
+  border-color: #60a5fa;
+  background: #eff6ff;
+}
+
+.backend-lifecycle-node--route,
+.backend-lifecycle-node--service {
+  border-color: #92c6aa;
+  background: #f0fbf5;
+}
+
+.backend-lifecycle-node--validation {
+  border-color: #facc15;
+  background: #fefce8;
+}
+
+.backend-lifecycle-node--repository,
+.backend-lifecycle-node--database {
+  border-color: #c7a5df;
+  background: #faf5ff;
+}
+
+.backend-lifecycle-node--response {
+  border-color: #34d399;
+  background: #f0fdf4;
+}
+
+.backend-lifecycle-node--error {
+  border-color: #fb7185;
+  background: #fff1f2;
+}
+
+.backend-lifecycle-node__type {
+  margin-bottom: 4px;
+  color: #5c7087;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.backend-lifecycle-node__label {
+  color: #172033;
+  font-size: 0.93rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.backend-lifecycle-node p {
+  margin: 7px 0 0;
+  color: #465a70;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.backend-lifecycle-node__details {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  border-top: 1px solid rgba(100, 116, 139, 0.22);
+  padding-top: 7px;
+}
+
+.backend-lifecycle-node__details div,
+.backend-lifecycle-inspector dl div {
+  min-width: 0;
+}
+
+.backend-lifecycle-node__details dt,
+.backend-lifecycle-inspector dt {
+  color: #6b7d91;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.backend-lifecycle-node__details dd,
+.backend-lifecycle-inspector dd {
+  margin: 2px 0 0;
+  color: #223047;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.backend-lifecycle-inspector {
+  min-width: 0;
+  border-left: 1px solid #d7e0ea;
+  background: #ffffff;
+  overflow: auto;
+  padding: 16px;
+}
+
+.backend-lifecycle-inspector p {
+  margin: 10px 0 14px;
+  color: #465a70;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.backend-lifecycle-inspector dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
 }
 
 .runtime-graph-workspace {
