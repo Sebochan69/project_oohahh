@@ -33,6 +33,8 @@ V1 establishes the learning loop:
 - Add misconception-specific mentor flows
 - Improve prompt evaluation and response quality checks
 - Add instructor-friendly review artifacts
+- Plan and build the backend fundamentals track described in
+  [V2 Backend Track](docs/v2-backend-track.md)
 
 ## Future Debug Mode
 
