@@ -1,24 +1,63 @@
 import json
 import subprocess
 import sys
+from datetime import UTC, datetime
 from textwrap import dedent
 
 from app.models.analysis import AnalysisError
-from app.models.trace import RuntimeTraceRequest, RuntimeTraceResponse
+from app.models.trace import RuntimeTraceEvent, RuntimeTraceRequest, RuntimeTraceResponse
 
 EXECUTION_TIMEOUT_SECONDS = 2.0
 ERROR_MARKER = "__OOH_AHH_ERROR__"
+EVENT_MARKER = "__OOH_AHH_EVENT__"
+MAX_TRACE_EVENTS = 500
 
 RUNNER_SCRIPT = dedent(
     f"""
     import builtins
+    import datetime
     import json
     import sys
     import traceback
 
     ERROR_MARKER = {ERROR_MARKER!r}
+    EVENT_MARKER = {EVENT_MARKER!r}
+    MAX_TRACE_EVENTS = {MAX_TRACE_EVENTS}
     file_path = sys.argv[1]
     source = sys.stdin.read()
+    step = 0
+    tracing_suppressed = False
+
+    def now_iso():
+        return datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00", "Z")
+
+    def make_event(event_type, line_number=None, payload=None, visual=None, validation=None):
+        global step
+        event = {{
+            "id": f"evt-{{step:04d}}-{{event_type}}",
+            "type": event_type,
+            "timestamp": now_iso(),
+            "step": step,
+            "file_path": file_path,
+            "line_number": line_number,
+            "scope": {{
+                "id": f"module:{{file_path}}",
+                "name": file_path,
+                "kind": "module",
+                "parent_id": None,
+            }},
+            "payload": payload or {{}},
+            "visual": visual or {{}},
+            "validation": validation,
+        }}
+        step += 1
+        return event
+
+    def emit_event(event_type, line_number=None, payload=None, visual=None, validation=None):
+        print(
+            EVENT_MARKER + json.dumps(make_event(event_type, line_number, payload, visual, validation)),
+            file=sys.stderr,
+        )
 
     def emit_error(kind, message, line_number=None):
         payload = {{
@@ -27,6 +66,29 @@ RUNNER_SCRIPT = dedent(
             "line_number": line_number,
         }}
         print(ERROR_MARKER + json.dumps(payload), file=sys.stderr)
+
+    def trace_lines(frame, event, arg):
+        global tracing_suppressed
+        if event == "line" and frame.f_code.co_filename == file_path:
+            if step >= MAX_TRACE_EVENTS:
+                if not tracing_suppressed:
+                    tracing_suppressed = True
+                    emit_event(
+                        "line_executed",
+                        frame.f_lineno,
+                        {{"line_number": frame.f_lineno, "truncated": True}},
+                        {{"category": "execution", "label": "Trace event limit reached", "emphasis": "muted"}},
+                    )
+                return None
+
+            emit_event(
+                "line_executed",
+                frame.f_lineno,
+                {{"line_number": frame.f_lineno}},
+                {{"category": "execution", "label": f"Line {{frame.f_lineno}}", "emphasis": "normal"}},
+            )
+
+        return trace_lines
 
     def blocked_import(*args, **kwargs):
         raise ImportError("Imports are disabled in the prototype runtime.")
@@ -63,31 +125,102 @@ RUNNER_SCRIPT = dedent(
         "__file__": file_path,
     }}
 
+    emit_event(
+        "execution_started",
+        None,
+        {{"entry_file": file_path}},
+        {{"category": "system", "label": "Execution started", "emphasis": "highlight"}},
+    )
+
     try:
         code = compile(source, file_path, "exec")
     except SyntaxError as error:
+        emit_event(
+            "error_raised",
+            error.lineno,
+            {{"error_type": "SyntaxError", "error_message": error.msg}},
+            {{"category": "error", "label": "Syntax error", "emphasis": "highlight"}},
+        )
+        emit_event(
+            "execution_finished",
+            error.lineno,
+            {{"status": "failed"}},
+            {{"category": "system", "label": "Execution failed", "emphasis": "highlight"}},
+        )
         emit_error("syntax_error", error.msg, error.lineno)
         traceback.print_exception(error, file=sys.stderr)
         raise SystemExit(1)
 
     try:
+        sys.settrace(trace_lines)
         exec(code, globals_for_exec, globals_for_exec)
     except BaseException as error:
+        sys.settrace(None)
         traceback_summary = traceback.extract_tb(error.__traceback__)
         user_frames = [frame for frame in traceback_summary if frame.filename == file_path]
         line_number = user_frames[-1].lineno if user_frames else None
+        emit_event(
+            "error_raised",
+            line_number,
+            {{"error_type": type(error).__name__, "error_message": str(error)}},
+            {{"category": "error", "label": type(error).__name__, "emphasis": "highlight"}},
+        )
+        emit_event(
+            "execution_finished",
+            line_number,
+            {{"status": "failed"}},
+            {{"category": "system", "label": "Execution failed", "emphasis": "highlight"}},
+        )
         emit_error(type(error).__name__, str(error), line_number)
         traceback.print_exception(error, file=sys.stderr)
         raise SystemExit(1)
+    finally:
+        sys.settrace(None)
+
+    emit_event(
+        "execution_finished",
+        None,
+        {{"status": "completed"}},
+        {{"category": "system", "label": "Execution finished", "emphasis": "highlight"}},
+    )
     """
 )
 
 
-def _extract_marked_errors(file_path: str, stderr: str) -> tuple[str, list[AnalysisError]]:
+def _fallback_event(event_type: str, step: int, file_path: str, line_number: int | None, payload: dict) -> RuntimeTraceEvent:
+    return RuntimeTraceEvent(
+        id=f"evt-{step:04d}-{event_type}",
+        type=event_type,
+        timestamp=_utc_timestamp(),
+        step=step,
+        file_path=file_path,
+        line_number=line_number,
+        scope={
+            "id": f"module:{file_path}",
+            "name": file_path,
+            "kind": "module",
+            "parent_id": None,
+        },
+        payload=payload,
+        visual={},
+        validation=None,
+    )
+
+
+def _extract_marked_output(file_path: str, stderr: str) -> tuple[str, list[RuntimeTraceEvent], list[AnalysisError]]:
+    """Split runner stderr into user-visible stderr, trace events, and errors."""
+    events: list[RuntimeTraceEvent] = []
     errors: list[AnalysisError] = []
     visible_stderr_lines: list[str] = []
 
     for line in stderr.splitlines():
+        if line.startswith(EVENT_MARKER):
+            try:
+                events.append(RuntimeTraceEvent(**json.loads(line.removeprefix(EVENT_MARKER))))
+            except (json.JSONDecodeError, ValueError):
+                visible_stderr_lines.append(line)
+            continue
+
         if line.startswith(ERROR_MARKER):
             try:
                 payload = json.loads(line.removeprefix(ERROR_MARKER))
@@ -112,7 +245,7 @@ def _extract_marked_errors(file_path: str, stderr: str) -> tuple[str, list[Analy
     if visible_stderr:
         visible_stderr += "\n"
 
-    return visible_stderr, errors
+    return visible_stderr, events, errors
 
 
 def _ensure_text(value: str | bytes | None) -> str:
@@ -125,12 +258,18 @@ def _ensure_text(value: str | bytes | None) -> str:
     return value
 
 
+def _utc_timestamp() -> str:
+    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
+
+
 def run_runtime_trace(request: RuntimeTraceRequest) -> RuntimeTraceResponse:
-    """Run the entry file in a constrained prototype subprocess.
+    """Run the entry file and emit basic schema-shaped runtime events.
 
     This is not a production sandbox. It avoids writing submitted files to disk,
     disables imports through restricted builtins, captures output, and applies a
-    timeout, but it should not be treated as a complete security boundary.
+    timeout. Tracing currently uses Python's line tracing hook for entry-file
+    line events only; variable/function/loop-specific events are intentionally
+    out of scope for this prototype.
     """
     errors: list[AnalysisError] = []
     files_by_path = {file.path: file for file in request.files}
@@ -162,7 +301,8 @@ def run_runtime_trace(request: RuntimeTraceRequest) -> RuntimeTraceResponse:
         )
     except subprocess.TimeoutExpired as error:
         stdout = _ensure_text(error.stdout)
-        stderr = _ensure_text(error.stderr)
+        stderr, events, execution_errors = _extract_marked_output(request.entry_file, _ensure_text(error.stderr))
+        errors.extend(execution_errors)
         errors.append(
             AnalysisError(
                 file_path=request.entry_file,
@@ -171,13 +311,29 @@ def run_runtime_trace(request: RuntimeTraceRequest) -> RuntimeTraceResponse:
         )
 
         return RuntimeTraceResponse(
-            events=[],
+            events=[
+                *events,
+                _fallback_event(
+                    "error_raised",
+                    len(events),
+                    request.entry_file,
+                    None,
+                    {"error_type": "TimeoutError", "error_message": f"Execution timed out after {EXECUTION_TIMEOUT_SECONDS:g} seconds."},
+                ),
+                _fallback_event(
+                    "execution_finished",
+                    len(events) + 1,
+                    request.entry_file,
+                    None,
+                    {"status": "failed"},
+                ),
+            ],
             stdout=stdout,
             stderr=stderr,
             errors=errors,
         )
 
-    stderr, execution_errors = _extract_marked_errors(request.entry_file, completed_process.stderr)
+    stderr, events, execution_errors = _extract_marked_output(request.entry_file, completed_process.stderr)
     errors.extend(execution_errors)
 
     if completed_process.returncode != 0 and not execution_errors:
@@ -189,7 +345,7 @@ def run_runtime_trace(request: RuntimeTraceRequest) -> RuntimeTraceResponse:
         )
 
     return RuntimeTraceResponse(
-        events=[],
+        events=events,
         stdout=completed_process.stdout,
         stderr=stderr,
         errors=errors,

@@ -11,8 +11,14 @@ class RuntimeTraceRequest(BaseModel):
 class RuntimeTraceEvent(BaseModel):
     id: str
     type: str
+    timestamp: str
     step: int
+    file_path: str
+    line_number: int | None
+    scope: dict
     payload: dict = Field(default_factory=dict)
+    visual: dict = Field(default_factory=dict)
+    validation: dict | None = None
 
 
 class RuntimeTraceResponse(BaseModel):
