@@ -15,7 +15,23 @@ V1 establishes the learning loop:
 - Correctness state overlays
 - Beginner/Engineer mode presentation
 - AI Mentor API and frontend panel with OpenAI/fallback behavior
+- Static backend lifecycle visualization from lesson-defined mock data
 - Smoke test and demo flow documentation
+
+## Current Backend Lifecycle Prototype
+
+The backend lifecycle prototype teaches how a request moves through
+`client -> route -> validation -> service -> repository -> mock DB -> response`.
+It renders React Flow nodes from backend lifecycle lesson metadata and shows
+placeholder validation for required metadata and lifecycle nodes.
+
+Current boundaries:
+
+- No real FastAPI app execution
+- No real HTTP requests
+- No backend request tracing
+- No real database behavior
+- No AI mentor changes specific to backend lifecycle lessons
 
 ## V1 Remaining Hardening
 
@@ -33,8 +49,10 @@ V1 establishes the learning loop:
 - Add misconception-specific mentor flows
 - Improve prompt evaluation and response quality checks
 - Add instructor-friendly review artifacts
-- Plan and build the backend fundamentals track described in
+- Expand the backend fundamentals track described in
   [V2 Backend Track](docs/v2-backend-track.md)
+- Add controlled FastAPI request execution/tracing only after a separate safety
+  design and trace contract
 
 ## Future Debug Mode
 

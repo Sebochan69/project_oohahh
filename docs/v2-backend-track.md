@@ -1,12 +1,13 @@
 # V2 Backend Track
 
-This document plans a future V2 learning track for backend fundamentals in
-PROJECT OOH-AHH. It is planning only. It does not implement FastAPI
-visualization, backend execution changes, or new frontend features.
+This document describes the V2 backend learning track and the current static
+backend lifecycle prototype in PROJECT OOH-AHH. The prototype renders
+lesson-defined/mock lifecycle data. It does not execute real FastAPI apps,
+send real HTTP requests, trace backend processes, or connect to databases.
 
 ## Track Goal
 
-The V2 backend track should help learners understand how an HTTP request moves
+The V2 backend track helps learners understand how an HTTP request moves
 through a small FastAPI-style backend:
 
 ```text
@@ -73,8 +74,8 @@ Each node should preserve:
 
 ## Lesson Schema Metadata
 
-Future backend lessons can use optional lesson schema fields to describe the
-request lifecycle without requiring execution support yet:
+Backend lifecycle lessons use optional lesson schema fields to describe the
+request lifecycle without requiring execution support:
 
 - `lesson_type: backend_lifecycle`
 - `request_method`
@@ -85,7 +86,7 @@ request lifecycle without requiring execution support yet:
 - `expected_status_code`
 - `lifecycle_nodes`
 
-The first planning/reference lesson is
+The current static demo lesson is
 `lessons/backend-lifecycle/fastapi-hello-route.lesson.json`.
 
 ## Beginner Mode Style
@@ -102,6 +103,10 @@ Beginner Mode should explain the request as a story:
 Keep language concrete, avoid framework jargon until the learner has seen the
 node behavior, and emphasize cause and effect.
 
+In the current prototype, Beginner Mode uses simplified lifecycle labels and
+explanations from the static graph. It should not imply that a real request was
+sent.
+
 ## Engineer Mode Style
 
 Engineer Mode should expose implementation details:
@@ -116,6 +121,10 @@ Engineer Mode should expose implementation details:
 
 Engineer Mode can use terms like dependency boundary, data access layer,
 serialization, validation error, and exception handler.
+
+In the current prototype, Engineer Mode shows lesson metadata such as method,
+path, payload placeholders, status code, file path, and line number when
+available. These details come from lesson JSON, not from live FastAPI tracing.
 
 ## Possible Lesson List
 
@@ -151,6 +160,9 @@ serialization, validation error, and exception handler.
 
 ## Non-Goals For V2 Backend Track
 
+- Real FastAPI execution in the current prototype
+- Real HTTP requests in the current prototype
+- Backend request tracing in the current prototype
 - Production FastAPI deployment
 - Docker or Kubernetes
 - Real database setup or migrations
@@ -178,8 +190,20 @@ serialization, validation error, and exception handler.
 - The V1 runtime tracer is Python-code focused; backend request lifecycle
   tracing may need a separate event model or carefully extended trace events.
 
-## Documentation Boundary
+## Current Prototype Versus Future Work
 
-This plan defines a future track shape only. Implementation should happen in
-separate tickets for schemas, backend trace contracts, frontend graph rendering,
-lesson content, and validation behavior.
+Implemented now:
+
+- Static backend lifecycle graph from `backend_lifecycle` lesson metadata
+- Request/response context shown from lesson fields
+- Beginner/Engineer presentation differences
+- Placeholder validation for method, path, status code, response payload, and
+  required lifecycle node types
+
+Future work:
+
+- Controlled FastAPI execution design
+- Request lifecycle trace event contracts
+- Real route/request instrumentation
+- Richer validation based on observed request behavior
+- Backend-specific mentor context after tracing exists

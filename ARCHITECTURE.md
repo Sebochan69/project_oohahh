@@ -40,6 +40,27 @@ Code -> Static Analysis -> Runtime Trace Events -> Visualization Graph -> Valida
    `POST /api/v1/mentor/respond`. The backend uses OpenAI when configured and
    falls back safely when no API key is present or a request fails.
 
+## Backend Lifecycle Prototype
+
+Backend lifecycle lessons use `lesson_type: backend_lifecycle` and
+lesson-defined metadata to render a static request lifecycle graph. The graph
+can show client, route, validation, service, repository, mock database,
+response, and error nodes. The inspector shows request method/path, request
+body, query params, expected response payload, expected status code, and
+placeholder validation for metadata completeness.
+
+This prototype is intentionally static:
+
+- It does not execute learner FastAPI apps.
+- It does not send real HTTP requests.
+- It does not trace a real backend process.
+- It does not connect to a real database.
+
+Beginner Mode keeps node copy focused on the story of the request. Engineer
+Mode exposes deeper lifecycle, payload, status, and source metadata where the
+lesson provides it. Future work may add controlled FastAPI execution and request
+trace events, but that is outside the current prototype.
+
 ## Event Coverage
 
 The shared schema defines V1 event types broadly. The current runtime emitter
@@ -68,6 +89,7 @@ contracts for future implementation.
 - No Docker execution
 - No arbitrary pip installs or external packages
 - Runtime imports are blocked
+- Backend lifecycle lessons are static metadata visualizations only
 - No full terminal emulation
 - No collaborative editing
 - No production debugging workflows

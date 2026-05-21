@@ -18,9 +18,12 @@ Implemented V1 prototype capabilities:
 - Runtime trace events for execution start/finish, line execution, variable
   create/update, and errors
 - Static and runtime React Flow graph rendering
+- Static backend lifecycle graph rendering from lesson-defined mock lifecycle
+  data
 - Timeline controls for Previous, Next, Play, Pause, and Reset
 - stdout, stderr, error, and event inspection
 - Basic lesson validation for expected stdout and required concepts
+- Placeholder backend lifecycle validation for lesson metadata completeness
 - Correctness states and graph node badges
 - Beginner Mode and Engineer Mode detail levels
 - AI Mentor panel using OpenAI when configured, with safe placeholder/fallback
@@ -39,6 +42,8 @@ V1 focuses on Python fundamentals:
 
 V1 intentionally excludes:
 
+- Real FastAPI app execution or request tracing
+- Real HTTP requests from backend lifecycle lessons
 - Docker execution
 - Kubernetes
 - Arbitrary pip installs or external packages
@@ -64,7 +69,7 @@ discipline of reading, reasoning about, and improving code.
 frontend/   Vite + React + TypeScript app, workspace UI, graphs, timeline
 backend/    FastAPI app, static analysis, runtime trace, mentor API
 shared/     JSON Schema contracts for trace events, validation, lessons
-lessons/    Python foundations lesson JSON files
+lessons/    Python foundations and backend lifecycle lesson JSON files
 docs/       Product, workflow, smoke test, and demo documentation
 ```
 
@@ -130,6 +135,8 @@ Never commit real API keys.
   function return, loop-specific, or condition-specific events.
 - Lesson validation is intentionally simple: stdout matching, runtime error
   presence, and basic concept detection.
+- Backend lifecycle visualization is static and lesson-defined. It does not
+  execute FastAPI apps, send HTTP requests, or touch a database.
 - AI Mentor responses are single-turn and do not edit learner code.
 
 ## V1 Release Candidate Checklist
@@ -155,6 +162,7 @@ Never commit real API keys.
 - [Git Workflow](docs/git-workflow.md)
 - [Smoke Test](docs/smoke-test.md)
 - [Demo Flow](docs/demo-flow.md)
+- [Backend Lifecycle Demo](docs/backend-lifecycle-demo.md)
 - [V1 Release Notes](docs/release-notes-v1.md)
 - [Codex Guidance](AGENTS.md)
 - [Learning Philosophy](SKILLS.md)

@@ -7,6 +7,11 @@ Recommended lesson:
 
 - `lessons/python-foundations/print-welcome-message.lesson.json`
 
+Backend lifecycle demo:
+
+- `lessons/backend-lifecycle/fastapi-hello-route.lesson.json`
+- Details: `docs/backend-lifecycle-demo.md`
+
 ## Setup
 
 1. Start the backend from the repository root:
@@ -92,6 +97,30 @@ Recommended lesson:
     Expected outcome: the mentor returns a hint without auto-editing code or
     giving a full solution.
 
+## Backend Lifecycle Demo
+
+1. Load the "FastAPI Hello Route" lesson.
+
+   Expected outcome: the visualization switches to the backend lifecycle graph.
+   This graph is rendered from lesson-defined/mock lifecycle data.
+
+2. Explain the flow from client to response.
+
+   Expected outcome: the graph shows the request moving through route,
+   validation, service, repository, mock database, and response concepts when
+   the lesson defines those nodes.
+
+3. Point out the boundary.
+
+   Expected outcome: the presenter makes clear that OOH-AHH is not executing a
+   FastAPI app, sending an HTTP request, tracing a backend process, or touching
+   a real database yet.
+
+4. Toggle Beginner Mode and Engineer Mode.
+
+   Expected outcome: Beginner Mode keeps the flow explanation simpler, while
+   Engineer Mode shows deeper lifecycle and payload metadata from the lesson.
+
 ## Good Demo Variations
 
 - Change the printed text so it does not match the expected stdout, then run
@@ -100,6 +129,8 @@ Recommended lesson:
   variable creation and update information.
 - Switch to Engineer Mode before stepping through the timeline to show raw event
   payloads.
+- Load the backend lifecycle lesson to show request lifecycle concepts without
+  running real FastAPI code.
 
 ## Troubleshooting
 
@@ -113,3 +144,5 @@ Recommended lesson:
   Analyze or Run / Verify.
 - If runtime code imports a module, expect execution to reject it in V1. Static
   analysis can detect import syntax, but runtime imports are blocked.
+- If the backend lifecycle graph appears, remember it is static lesson metadata.
+  Analyze and Run / Verify remain Python-focused in this prototype.
