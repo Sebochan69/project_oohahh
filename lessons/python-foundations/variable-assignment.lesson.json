@@ -1,0 +1,38 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.variable-assignment",
+  "title": "Variable Assignment",
+  "description": "Store a message in a variable, then print it.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "# Store the message in a variable, then print the variable\n"
+    }
+  ],
+  "learning_objectives": [
+    "Create a variable with a string value.",
+    "Use print to display the value stored in a variable."
+  ],
+  "expected_output": {
+    "stdout": "Hello, learner!\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["variable_assignment", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "Hello, learner!\n"
+      }
+    ]
+  },
+  "hints": [
+    "Create a variable name on the left side of =.",
+    "Print the variable name, not the quoted message directly."
+  ]
+}

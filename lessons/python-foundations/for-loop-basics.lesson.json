@@ -1,0 +1,38 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.for-loop-basics",
+  "title": "For Loop Basics",
+  "description": "Use a for loop to print each item in a short list.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "colors = [\"red\", \"blue\", \"green\"]\n# Print each color using a for loop\n"
+    }
+  ],
+  "learning_objectives": [
+    "Use a for loop to repeat work for each item.",
+    "Print each item from a list on its own line."
+  ],
+  "expected_output": {
+    "stdout": "red\nblue\ngreen\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["for_loop", "list_usage", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "red\nblue\ngreen\n"
+      }
+    ]
+  },
+  "hints": [
+    "A for loop can visit each value in colors.",
+    "Put print inside the loop body."
+  ]
+}

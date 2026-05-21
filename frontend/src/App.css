@@ -218,6 +218,35 @@ select {
   cursor: not-allowed;
 }
 
+.lesson-panel__selector {
+  display: grid;
+  gap: 5px;
+}
+
+.lesson-panel__selector span {
+  color: #8fa3ba;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.lesson-panel__selector select {
+  width: 100%;
+  min-height: 34px;
+  border: 1px solid #3f5068;
+  border-radius: 7px;
+  background: #0f172a;
+  color: #eef5ff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0 9px;
+}
+
+.lesson-panel__selector select:focus-visible {
+  outline: 2px solid #5c9cff;
+  outline-offset: 2px;
+}
+
 .lesson-panel__description {
   margin: 0;
   color: #b6c4d4;

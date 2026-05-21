@@ -1,0 +1,38 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.list-filtering",
+  "title": "List Filtering",
+  "description": "Loop through a list and print only the numbers greater than 3.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "numbers = [1, 4, 2, 6]\n# Print only numbers greater than 3\n"
+    }
+  ],
+  "learning_objectives": [
+    "Combine a for loop with an if statement.",
+    "Use a condition to filter list values."
+  ],
+  "expected_output": {
+    "stdout": "4\n6\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["list_usage", "for_loop", "if_statement", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "4\n6\n"
+      }
+    ]
+  },
+  "hints": [
+    "Loop through each number in numbers.",
+    "Print only when the current number is greater than 3."
+  ]
+}

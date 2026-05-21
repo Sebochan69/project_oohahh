@@ -1,0 +1,38 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.if-statement-basics",
+  "title": "If Statement Basics",
+  "description": "Use an if statement to print a message when a number is large enough.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "score = 8\n# If score is at least 5, print Ready\n"
+    }
+  ],
+  "learning_objectives": [
+    "Write a boolean condition.",
+    "Run code only when an if condition is true."
+  ],
+  "expected_output": {
+    "stdout": "Ready\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["if_statement", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "Ready\n"
+      }
+    ]
+  },
+  "hints": [
+    "Use >= to check whether score is at least 5.",
+    "Indent the print line under the if statement."
+  ]
+}
