@@ -76,6 +76,7 @@ The Vite development server will print the local URL, usually
 From the repository root:
 
 ```bash
+copy .env.example .env
 cd backend
 python -m venv .venv
 .venv\Scripts\activate
@@ -84,6 +85,12 @@ uvicorn app.main:app --reload
 ```
 
 The API will run at `http://127.0.0.1:8000`.
+
+Optional environment setup:
+
+`OPENAI_API_KEY` and `OPENAI_MODEL` are reserved for future AI Mentor
+integration. The backend starts and the mentor endpoint returns placeholder
+responses when `OPENAI_API_KEY` is not set.
 
 Health check:
 
