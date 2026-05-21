@@ -34,14 +34,16 @@ function importModuleCandidates(sourceFilePath: string, importItem: StaticAnalys
   const candidates = new Set<string>();
 
   if (moduleName) {
-    candidates.add(normalizePath(`${moduleName.replace(/\./g, '/')}.py`));
-    candidates.add(normalizePath(`${sourceDirectory}${moduleName.replace(/\./g, '/')}.py`));
+    const modulePath = moduleName.replace(/\./g, '/');
+    candidates.add(normalizePath(`${modulePath}.py`));
+    candidates.add(normalizePath(`${sourceDirectory}${modulePath}.py`));
   }
 
   if (importItem.name) {
+    const modulePath = moduleName.replace(/\./g, '/');
     const importedNamePath = importItem.name.replace(/\./g, '/');
-    candidates.add(normalizePath(`${moduleName.replace(/\./g, '/')}/${importedNamePath}.py`));
-    candidates.add(normalizePath(`${sourceDirectory}${moduleName.replace(/\./g, '/')}/${importedNamePath}.py`));
+    candidates.add(normalizePath(`${modulePath}/${importedNamePath}.py`));
+    candidates.add(normalizePath(`${sourceDirectory}${modulePath}/${importedNamePath}.py`));
     candidates.add(normalizePath(`${sourceDirectory}${importedNamePath}.py`));
   }
 
