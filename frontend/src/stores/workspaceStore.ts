@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { analyzeStatic } from '../api/staticAnalysis';
-import type { StaticAnalysisResult } from '../api/staticAnalysis';
+import type { StaticAnalysisResult } from '../types/analysis';
+import type { StaticGraphData } from '../types/graph';
+import { buildStaticGraph } from '../utils/buildStaticGraph';
 
 const STARTER_CODE = 'print("Welcome to OOH-AHH")';
 
@@ -14,6 +16,7 @@ type WorkspaceState = {
   analysisError: string | null;
   analysisResult: StaticAnalysisResult | null;
   files: Record<string, WorkspaceFile>;
+  graphData: StaticGraphData | null;
   isAnalyzing: boolean;
   createFile: () => void;
   deleteFile: (fileName: string) => void;
@@ -55,6 +58,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       content: STARTER_CODE,
     },
   },
+  graphData: null,
   isAnalyzing: false,
   createFile: () =>
     set((state) => {
@@ -118,6 +122,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
     set({
       analysisError: null,
+      graphData: null,
       isAnalyzing: true,
     });
 
@@ -126,14 +131,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         entryFile: activeFileName,
         files: Object.values(files),
       });
+      const graphData = buildStaticGraph(analysisResult);
 
       set({
         analysisResult,
+        graphData,
         isAnalyzing: false,
       });
     } catch (error) {
       set({
         analysisError: error instanceof Error ? error.message : 'Static analysis request failed.',
+        graphData: null,
         isAnalyzing: false,
       });
     }

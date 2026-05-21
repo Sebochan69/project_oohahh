@@ -1,8 +1,9 @@
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import { StaticGraphCanvas } from '../visualization/StaticGraphCanvas';
 
 export function AnalysisPanel() {
   const analysisError = useWorkspaceStore((state) => state.analysisError);
-  const analysisResult = useWorkspaceStore((state) => state.analysisResult);
+  const graphData = useWorkspaceStore((state) => state.graphData);
   const isAnalyzing = useWorkspaceStore((state) => state.isAnalyzing);
 
   if (isAnalyzing) {
@@ -21,17 +22,13 @@ export function AnalysisPanel() {
     );
   }
 
-  if (!analysisResult) {
+  if (!graphData) {
     return (
       <div className="analysis-panel analysis-panel--empty">
-        <p>Run static analysis to inspect the raw backend response.</p>
+        <p>Run static analysis to render the static graph.</p>
       </div>
     );
   }
 
-  return (
-    <pre className="analysis-panel analysis-panel--result">
-      {JSON.stringify(analysisResult, null, 2)}
-    </pre>
-  );
+  return <StaticGraphCanvas graphData={graphData} />;
 }

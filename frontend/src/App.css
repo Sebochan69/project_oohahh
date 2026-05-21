@@ -383,6 +383,92 @@ select {
   white-space: pre-wrap;
 }
 
+.static-graph-canvas {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  background: #f8fafc;
+}
+
+.static-graph-canvas .react-flow {
+  min-height: 0;
+}
+
+.static-node {
+  min-width: 150px;
+  max-width: 210px;
+  border: 1px solid #cbd6e2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #152233;
+  padding: 10px 12px;
+  box-shadow: 0 10px 24px rgba(24, 39, 75, 0.12);
+}
+
+.static-node--file {
+  border-color: #7ea6d8;
+  background: #eef6ff;
+}
+
+.static-node--function {
+  border-color: #92c6aa;
+  background: #f0fbf5;
+}
+
+.static-node--class {
+  border-color: #c7a5df;
+  background: #faf5ff;
+}
+
+.static-node__type {
+  margin-bottom: 4px;
+  color: #5c7087;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.static-node__label {
+  overflow-wrap: anywhere;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.static-node__meta {
+  margin-top: 6px;
+  color: #63758a;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.graph-debug {
+  max-height: 180px;
+  border-top: 1px solid #d7e0ea;
+  background: #ffffff;
+  overflow: auto;
+}
+
+.graph-debug summary {
+  cursor: pointer;
+  color: #42546a;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 10px 12px;
+}
+
+.graph-debug pre {
+  margin: 0;
+  border-top: 1px solid #e3e9f0;
+  color: #1f2937;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  padding: 12px;
+  white-space: pre-wrap;
+}
+
 .placeholder-surface {
   min-height: 0;
   display: grid;
