@@ -21,7 +21,7 @@
     "stderr": "",
     "exit_code": 0
   },
-  "required_concepts": ["print", "strings", "stdout"],
+  "required_concepts": ["print_statement"],
   "validation": {
     "strategy": "placeholder_stdout_match",
     "rules": [

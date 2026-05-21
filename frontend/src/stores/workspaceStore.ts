@@ -71,6 +71,19 @@ function normalizePythonFileName(fileName: string) {
   return trimmedName.endsWith('.py') ? trimmedName : `${trimmedName}.py`;
 }
 
+function notEvaluatedLessonValidation(message: string): LessonValidationResult {
+  return {
+    status: 'not_evaluated',
+    output_status: 'not_evaluated',
+    message,
+    concepts: {
+      required: [],
+      found: [],
+      missing: [],
+    },
+  };
+}
+
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   activeFileName: 'main.py',
   analysisError: null,
@@ -91,10 +104,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   traceError: null,
   traceResult: null,
   runtimeGraphData: null,
-  lessonValidationResult: {
-    status: 'not_evaluated',
-    message: 'Run / Verify to evaluate a loaded lesson.',
-  },
+  lessonValidationResult: notEvaluatedLessonValidation('Run / Verify to evaluate a loaded lesson.'),
   createFile: () =>
     set((state) => {
       const fileName = createUntitledFileName(state.files);
@@ -196,10 +206,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       files: starterFiles,
       graphData: null,
       isTimelinePlaying: false,
-      lessonValidationResult: {
-        status: 'not_evaluated',
-        message: 'Run / Verify to evaluate this lesson.',
-      },
+      lessonValidationResult: notEvaluatedLessonValidation('Run / Verify to evaluate this lesson.'),
       runtimeGraphData: null,
       traceError: null,
       traceResult: null,
@@ -240,10 +247,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       isTimelinePlaying: false,
       isTracing: true,
       runtimeGraphData: null,
-      lessonValidationResult: {
-        status: 'not_evaluated',
-        message: 'Runtime execution is in progress.',
-      },
+      lessonValidationResult: notEvaluatedLessonValidation('Runtime execution is in progress.'),
       graphData: null,
       traceError: null,
     });
@@ -253,7 +257,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         entryFile: activeFileName,
         files: Object.values(files),
       });
-      const lessonValidationResult = validateLessonOutput(activeLesson, traceResult);
+      const lessonValidationResult = validateLessonOutput(activeLesson, traceResult, files);
 
       set({
         currentEventIndex: 0,
@@ -267,10 +271,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       set({
         isTimelinePlaying: false,
         isTracing: false,
-        lessonValidationResult: {
-          status: 'not_evaluated',
-          message: 'Runtime execution did not complete, so lesson output was not evaluated.',
-        },
+        lessonValidationResult: notEvaluatedLessonValidation(
+          'Runtime execution did not complete, so lesson validation was not evaluated.',
+        ),
         runtimeGraphData: null,
         traceError: error instanceof Error ? error.message : 'Runtime trace request failed.',
       });
@@ -305,10 +308,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         files,
         graphData: null,
         isTimelinePlaying: false,
-        lessonValidationResult: {
-          status: 'not_evaluated',
-          message: 'Run / Verify to evaluate this lesson.',
-        },
+        lessonValidationResult: notEvaluatedLessonValidation('Run / Verify to evaluate this lesson.'),
         runtimeGraphData: null,
         traceError: null,
         traceResult: null,

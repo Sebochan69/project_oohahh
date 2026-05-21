@@ -11,11 +11,29 @@ export type ValidationState = (typeof VALIDATION_STATES)[number];
 
 export type LessonValidationStatus = Extract<ValidationState, 'not_evaluated' | 'correct' | 'incorrect'>;
 
+export type RequiredConceptKey =
+  | 'print_statement'
+  | 'variable_assignment'
+  | 'for_loop'
+  | 'if_statement'
+  | 'function_definition'
+  | 'function_call'
+  | 'list_usage'
+  | 'dict_usage';
+
+export type ConceptValidationResult = {
+  required: string[];
+  found: string[];
+  missing: string[];
+};
+
 export type LessonValidationResult = {
   status: LessonValidationStatus;
   message: string;
   expected_stdout?: string;
   actual_stdout?: string;
+  output_status: LessonValidationStatus;
+  concepts: ConceptValidationResult;
 };
 
 export const DEFAULT_VALIDATION_STATE: ValidationState = 'not_evaluated';
