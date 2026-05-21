@@ -27,6 +27,8 @@ RUNNER_SCRIPT = dedent(
     source = sys.stdin.read()
     step = 0
     tracing_suppressed = False
+    last_line_number = None
+    last_locals_snapshot = {{}}
 
     def now_iso():
         return datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00", "Z")
@@ -67,9 +69,59 @@ RUNNER_SCRIPT = dedent(
         }}
         print(ERROR_MARKER + json.dumps(payload), file=sys.stderr)
 
+    def safe_value(value):
+        try:
+            json.dumps(value)
+        except (TypeError, ValueError):
+            return repr(value)
+
+        if value is None or isinstance(value, (str, int, float, bool, list, dict)):
+            return value
+
+        return repr(value)
+
+    def snapshot_locals(frame):
+        ignored_names = {{"__builtins__", "__name__", "__file__"}}
+        return {{
+            name: safe_value(value)
+            for name, value in frame.f_locals.items()
+            if not name.startswith("__") and name not in ignored_names
+        }}
+
+    def emit_variable_changes(frame, completed_line_number):
+        global last_locals_snapshot
+        current_snapshot = snapshot_locals(frame)
+
+        for name, new_value in current_snapshot.items():
+            if name not in last_locals_snapshot:
+                emit_event(
+                    "variable_created",
+                    completed_line_number,
+                    {{"name": name, "old_value": None, "new_value": new_value, "scope": "module"}},
+                    {{"category": "data", "label": f"Created {{name}}", "emphasis": "highlight"}},
+                )
+                continue
+
+            old_value = last_locals_snapshot[name]
+            if old_value != new_value:
+                emit_event(
+                    "variable_updated",
+                    completed_line_number,
+                    {{"name": name, "old_value": old_value, "new_value": new_value, "scope": "module"}},
+                    {{"category": "data", "label": f"Updated {{name}}", "emphasis": "highlight"}},
+                )
+
+        last_locals_snapshot = current_snapshot
+
     def trace_lines(frame, event, arg):
-        global tracing_suppressed
-        if event == "line" and frame.f_code.co_filename == file_path:
+        global last_line_number, tracing_suppressed
+        if frame.f_code.co_filename != file_path:
+            return trace_lines
+
+        if event == "line":
+            if last_line_number is not None:
+                emit_variable_changes(frame, last_line_number)
+
             if step >= MAX_TRACE_EVENTS:
                 if not tracing_suppressed:
                     tracing_suppressed = True
@@ -81,12 +133,17 @@ RUNNER_SCRIPT = dedent(
                     )
                 return None
 
+            last_line_number = frame.f_lineno
             emit_event(
                 "line_executed",
                 frame.f_lineno,
                 {{"line_number": frame.f_lineno}},
                 {{"category": "execution", "label": f"Line {{frame.f_lineno}}", "emphasis": "normal"}},
             )
+
+        if event == "return" and last_line_number is not None:
+            emit_variable_changes(frame, last_line_number)
+            last_line_number = None
 
         return trace_lines
 
@@ -268,8 +325,8 @@ def run_runtime_trace(request: RuntimeTraceRequest) -> RuntimeTraceResponse:
     This is not a production sandbox. It avoids writing submitted files to disk,
     disables imports through restricted builtins, captures output, and applies a
     timeout. Tracing currently uses Python's line tracing hook for entry-file
-    line events only; variable/function/loop-specific events are intentionally
-    out of scope for this prototype.
+    line events and simple module-level variable snapshots. Function-call and
+    loop-specific events are intentionally out of scope for this prototype.
     """
     errors: list[AnalysisError] = []
     files_by_path = {file.path: file for file in request.files}
