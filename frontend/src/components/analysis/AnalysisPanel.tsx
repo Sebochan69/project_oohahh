@@ -1,5 +1,6 @@
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import { BackendLifecycleCanvas } from '../visualization/BackendLifecycleCanvas';
+import { RagPipelineCanvas } from '../visualization/RagPipelineCanvas';
 import { RuntimeGraphCanvas } from '../visualization/RuntimeGraphCanvas';
 import { StaticGraphCanvas } from '../visualization/StaticGraphCanvas';
 
@@ -11,6 +12,7 @@ export function AnalysisPanel() {
   const runtimeGraphData = useWorkspaceStore((state) => state.runtimeGraphData);
   const activeLesson = useWorkspaceStore((state) => state.activeLesson);
   const isBackendLifecycleLesson = activeLesson?.lesson_type === 'backend_lifecycle';
+  const isAiRagPipelineLesson = activeLesson?.lesson_type === 'ai_rag_pipeline';
 
   if (isBackendLifecycleLesson) {
     return (
@@ -22,6 +24,20 @@ export function AnalysisPanel() {
           </div>
         </div>
         <BackendLifecycleCanvas lesson={activeLesson} />
+      </div>
+    );
+  }
+
+  if (isAiRagPipelineLesson) {
+    return (
+      <div className="rag-pipeline-view">
+        <div className="rag-pipeline-view__toolbar">
+          <div>
+            <span>AI/RAG lesson</span>
+            <h3>RAG pipeline overview</h3>
+          </div>
+        </div>
+        <RagPipelineCanvas lesson={activeLesson} />
       </div>
     );
   }

@@ -19,6 +19,7 @@ export function LessonPanel() {
   );
   const isActiveLessonSelected = activeLesson?.id === lesson.id;
   const isBackendLifecycleLesson = lesson.lesson_type === 'backend_lifecycle';
+  const isAiRagPipelineLesson = lesson.lesson_type === 'ai_rag_pipeline';
 
   return (
     <section className="lesson-panel" aria-label="Lesson loader">
@@ -75,6 +76,23 @@ export function LessonPanel() {
           <div>
             <dt>Expected response</dt>
             <dd>{lesson.expected_response ? JSON.stringify(lesson.expected_response) : '(missing)'}</dd>
+          </div>
+        </dl>
+      )}
+
+      {isAiRagPipelineLesson && (
+        <dl className="lesson-panel__backend-meta">
+          <div>
+            <dt>Query</dt>
+            <dd>{lesson.user_query ?? '(missing query)'}</dd>
+          </div>
+          <div>
+            <dt>Documents</dt>
+            <dd>{lesson.documents?.length ?? 0}</dd>
+          </div>
+          <div>
+            <dt>Pipeline nodes</dt>
+            <dd>{lesson.pipeline_nodes?.length ?? 0}</dd>
           </div>
         </dl>
       )}

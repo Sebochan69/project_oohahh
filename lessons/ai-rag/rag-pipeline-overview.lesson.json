@@ -174,7 +174,7 @@
     },
     {
       "id": "risk-warning",
-      "type": "warning_risk",
+      "type": "hallucination_risk",
       "label": "Risk",
       "description": "Unsupported claims are a hallucination risk point.",
       "payload": {
@@ -210,7 +210,7 @@
           "llm",
           "response",
           "citation_source",
-          "warning_risk"
+          "hallucination_risk"
         ]
       },
       {
