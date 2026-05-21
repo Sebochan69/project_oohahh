@@ -58,6 +58,23 @@ export type BackendLifecycleValidationResult = {
   missing_lifecycle_nodes: string[];
 };
 
+export type RagValidationCheck = {
+  id: string;
+  label: string;
+  state: LessonValidationStatus;
+  beginner_message: string;
+  engineer_message: string;
+  related_node_type?: string;
+};
+
+export type RagValidationResult = {
+  status: LessonValidationStatus;
+  beginner_message: string;
+  engineer_message: string;
+  checks: RagValidationCheck[];
+  risk_count: number;
+};
+
 export const DEFAULT_VALIDATION_STATE: ValidationState = 'not_evaluated';
 
 export const VALIDATION_STATE_LABELS: Record<ValidationState, string> = {

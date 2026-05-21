@@ -13,6 +13,13 @@ import '@xyflow/react/dist/style.css';
 import { useMemo } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { AiRagPipelineNode, AiRagPipelineNodeType, Lesson } from '../../types/lesson';
+import {
+  VALIDATION_STATE_LABELS,
+  type RagValidationResult,
+  type ValidationState,
+  validationStateClassName,
+} from '../../types/validation';
+import { validateRagPipelineLesson } from '../../utils/validateRagPipelineLesson';
 import { RagPipelineNode, type RagPipelineNodeData } from './nodes/RagPipelineNode';
 
 type RagPipelineCanvasProps = {
@@ -143,9 +150,44 @@ function derivedPayload(type: AiRagPipelineNodeType, lesson: Lesson): Record<str
   return undefined;
 }
 
-function buildNodes(lesson: Lesson): Node<RagPipelineNodeData>[] {
+function validationStateForNode(
+  type: AiRagPipelineNodeType,
+  validationResult: RagValidationResult,
+): ValidationState {
+  if (validationResult.status === 'not_evaluated') {
+    return 'not_evaluated';
+  }
+
+  if (type === 'hallucination_risk') {
+    return validationResult.risk_count > 0 ? 'incorrect' : 'correct';
+  }
+
+  const hasFailedRelatedCheck = validationResult.checks.some(
+    (check) => check.related_node_type === type && check.state === 'incorrect',
+  );
+
+  if (hasFailedRelatedCheck) {
+    return type === 'retriever' || type === 'context_builder' ? 'partially_correct' : 'incorrect';
+  }
+
+  return 'correct';
+}
+
+function riskMessageForNode(type: AiRagPipelineNodeType, validationResult: RagValidationResult) {
+  const failedCheck = validationResult.checks.find(
+    (check) => check.related_node_type === type && check.state === 'incorrect',
+  );
+
+  return failedCheck?.beginner_message;
+}
+
+function buildNodes(
+  lesson: Lesson,
+  validationResult: RagValidationResult,
+): Node<RagPipelineNodeData>[] {
   return (lesson.pipeline_nodes ?? []).map((node: AiRagPipelineNode, index) => {
     const explanation = explanationForType(node.type);
+    const validationState = validationStateForNode(node.type, validationResult);
 
     return {
       id: node.id,
@@ -161,16 +203,22 @@ function buildNodes(lesson: Lesson): Node<RagPipelineNodeData>[] {
           lesson_id: lesson.id,
           topic: lesson.topic,
           pipeline_index: index,
+          validation_state: validationState,
         },
+        validation_state: validationState,
+        riskMessage: riskMessageForNode(node.type, validationResult),
       },
     };
   });
 }
 
-function buildEdges(nodes: Node<RagPipelineNodeData>[]): Edge[] {
+function buildEdges(nodes: Node<RagPipelineNodeData>[], validationResult: RagValidationResult): Edge[] {
   const mainNodes = nodes.filter((node) => node.data.type !== 'hallucination_risk');
   const edges = mainNodes.slice(1).map((node, index) => {
     const source = mainNodes[index];
+    const isWeakRetrievalEdge =
+      source.data.type === 'retriever' &&
+      (node.data.type === 'context_builder' || validationResult.status !== 'correct');
 
     return {
       id: `${source.id}-${node.id}`,
@@ -178,9 +226,9 @@ function buildEdges(nodes: Node<RagPipelineNodeData>[]): Edge[] {
       target: node.id,
       label: index === 0 ? 'source' : 'next',
       type: 'smoothstep',
-      animated: index === 0,
+      animated: index === 0 || isWeakRetrievalEdge,
       markerEnd: { type: MarkerType.ArrowClosed },
-      style: { stroke: '#0f766e', strokeWidth: 2 },
+      style: { stroke: isWeakRetrievalEdge ? '#ca8a04' : '#0f766e', strokeWidth: 2 },
     };
   });
   const riskNode = nodes.find((node) => node.data.type === 'hallucination_risk');
@@ -227,8 +275,12 @@ function formatValue(value: unknown, fallback: string) {
 export function RagPipelineCanvas({ lesson }: RagPipelineCanvasProps) {
   const learningMode = useWorkspaceStore((state) => state.learningMode);
   const isEngineerMode = learningMode === 'engineer';
-  const nodes = useMemo(() => (lesson ? buildNodes(lesson) : []), [lesson]);
-  const edges = useMemo(() => buildEdges(nodes), [nodes]);
+  const validationResult = useMemo(() => validateRagPipelineLesson(lesson ?? null), [lesson]);
+  const nodes = useMemo(
+    () => (lesson ? buildNodes(lesson, validationResult) : []),
+    [lesson, validationResult],
+  );
+  const edges = useMemo(() => buildEdges(nodes, validationResult), [nodes, validationResult]);
 
   if (!lesson || lesson.lesson_type !== 'ai_rag_pipeline') {
     return (
@@ -277,6 +329,19 @@ export function RagPipelineCanvas({ lesson }: RagPipelineCanvasProps) {
             ? 'This graph is rendered from static lesson metadata. It does not call embeddings, query a vector database, or generate an LLM response.'
             : 'This graph shows how a question can move through sources, retrieval, context, and a grounded answer.'}
         </p>
+        <div className={`rag-pipeline-validation ${validationStateClassName(validationResult.status)}`}>
+          <span>Validation</span>
+          <h4>{VALIDATION_STATE_LABELS[validationResult.status]}</h4>
+          <p>{isEngineerMode ? validationResult.engineer_message : validationResult.beginner_message}</p>
+          <ul>
+            {validationResult.checks.map((item) => (
+              <li key={item.id} className={validationStateClassName(item.state)}>
+                <strong>{item.label}</strong>
+                <span>{isEngineerMode ? item.engineer_message : item.beginner_message}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
         <dl>
           <div>
             <dt>Query</dt>
