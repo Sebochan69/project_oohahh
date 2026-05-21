@@ -3,6 +3,7 @@ import { AnalyzeButton } from '../analysis/AnalyzeButton';
 import { CodeEditor } from '../editor/CodeEditor';
 import { FileExplorer } from '../editor/FileExplorer';
 import { LessonPanel } from '../lessons/LessonPanel';
+import { AIMentorPanel } from '../mentor/AIMentorPanel';
 import { RunVerifyButton } from '../runtime/RunVerifyButton';
 import { RuntimeOutputPanel } from '../runtime/RuntimeOutputPanel';
 
@@ -29,7 +30,10 @@ export function WorkspaceLayout() {
           </div>
           <AnalyzeButton />
         </div>
-        <AnalysisPanel />
+        <div className="visual-workspace">
+          <AnalysisPanel />
+          <AIMentorPanel />
+        </div>
       </main>
 
       <section className="workspace-panel workspace-panel--timeline" aria-labelledby="timeline-panel-title">
