@@ -19,6 +19,10 @@
     "hints"
   ],
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional schema reference used by lesson JSON files."
+    },
     "id": {
       "type": "string",
       "minLength": 1
@@ -30,6 +34,11 @@
     "description": {
       "type": "string",
       "minLength": 1
+    },
+    "lesson_type": {
+      "type": "string",
+      "description": "Lesson family. Defaults conceptually to python_foundation when omitted for existing V1 lessons.",
+      "enum": ["python_foundation", "backend_lifecycle"]
     },
     "difficulty": {
       "type": "string",
@@ -78,6 +87,42 @@
         }
       }
     },
+    "request_method": {
+      "type": "string",
+      "description": "Optional backend lesson HTTP method.",
+      "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    },
+    "request_path": {
+      "type": "string",
+      "description": "Optional backend lesson request path, such as /hello.",
+      "minLength": 1
+    },
+    "request_body": {
+      "description": "Optional backend lesson sample request body."
+    },
+    "query_params": {
+      "type": "object",
+      "description": "Optional backend lesson query parameters.",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean", "null"]
+      }
+    },
+    "expected_response": {
+      "description": "Optional backend lesson expected response payload."
+    },
+    "expected_status_code": {
+      "type": "integer",
+      "description": "Optional backend lesson expected HTTP status code.",
+      "minimum": 100,
+      "maximum": 599
+    },
+    "lifecycle_nodes": {
+      "type": "array",
+      "description": "Optional backend lifecycle nodes that a future visualizer can render.",
+      "items": {
+        "$ref": "#/$defs/lifecycle_node"
+      }
+    },
     "required_concepts": {
       "type": "array",
       "items": {
@@ -123,6 +168,44 @@
         },
         "content": {
           "type": "string"
+        }
+      }
+    },
+    "lifecycle_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "label"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "client",
+            "route",
+            "validation",
+            "service",
+            "repository",
+            "database",
+            "response",
+            "error"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": "string"
+        },
+        "line_number": {
+          "type": "integer",
+          "minimum": 1
         }
       }
     }

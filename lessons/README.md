@@ -12,6 +12,8 @@ Each lesson includes:
 - `id`: stable lesson identifier.
 - `title`: learner-facing lesson name.
 - `description`: concise task summary.
+- `lesson_type`: optional lesson family, currently `python_foundation` or
+  `backend_lifecycle`. Existing V1 Python lessons may omit this field.
 - `difficulty`: `beginner`, `intermediate`, or `advanced`.
 - `topic`: course or concept area.
 - `mode_support`: supported learner modes, such as `beginner` and `engineer`.
@@ -25,6 +27,23 @@ Each lesson includes:
 The frontend currently loads lessons locally from JSON imports, injects starter
 files into the in-memory workspace, and can reset the active lesson back to its
 starter state.
+
+## Optional Backend Lifecycle Fields
+
+Backend lifecycle lessons may include extra planning metadata:
+
+- `request_method`: HTTP method, such as `GET` or `POST`.
+- `request_path`: route path, such as `/hello`.
+- `request_body`: sample JSON request body.
+- `query_params`: sample query parameter values.
+- `expected_response`: expected JSON response payload.
+- `expected_status_code`: expected HTTP status code.
+- `lifecycle_nodes`: future visualization nodes for `client`, `route`,
+  `validation`, `service`, `repository`, `database`, `response`, or `error`.
+
+These fields are optional and are not used by the V1 Python runtime validator.
+They exist so future V2 backend lessons can describe request lifecycle concepts
+without implementing backend visualization yet.
 
 ## Current Lessons
 
@@ -44,6 +63,9 @@ starter state.
   loop and condition.
 - `python-foundations/dictionary-access.lesson.json`: read a value from a
   dictionary.
+- `backend-lifecycle/fastapi-hello-route.lesson.json`: planning/reference
+  sample for a future FastAPI request lifecycle lesson. It is not wired into
+  the current frontend lesson selector.
 
 ## Boundaries
 
