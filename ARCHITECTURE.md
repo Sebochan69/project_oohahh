@@ -6,7 +6,21 @@ PROJECT OOH-AHH follows a staged learning-runtime pipeline:
 Code -> Static Analysis -> Runtime Trace Events -> Visualization Graph -> Validation Overlay -> AI Mentor Feedback
 ```
 
-## Implemented V1 Flow
+## Current Multi-Track Platform
+
+The current prototype has three tracks:
+
+- **Python Foundations** uses the full code-to-runtime learning loop.
+- **Backend Lifecycle** renders a static/mock FastAPI-style request lifecycle
+  from lesson metadata.
+- **AI/RAG Pipeline** renders a static/mock retrieval pipeline from lesson
+  metadata, including citation and hallucination-risk overlays.
+
+Backend Lifecycle and AI/RAG Pipeline are visual teaching prototypes. They do
+not execute real FastAPI apps, send real HTTP requests, call embedding APIs,
+query vector databases, retrieve live documents, or execute real RAG pipelines.
+
+## Python Foundations Flow
 
 1. **Code**
    Learners edit in-memory Python files in Monaco. The file explorer supports
@@ -61,19 +75,30 @@ Mode exposes deeper lifecycle, payload, status, and source metadata where the
 lesson provides it. Future work may add controlled FastAPI execution and request
 trace events, but that is outside the current prototype.
 
-## AI/RAG Track Planning
+## AI/RAG Pipeline Prototype
 
-The planned AI/RAG learning track is documented separately in
-`docs/ai-rag-track.md`. It proposes a future visualization pipeline:
+AI/RAG lessons use `lesson_type: ai_rag_pipeline` and lesson-defined metadata
+to render a static retrieval pipeline:
 
 ```text
 Prompt -> Documents -> Chunks -> Embeddings -> Vector Store -> Retrieval -> Context -> LLM -> Response -> Citations
 ```
 
-This is not implemented in the current application. OOH-AHH does not generate
-embeddings, add vector database dependencies, run retrieval, or render RAG
-graphs yet. Future work should start with lesson-defined/mock RAG lifecycle data
-before any guarded model or embedding calls.
+The current graph can show user query, document, chunker, embedding model,
+vector store, retriever, context builder, LLM, response, citation/source, and
+hallucination-risk nodes. Validation is static and lesson-data-driven; it checks
+for pipeline completeness, citations, weak retrieval/context signals, and
+lesson-defined risk points.
+
+This prototype is intentionally static:
+
+- It does not call embedding APIs.
+- It does not add vector database dependencies.
+- It does not run retrieval over real documents.
+- It does not call an LLM as part of the RAG graph.
+
+The AI Mentor is a separate single-turn mentor feature and may use OpenAI when
+configured. That does not make the AI/RAG visualization a real RAG executor.
 
 ## Event Coverage
 
@@ -104,7 +129,8 @@ contracts for future implementation.
 - No arbitrary pip installs or external packages
 - Runtime imports are blocked
 - Backend lifecycle lessons are static metadata visualizations only
-- AI/RAG lessons and vector retrieval are planning-only
+- AI/RAG lessons are static metadata visualizations only
+- No real embedding generation, vector store, retrieval, or RAG execution
 - No full terminal emulation
 - No collaborative editing
 - No production debugging workflows

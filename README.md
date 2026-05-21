@@ -5,13 +5,24 @@ fundamentals. Learners write Python, inspect static structure, run controlled
 execution traces, replay runtime events, see validation overlays, and ask an AI
 mentor for grounded explanations and hints.
 
-## Current V1 Prototype
+## Current Multi-Track Prototype
 
-Implemented V1 prototype capabilities:
+OOH-AHH currently supports three learning tracks:
+
+- **Python Foundations**: editable Python code, static analysis, controlled
+  runtime trace, timeline replay, validation, React Flow graphs, and AI Mentor.
+- **Backend Lifecycle**: static/mock request lifecycle visualization from
+  lesson data. It teaches FastAPI-style request flow without executing FastAPI
+  apps or sending HTTP requests.
+- **AI/RAG Pipeline**: static/mock RAG pipeline visualization from lesson data.
+  It teaches retrieval, citations, and hallucination risk without calling
+  embedding APIs or using a vector database.
+
+Implemented prototype capabilities:
 
 - Vite, React, TypeScript frontend with a workspace shell
 - In-memory Python file explorer and Monaco editor
-- Lesson selector with Python foundations starter files
+- Multi-track lesson selector with Python, Backend Lifecycle, and AI/RAG lessons
 - FastAPI backend with `/health`
 - Static AST analysis for files, imports, functions, classes, and syntax errors
 - Controlled Python execution prototype with timeout protection
@@ -20,18 +31,22 @@ Implemented V1 prototype capabilities:
 - Static and runtime React Flow graph rendering
 - Static backend lifecycle graph rendering from lesson-defined mock lifecycle
   data
+- Static AI/RAG graph rendering with lesson-defined mock pipeline data and risk
+  overlays
 - Timeline controls for Previous, Next, Play, Pause, and Reset
 - stdout, stderr, error, and event inspection
 - Basic lesson validation for expected stdout and required concepts
 - Placeholder backend lifecycle validation for lesson metadata completeness
+- Placeholder AI/RAG validation for pipeline completeness, citation, retrieval,
+  and hallucination-risk metadata
 - Correctness states and graph node badges
-- Beginner Mode and Engineer Mode detail levels
+- Beginner Mode and Engineer Mode detail levels across all tracks
 - AI Mentor panel using OpenAI when configured, with safe placeholder/fallback
   behavior when no key is available
 
-## V1 Boundaries
+## Track Boundaries
 
-V1 focuses on Python fundamentals:
+Python Foundations supports:
 
 - Variables, conditions, loops, functions
 - Lists and dictionaries
@@ -40,10 +55,21 @@ V1 focuses on Python fundamentals:
 - Lesson validation for output and simple required concepts
 - Local/rule-based misconception detection plus AI mentor responses
 
-V1 intentionally excludes:
+Backend Lifecycle is currently static/mock only:
 
 - Real FastAPI app execution or request tracing
 - Real HTTP requests from backend lifecycle lessons
+- Real database behavior
+
+AI/RAG Pipeline is currently static/mock only:
+
+- Real embedding generation
+- Vector database indexing or retrieval
+- Real RAG execution
+- Live document ingestion
+
+The current prototype intentionally excludes:
+
 - Docker execution
 - Kubernetes
 - Arbitrary pip installs or external packages
@@ -69,7 +95,7 @@ discipline of reading, reasoning about, and improving code.
 frontend/   Vite + React + TypeScript app, workspace UI, graphs, timeline
 backend/    FastAPI app, static analysis, runtime trace, mentor API
 shared/     JSON Schema contracts for trace events, validation, lessons
-lessons/    Python foundations and backend lifecycle lesson JSON files
+lessons/    Python, Backend Lifecycle, and AI/RAG lesson JSON files
 docs/       Product, workflow, smoke test, and demo documentation
 ```
 
@@ -137,19 +163,24 @@ Never commit real API keys.
   presence, and basic concept detection.
 - Backend lifecycle visualization is static and lesson-defined. It does not
   execute FastAPI apps, send HTTP requests, or touch a database.
+- AI/RAG visualization is static and lesson-defined. It does not call embedding
+  APIs, query a vector database, retrieve live documents, or execute a real RAG
+  pipeline.
 - AI Mentor responses are single-turn and do not edit learner code.
 
-## V1 Release Candidate Checklist
+## Demo Checklist
 
 - Frontend starts with `npm run dev`.
 - Backend starts with `uvicorn app.main:app --reload`.
 - `/health` returns `{"status":"ok","service":"ooh-ahh-backend"}`.
 - Lesson loading, file explorer actions, and Monaco editing work in memory.
-- Analyze renders the static graph and supports node inspection.
-- Run / Verify renders runtime events, stdout/stderr/errors, validation, and the
-  runtime graph.
-- Timeline controls step through runtime events.
-- Beginner Mode and Engineer Mode show different detail levels.
+- Python Analyze renders the static graph and supports node inspection.
+- Python Run / Verify renders runtime events, stdout/stderr/errors, validation,
+  and the runtime graph.
+- Python timeline controls step through runtime events.
+- Backend Lifecycle lesson renders the static request lifecycle graph.
+- AI/RAG Pipeline lesson renders the static pipeline graph and risk overlay.
+- Beginner Mode and Engineer Mode show different detail levels across tracks.
 - AI Mentor returns OpenAI responses when configured and fallback guidance when
   `OPENAI_API_KEY` is missing.
 - Known limitations are documented in [V1 Release Notes](docs/release-notes-v1.md).
@@ -163,6 +194,9 @@ Never commit real API keys.
 - [Smoke Test](docs/smoke-test.md)
 - [Demo Flow](docs/demo-flow.md)
 - [Backend Lifecycle Demo](docs/backend-lifecycle-demo.md)
+- [Backend Track Plan](docs/v2-backend-track.md)
+- [AI/RAG Demo](docs/ai-rag-demo.md)
+- [AI/RAG Track Plan](docs/ai-rag-track.md)
 - [V1 Release Notes](docs/release-notes-v1.md)
 - [Codex Guidance](AGENTS.md)
 - [Learning Philosophy](SKILLS.md)

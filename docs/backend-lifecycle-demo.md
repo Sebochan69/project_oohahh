@@ -20,10 +20,10 @@ Recommended lesson:
 
    Expected outcome: the PROJECT OOH-AHH workspace opens locally.
 
-2. In the lesson selector, choose **FastAPI Hello Route** and press Load.
+2. In the lesson selector, choose **FastAPI Request Lifecycle** and press Load.
 
-   Expected outcome: the lesson panel shows `GET /hello`, status `200`, and the
-   expected JSON response.
+   Expected outcome: the lesson panel shows `POST /messages`, status `200`,
+   and the expected JSON response.
 
 3. Inspect the visualization panel.
 

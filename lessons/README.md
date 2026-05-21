@@ -12,9 +12,9 @@ Each lesson includes:
 - `id`: stable lesson identifier.
 - `title`: learner-facing lesson name.
 - `description`: concise task summary.
-- `lesson_type`: optional lesson family, currently `python_foundation` or
-  `backend_lifecycle` or `ai_rag_pipeline`. Existing V1 Python lessons may omit
-  this field.
+- `lesson_type`: optional lesson family. Supported values are
+  `python_foundation`, `backend_lifecycle`, and `ai_rag_pipeline`. Existing V1
+  Python lessons may omit this field.
 - `difficulty`: `beginner`, `intermediate`, or `advanced`.
 - `topic`: course or concept area.
 - `mode_support`: supported learner modes, such as `beginner` and `engineer`.
@@ -25,9 +25,9 @@ Each lesson includes:
 - `validation`: placeholder metadata for future validation rules.
 - `hints`: simple learner-facing hints.
 
-The frontend currently loads lessons locally from JSON imports, injects starter
-files into the in-memory workspace, and can reset the active lesson back to its
-starter state.
+The frontend currently loads lessons locally from JSON imports, groups them by
+track, injects starter files into the in-memory workspace, and can reset the
+active lesson back to its starter state.
 
 ## Optional Backend Lifecycle Fields
 
@@ -73,9 +73,9 @@ visualization:
 - `beginner_explanation`: optional learner-friendly text for a pipeline node.
 - `engineer_explanation`: optional technical text for a pipeline node.
 
-These fields drive the current static AI/RAG graph prototype. They are not used
-by the runtime runner, OpenAI mentor endpoint, backend APIs, or any real RAG
-execution path.
+These fields drive the current static AI/RAG graph prototype and hallucination
+risk overlay. They are not used by the runtime runner, OpenAI mentor endpoint,
+backend APIs, or any real RAG execution path.
 
 ## Current Lessons
 
@@ -109,3 +109,6 @@ concept checks, and mentor context.
 Validation remains intentionally lightweight in V1. Lesson `validation` metadata
 is a placeholder for future richer rule engines; current validation uses
 expected stdout, runtime error presence, and simple required concept detection.
+Backend Lifecycle and AI/RAG lessons use static lesson-data validation only; no
+real FastAPI request, embedding call, vector store query, or RAG execution is
+performed.

@@ -1,8 +1,16 @@
 # Roadmap
 
-## V1 Prototype: Current Stabilization Target
+## Current Multi-Track Prototype
 
-V1 establishes the learning loop:
+The current prototype is a multi-track learning platform with clear boundaries:
+
+- **Python Foundations** is the implemented code execution track.
+- **Backend Lifecycle** is a static/mock request lifecycle visualization track.
+- **AI/RAG Pipeline** is a static/mock retrieval pipeline visualization track.
+
+## Implemented Now
+
+Python Foundations includes:
 
 - In-memory Python workspace
 - Monaco editor
@@ -15,10 +23,27 @@ V1 establishes the learning loop:
 - Correctness state overlays
 - Beginner/Engineer mode presentation
 - AI Mentor API and frontend panel with OpenAI/fallback behavior
-- Static backend lifecycle visualization from lesson-defined mock data
-- Static AI/RAG pipeline visualization with hallucination risk overlays from
-  lesson-defined mock data
-- Smoke test and demo flow documentation
+
+Backend Lifecycle includes:
+
+- Lesson-defined request method, path, body, response, status, and lifecycle
+  nodes
+- Static React Flow visualization for client, route, validation, service,
+  repository, mock DB, response, and error concepts
+- Placeholder validation for lifecycle metadata completeness
+- Beginner/Engineer mode presentation
+
+AI/RAG Pipeline includes:
+
+- Lesson-defined query, documents, chunks, retrieved context, expected response,
+  citations, risk points, and pipeline nodes
+- Static React Flow visualization for retrieval and response grounding concepts
+- Hallucination/risk overlays from lesson-defined mock data
+- Placeholder validation for pipeline completeness, citations, weak retrieval,
+  and unsupported-answer risks
+- Beginner/Engineer mode presentation
+
+Shared platform work includes smoke test and demo flow documentation.
 
 ## Current Backend Lifecycle Prototype
 
@@ -34,6 +59,21 @@ Current boundaries:
 - No backend request tracing
 - No real database behavior
 - No AI mentor changes specific to backend lifecycle lessons
+
+## Current AI/RAG Pipeline Prototype
+
+The AI/RAG prototype teaches how a query moves through
+`documents -> chunks -> embeddings -> vector store -> retrieval -> context -> LLM -> response -> citations`.
+It renders React Flow nodes from AI/RAG lesson metadata and shows static
+validation/risk overlays for citation and grounding concepts.
+
+Current boundaries:
+
+- No real embedding generation
+- No vector database dependencies
+- No real retrieval over documents
+- No RAG backend APIs
+- No AI mentor changes specific to AI/RAG lessons
 
 ## V1 Remaining Hardening
 
@@ -56,8 +96,10 @@ Current boundaries:
 - Add controlled FastAPI request execution/tracing only after a separate safety
   design and trace contract
 - Plan the AI/RAG learning track described in
-  [AI/RAG Track](docs/ai-rag-track.md), with implementation kept separate from
-  the current prototype
+  [AI/RAG Track](docs/ai-rag-track.md), with real execution kept separate from
+  the current static prototype
+- Add real RAG execution only after separate safety, privacy, source-grounding,
+  and dependency design work
 
 ## Future Debug Mode
 

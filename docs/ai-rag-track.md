@@ -1,9 +1,10 @@
 # AI/RAG Track
 
-This document plans a future PROJECT OOH-AHH learning track for AI and
-retrieval-augmented generation. It is planning only. It does not implement RAG
-visualization, embedding calls, vector databases, retrieval, or new frontend
-features.
+This document describes the AI/RAG learning track and the current static
+AI/RAG pipeline prototype in PROJECT OOH-AHH. The prototype renders
+lesson-defined/mock pipeline data. It does not call embedding APIs, create a
+vector database, retrieve live documents, execute a real RAG pipeline, or call
+an LLM as part of the pipeline graph.
 
 ## Track Goal
 
@@ -112,6 +113,10 @@ Beginner Mode should make risk visible without fear:
 - "A citation helps you check whether the answer is supported."
 - "If the source does not say it, the model should not claim it."
 
+In the current prototype, Beginner Mode uses simplified labels and
+lesson-defined explanations. It should not imply that retrieval, embeddings, or
+model generation actually happened.
+
 ## Engineer Mode Style
 
 Engineer Mode should expose implementation details:
@@ -132,6 +137,10 @@ Engineer Mode should distinguish between observed values and placeholders. It
 should never imply an embedding or model call happened when the lesson is using
 mock data.
 
+In the current prototype, Engineer Mode shows lesson metadata such as chunk ids,
+retrieval scores, source ids, citation mappings, and risk placeholders. These
+details come from lesson JSON, not a live RAG system.
+
 ## Node Payload Examples
 
 The lesson schema now supports optional AI/RAG metadata fields for planning
@@ -149,7 +158,7 @@ lessons:
 - `hallucination_risk_points`
 - `pipeline_nodes`
 
-The first planning/reference lesson is
+The current static demo lesson is
 `lessons/ai-rag/rag-pipeline-overview.lesson.json`. It is static metadata only
 and is not a RAG executor.
 
@@ -301,10 +310,10 @@ the response stays within supplied context.
 
 ## Non-Goals
 
-- Real embedding generation in the planning phase
+- Real embedding generation in the current prototype
 - OpenAI embedding calls
 - Vector database dependencies
-- RAG visualization implementation
+- Real RAG execution
 - Production RAG architecture
 - Autonomous web crawling
 - Private document ingestion
@@ -333,8 +342,21 @@ the response stays within supplied context.
 - Any future real document ingestion must consider privacy, secrets, and source
   permissions.
 
-## Current Boundary
+## Current Prototype Versus Future Work
 
-This document is a track plan only. Implementation should happen in separate
-tickets for schemas, lesson data, mock graph rendering, validation, and any
-future guarded model or embedding calls.
+Implemented now:
+
+- Static AI/RAG graph from `ai_rag_pipeline` lesson metadata
+- Query, document, chunk, retrieval, context, response, citation, and risk
+  context shown from lesson fields
+- Beginner/Engineer presentation differences
+- Placeholder validation and visual overlays for required stages, citations,
+  weak retrieval/context, and hallucination-risk points
+
+Future work:
+
+- Guarded document loading design
+- Embedding and vector store contract design
+- Controlled/mock-first retrieval execution
+- Source-grounded response validation
+- RAG-specific mentor context after real pipeline traces exist

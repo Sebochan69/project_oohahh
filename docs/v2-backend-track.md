@@ -5,6 +5,10 @@ backend lifecycle prototype in PROJECT OOH-AHH. The prototype renders
 lesson-defined/mock lifecycle data. It does not execute real FastAPI apps,
 send real HTTP requests, trace backend processes, or connect to databases.
 
+It is one of the current multi-track visual lessons alongside Python
+Foundations and AI/RAG Pipeline. Python Foundations is the only current track
+that runs learner code.
+
 ## Track Goal
 
 The V2 backend track helps learners understand how an HTTP request moves

@@ -104,7 +104,7 @@ AI/RAG demo:
 
 ## Backend Lifecycle Demo
 
-1. Load the "FastAPI Hello Route" lesson.
+1. Load the "FastAPI Request Lifecycle" lesson.
 
    Expected outcome: the visualization switches to the backend lifecycle graph.
    This graph is rendered from lesson-defined/mock lifecycle data.
@@ -152,7 +152,8 @@ AI/RAG demo:
 
    Expected outcome: the presenter makes clear that OOH-AHH is not calling
    embeddings, using a vector database, retrieving live documents, or calling an
-   LLM in this demo.
+   LLM as part of the RAG pipeline visualization. The separate AI Mentor may
+   call OpenAI only when `OPENAI_API_KEY` is configured.
 
 ## Good Demo Variations
 

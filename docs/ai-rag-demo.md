@@ -8,7 +8,7 @@ The demo does not:
 - call embedding APIs
 - use a vector database
 - retrieve live documents
-- call an LLM
+- call an LLM as part of the RAG pipeline visualization
 - add backend RAG APIs or tracing
 
 Recommended lesson:
@@ -71,4 +71,5 @@ Recommended lesson:
 - If validation appears risky, that is expected for this demo: the lesson
   intentionally includes hallucination risk metadata so the overlay is visible.
 - Analyze and Run / Verify remain Python-focused in this prototype.
-- The AI Mentor panel is unchanged by this track and does not perform RAG.
+- The AI Mentor panel is unchanged by this track. It may call OpenAI for a
+  mentor response if configured, but it does not perform RAG.

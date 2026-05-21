@@ -2,6 +2,7 @@
 
 Use this checklist to verify the current PROJECT OOH-AHH prototype end to end.
 It is intended for local development, not production readiness.
+It covers Python Foundations, Backend Lifecycle, and AI/RAG Pipeline tracks.
 
 ## Prerequisites
 
