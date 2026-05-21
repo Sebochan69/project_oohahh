@@ -61,6 +61,20 @@ Mode exposes deeper lifecycle, payload, status, and source metadata where the
 lesson provides it. Future work may add controlled FastAPI execution and request
 trace events, but that is outside the current prototype.
 
+## AI/RAG Track Planning
+
+The planned AI/RAG learning track is documented separately in
+`docs/ai-rag-track.md`. It proposes a future visualization pipeline:
+
+```text
+Prompt -> Documents -> Chunks -> Embeddings -> Vector Store -> Retrieval -> Context -> LLM -> Response -> Citations
+```
+
+This is not implemented in the current application. OOH-AHH does not generate
+embeddings, add vector database dependencies, run retrieval, or render RAG
+graphs yet. Future work should start with lesson-defined/mock RAG lifecycle data
+before any guarded model or embedding calls.
+
 ## Event Coverage
 
 The shared schema defines V1 event types broadly. The current runtime emitter
@@ -90,6 +104,7 @@ contracts for future implementation.
 - No arbitrary pip installs or external packages
 - Runtime imports are blocked
 - Backend lifecycle lessons are static metadata visualizations only
+- AI/RAG lessons and vector retrieval are planning-only
 - No full terminal emulation
 - No collaborative editing
 - No production debugging workflows

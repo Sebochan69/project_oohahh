@@ -53,6 +53,9 @@ Current boundaries:
   [V2 Backend Track](docs/v2-backend-track.md)
 - Add controlled FastAPI request execution/tracing only after a separate safety
   design and trace contract
+- Plan the AI/RAG learning track described in
+  [AI/RAG Track](docs/ai-rag-track.md), with implementation kept separate from
+  the current prototype
 
 ## Future Debug Mode
 
@@ -71,6 +74,8 @@ Future debug mode is not a production debugger commitment.
 - Docker execution
 - Kubernetes concepts
 - Arbitrary package installation
+- Vector database dependencies
+- Real embedding generation
 - Collaborative editing
 - Full terminal emulation
 - Production debugging
