@@ -785,7 +785,8 @@ select {
   overflow: hidden;
 }
 
-.runtime-output__section--events {
+.runtime-output__section--events,
+.runtime-output__section--runtime-graph {
   grid-column: span 2;
 }
 
@@ -900,7 +901,8 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .runtime-output__section--events {
+  .runtime-output__section--events,
+  .runtime-output__section--runtime-graph {
     grid-column: auto;
   }
 }
