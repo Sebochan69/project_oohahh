@@ -71,6 +71,23 @@ Each node should preserve:
 - status or validation state
 - source file and line number when available
 
+## Lesson Schema Metadata
+
+Future backend lessons can use optional lesson schema fields to describe the
+request lifecycle without requiring execution support yet:
+
+- `lesson_type: backend_lifecycle`
+- `request_method`
+- `request_path`
+- `request_body`
+- `query_params`
+- `expected_response`
+- `expected_status_code`
+- `lifecycle_nodes`
+
+The first planning/reference lesson is
+`lessons/backend-lifecycle/fastapi-hello-route.lesson.json`.
+
 ## Beginner Mode Style
 
 Beginner Mode should explain the request as a story:

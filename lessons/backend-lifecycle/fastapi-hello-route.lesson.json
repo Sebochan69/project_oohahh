@@ -1,0 +1,79 @@
+{
+  "id": "backend-lifecycle.fastapi-hello-route",
+  "title": "FastAPI Hello Route",
+  "description": "Trace how a simple GET request reaches a FastAPI route and becomes a JSON response.",
+  "lesson_type": "backend_lifecycle",
+  "difficulty": "beginner",
+  "topic": "Backend request lifecycle",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "app.py",
+      "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/hello\")\ndef hello():\n    return {\"message\": \"Hello from OOH-AHH\"}\n"
+    }
+  ],
+  "learning_objectives": [
+    "Identify the client, route, and response parts of a backend request.",
+    "Explain how a GET request maps to a FastAPI route function.",
+    "Describe how a Python dictionary becomes a JSON response."
+  ],
+  "expected_output": {},
+  "request_method": "GET",
+  "request_path": "/hello",
+  "query_params": {},
+  "expected_response": {
+    "message": "Hello from OOH-AHH"
+  },
+  "expected_status_code": 200,
+  "lifecycle_nodes": [
+    {
+      "id": "client-request",
+      "type": "client",
+      "label": "Client request",
+      "description": "A browser or API client asks for GET /hello."
+    },
+    {
+      "id": "hello-route",
+      "type": "route",
+      "label": "GET /hello route",
+      "description": "FastAPI matches the path and method to the hello route function.",
+      "file_path": "app.py",
+      "line_number": 5
+    },
+    {
+      "id": "json-response",
+      "type": "response",
+      "label": "JSON response",
+      "description": "The returned dictionary becomes a JSON response with status 200.",
+      "file_path": "app.py",
+      "line_number": 7
+    }
+  ],
+  "required_concepts": [
+    "http_get_request",
+    "fastapi_route",
+    "json_response"
+  ],
+  "validation": {
+    "strategy": "backend_lifecycle_metadata_only",
+    "rules": [
+      {
+        "type": "expected_request",
+        "method": "GET",
+        "path": "/hello"
+      },
+      {
+        "type": "expected_response",
+        "status_code": 200,
+        "body": {
+          "message": "Hello from OOH-AHH"
+        }
+      }
+    ]
+  },
+  "hints": [
+    "Start by finding the decorator that names the HTTP method and path.",
+    "The route function body decides what data is returned.",
+    "In FastAPI, returning a dictionary usually becomes a JSON response."
+  ]
+}
