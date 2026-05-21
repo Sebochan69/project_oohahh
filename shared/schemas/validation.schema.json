@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ooh-ahh.local/schemas/validation.schema.json",
+  "title": "OOH-AHH Validation",
+  "description": "Validation state and feedback that can be attached to trace events, visualization nodes, timeline items, or AI mentor context.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "state": {
+      "type": "string",
+      "description": "Current correctness or evaluation state.",
+      "enum": [
+        "not_evaluated",
+        "running",
+        "correct",
+        "partially_correct",
+        "incorrect",
+        "inherited_error"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "description": "Learner-facing feedback summary."
+    },
+    "expected": {
+      "description": "Expected value, behavior, event shape, or concept for this validation point."
+    },
+    "actual": {
+      "description": "Observed value, behavior, event shape, or concept for this validation point."
+    },
+    "misconception": {
+      "type": "string",
+      "description": "Optional misconception label or short explanation inferred from the validation result."
+    },
+    "severity": {
+      "type": "string",
+      "description": "How strongly this issue should affect the learning flow.",
+      "enum": ["info", "warning", "error"]
+    },
+    "source": {
+      "type": "string",
+      "description": "System component that produced the validation result.",
+      "enum": ["static_analysis", "runtime_trace", "lesson_rule", "ai_mentor", "manual_review"]
+    },
+    "related_event_ids": {
+      "type": "array",
+      "description": "Trace event ids related to this validation result.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Extension point for future validation details.",
+      "additionalProperties": true
+    }
+  },
+  "required": ["state"]
+}
