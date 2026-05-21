@@ -21,7 +21,7 @@ export function WorkspaceLayout() {
         <div className="panel-header panel-header--with-action">
           <div>
             <span className="panel-kicker">Right panel</span>
-            <h2 id="visual-panel-title">Static Analysis Result</h2>
+            <h2 id="visual-panel-title">Static Graph Data</h2>
           </div>
           <AnalyzeButton />
         </div>
