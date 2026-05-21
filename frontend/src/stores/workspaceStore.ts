@@ -19,13 +19,20 @@ type WorkspaceState = {
   analysisResult: StaticAnalysisResult | null;
   files: Record<string, WorkspaceFile>;
   graphData: StaticGraphData | null;
+  currentEventIndex: number;
   isAnalyzing: boolean;
+  isTimelinePlaying: boolean;
   isTracing: boolean;
   traceError: string | null;
   traceResult: RuntimeTraceResult | null;
   createFile: () => void;
   deleteFile: (fileName: string) => void;
+  goToNextTimelineEvent: () => void;
+  goToPreviousTimelineEvent: () => void;
+  pauseTimeline: () => void;
+  playTimeline: () => void;
   renameFile: (oldName: string, nextName: string) => boolean;
+  resetTimeline: () => void;
   runRuntimeTrace: () => Promise<void>;
   runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
@@ -65,7 +72,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     },
   },
   graphData: null,
+  currentEventIndex: 0,
   isAnalyzing: false,
+  isTimelinePlaying: false,
   isTracing: false,
   traceError: null,
   traceResult: null,
@@ -99,6 +108,47 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         files: remainingFiles,
       };
     }),
+  goToNextTimelineEvent: () =>
+    set((state) => {
+      const eventCount = state.traceResult?.events.length ?? 0;
+
+      if (eventCount === 0) {
+        return {
+          currentEventIndex: 0,
+          isTimelinePlaying: false,
+        };
+      }
+
+      const nextIndex = Math.min(state.currentEventIndex + 1, eventCount - 1);
+
+      return {
+        currentEventIndex: nextIndex,
+        isTimelinePlaying: nextIndex < eventCount - 1 ? state.isTimelinePlaying : false,
+      };
+    }),
+  goToPreviousTimelineEvent: () =>
+    set((state) => ({
+      currentEventIndex: Math.max(state.currentEventIndex - 1, 0),
+      isTimelinePlaying: false,
+    })),
+  pauseTimeline: () =>
+    set({
+      isTimelinePlaying: false,
+    }),
+  playTimeline: () =>
+    set((state) => {
+      const eventCount = state.traceResult?.events.length ?? 0;
+
+      if (eventCount === 0 || state.currentEventIndex >= eventCount - 1) {
+        return {
+          isTimelinePlaying: false,
+        };
+      }
+
+      return {
+        isTimelinePlaying: true,
+      };
+    }),
   renameFile: (oldName, nextName) => {
     let didRename = false;
 
@@ -130,6 +180,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     const { activeFileName, files } = useWorkspaceStore.getState();
 
     set({
+      currentEventIndex: 0,
+      isTimelinePlaying: false,
       isTracing: true,
       traceError: null,
     });
@@ -141,16 +193,24 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       });
 
       set({
+        currentEventIndex: 0,
+        isTimelinePlaying: false,
         isTracing: false,
         traceResult,
       });
     } catch (error) {
       set({
+        isTimelinePlaying: false,
         isTracing: false,
         traceError: error instanceof Error ? error.message : 'Runtime trace request failed.',
       });
     }
   },
+  resetTimeline: () =>
+    set({
+      currentEventIndex: 0,
+      isTimelinePlaying: false,
+    }),
   runStaticAnalysis: async () => {
     const { activeFileName, files } = useWorkspaceStore.getState();
 
