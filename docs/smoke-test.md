@@ -8,6 +8,8 @@ It is intended for local development, not production readiness.
 - Node dependencies installed in `frontend/` with `npm install`.
 - Python dependencies installed in `backend/` with `pip install -r requirements.txt`.
 - Optional: `.env` created from `.env.example`.
+- Optional: `OPENAI_API_KEY` in `.env` for real mentor responses. Without it,
+  mentor fallback behavior is expected.
 
 ## 1. Backend Startup
 
@@ -220,3 +222,5 @@ Expected outcome:
 - Runtime timeout: check for infinite loops or long-running code.
 - Mentor fallback: expected when `OPENAI_API_KEY` is missing or the OpenAI
   request fails.
+- Import errors during runtime: expected in V1 because controlled execution
+  blocks imports. Static analysis still reports import syntax.

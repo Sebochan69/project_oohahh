@@ -27,7 +27,7 @@
     "rules": [
       {
         "id": "stdout_matches_expected",
-        "description": "Future validation should compare stdout with the lesson expected output.",
+        "description": "Validation compares stdout with the lesson expected output.",
         "expected_stdout": "Welcome to OOH-AHH\n"
       }
     ]

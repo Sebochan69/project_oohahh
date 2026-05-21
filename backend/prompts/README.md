@@ -1,6 +1,6 @@
 # Prompt Library
 
-Prompt files for future AI-powered mentor behavior live here.
+Prompt files for AI-powered mentor behavior live here.
 
 ## Organization
 
@@ -15,7 +15,10 @@ Prompt files for future AI-powered mentor behavior live here.
 
 ## Boundaries
 
-These files are prompt templates only. They are not wired into an OpenAI client,
-do not call an LLM, and do not edit learner code. Future API work should load
-these prompts explicitly and keep mentor responses grounded in provided lesson,
-runtime, validation, and misconception context.
+These files are prompt templates. The backend mentor service loads them when
+`OPENAI_API_KEY` is configured and falls back to placeholder mentor responses
+when the key is missing or a request fails.
+
+Mentor responses must stay grounded in provided lesson, runtime, validation,
+and misconception context. The mentor should not edit learner code or provide a
+full completed lesson solution.

@@ -108,6 +108,8 @@ Recommended lesson:
 - If the frontend cannot reach the backend, confirm it is running from
   `http://localhost:5173` or `http://127.0.0.1:5173`, which are allowed by CORS.
 - If AI Mentor falls back, check whether `OPENAI_API_KEY` is configured. Fallback
-  behavior is expected when no key is set.
+  behavior is expected when no key is set or the OpenAI request fails.
 - If a graph looks empty, confirm the active file has valid Python and rerun
   Analyze or Run / Verify.
+- If runtime code imports a module, expect execution to reject it in V1. Static
+  analysis can detect import syntax, but runtime imports are blocked.

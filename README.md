@@ -1,37 +1,53 @@
 # PROJECT OOH-AHH
 
-PROJECT OOH-AHH is a visual runtime learning platform for software fundamentals.
-Learners write code, visualize execution flow, inspect payload and data movement,
-replay runtime events, and receive AI-guided hints and misconception feedback.
+PROJECT OOH-AHH is a visual runtime learning platform for software
+fundamentals. Learners write Python, inspect static structure, run controlled
+execution traces, replay runtime events, see validation overlays, and ask an AI
+mentor for grounded explanations and hints.
 
-## V1 Scope
+## Current V1 Prototype
+
+Implemented V1 prototype capabilities:
+
+- Vite, React, TypeScript frontend with a workspace shell
+- In-memory Python file explorer and Monaco editor
+- Lesson selector with Python foundations starter files
+- FastAPI backend with `/health`
+- Static AST analysis for files, imports, functions, classes, and syntax errors
+- Controlled Python execution prototype with timeout protection
+- Runtime trace events for execution start/finish, line execution, variable
+  create/update, and errors
+- Static and runtime React Flow graph rendering
+- Timeline controls for Previous, Next, Play, Pause, and Reset
+- stdout, stderr, error, and event inspection
+- Basic lesson validation for expected stdout and required concepts
+- Correctness states and graph node badges
+- Beginner Mode and Engineer Mode detail levels
+- AI Mentor panel using OpenAI when configured, with safe placeholder/fallback
+  behavior when no key is available
+
+## V1 Boundaries
 
 V1 focuses on Python fundamentals:
 
-- Variables
-- Conditions
-- Loops
-- Functions
+- Variables, conditions, loops, functions
 - Lists and dictionaries
-- Multi-file imports
-- Static analysis
-- Runtime trace events
-- React Flow visualization
-- Node-level correctness feedback
-- Beginner mode and engineer mode
-- AI mentor hints, explanations, and misconception detection
+- Static analysis of imports and multiple in-memory files
+- Runtime tracing of a selected entry file
+- Lesson validation for output and simple required concepts
+- Local/rule-based misconception detection plus AI mentor responses
 
-## V1 Non-Goals
-
-The first version intentionally excludes:
+V1 intentionally excludes:
 
 - Docker execution
 - Kubernetes
-- Arbitrary pip installs
+- Arbitrary pip installs or external packages
+- Network access from learner code
 - Production debugging
 - Collaborative editing
 - Full terminal emulation
 - Multi-language support
+- Full sandbox hardening
 
 ## Architecture Philosophy
 
@@ -39,23 +55,17 @@ The first version intentionally excludes:
 Code -> Static Analysis -> Runtime Trace Events -> Visualization Graph -> Validation Overlay -> AI Mentor Feedback
 ```
 
-OOH-AHH should make invisible runtime behavior visible without hiding the
+OOH-AHH should make invisible runtime behavior visible while preserving the
 discipline of reading, reasoning about, and improving code.
-
-## Repository Status
-
-Ticket 1 initializes the monorepo and minimal frontend/backend app shells. It
-does not implement tracing, visualization, validation, AI mentor behavior, or
-lesson content.
 
 ## Monorepo Layout
 
 ```text
-frontend/   Vite, React, and TypeScript app shell
-backend/    FastAPI app shell
-shared/     Future shared contracts and schemas
-lessons/    Future lesson content
-docs/       Product and process documentation
+frontend/   Vite + React + TypeScript app, workspace UI, graphs, timeline
+backend/    FastAPI app, static analysis, runtime trace, mentor API
+shared/     JSON Schema contracts for trace events, validation, lessons
+lessons/    Python foundations lesson JSON files
+docs/       Product, workflow, smoke test, and demo documentation
 ```
 
 ## Frontend Setup
@@ -68,7 +78,7 @@ npm install
 npm run dev
 ```
 
-The Vite development server will print the local URL, usually
+The Vite development server prints a local URL, usually
 `http://localhost:5173`.
 
 ## Backend Setup
@@ -84,13 +94,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-The API will run at `http://127.0.0.1:8000`.
-
-Optional environment setup:
-
-`OPENAI_API_KEY` and `OPENAI_MODEL` are reserved for future AI Mentor
-integration. The backend starts and the mentor endpoint returns placeholder
-responses when `OPENAI_API_KEY` is not set.
+The API runs at `http://127.0.0.1:8000`.
 
 Health check:
 
@@ -106,6 +110,27 @@ Expected response:
   "service": "ooh-ahh-backend"
 }
 ```
+
+## Environment Variables
+
+`.env.example` documents local backend settings:
+
+- `OOH_AHH_ENVIRONMENT`: local environment label.
+- `OPENAI_API_KEY`: optional. If missing, the backend still starts and the
+  mentor endpoint returns placeholder/fallback responses.
+- `OPENAI_MODEL`: optional model name used when `OPENAI_API_KEY` is present.
+
+Never commit real API keys.
+
+## Known Limitations
+
+- Controlled execution is a prototype, not a production sandbox.
+- Runtime imports are blocked; static analysis can still detect import syntax.
+- Runtime tracing is entry-file focused and does not yet emit function call,
+  function return, loop-specific, or condition-specific events.
+- Lesson validation is intentionally simple: stdout matching, runtime error
+  presence, and basic concept detection.
+- AI Mentor responses are single-turn and do not edit learner code.
 
 ## Documentation
 

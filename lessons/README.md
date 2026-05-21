@@ -22,6 +22,10 @@ Each lesson includes:
 - `validation`: placeholder metadata for future validation rules.
 - `hints`: simple learner-facing hints.
 
+The frontend currently loads lessons locally from JSON imports, injects starter
+files into the in-memory workspace, and can reset the active lesson back to its
+starter state.
+
 ## Current Lessons
 
 - `python-foundations/print-welcome-message.lesson.json`: print a welcome
@@ -43,7 +47,10 @@ Each lesson includes:
 
 ## Boundaries
 
-This folder defines lesson data only. It does not implement lesson navigation,
-editor loading, runtime validation, correctness scoring, or AI mentor behavior.
-Validation rules are metadata placeholders until a future validation engine
-consumes them.
+This folder defines lesson data only. Frontend code consumes this data for
+lesson selection, editor injection, reset behavior, stdout validation, required
+concept checks, and mentor context.
+
+Validation remains intentionally lightweight in V1. Lesson `validation` metadata
+is a placeholder for future richer rule engines; current validation uses
+expected stdout, runtime error presence, and simple required concept detection.

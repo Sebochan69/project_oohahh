@@ -16,6 +16,10 @@ The product should support two complementary learning modes:
 - Engineer mode: precise vocabulary, trace inspection, graph structure, and
   deeper debugging habits.
 
+Mode changes should alter explanation depth, not the underlying facts. Beginner
+Mode should be calm and readable; Engineer Mode should expose the technical
+details needed to build debugging habits.
+
 ## Core Skills V1 Should Develop
 
 - Reading code before running it
@@ -29,6 +33,10 @@ The product should support two complementary learning modes:
 - Using visual graphs to reason about program behavior
 - Responding to feedback without losing ownership of the solution
 
+Current V1 validation is intentionally simple: expected stdout, runtime error
+presence, and required concept detection. It should be framed as learning
+feedback, not as proof that a program is semantically complete.
+
 ## AI Mentor Principles
 
 The AI mentor should:
@@ -39,6 +47,8 @@ The AI mentor should:
 - Offer progressive hints before complete solutions.
 - Explain why behavior happened, not only what happened.
 - Respect the learner's current mode and vocabulary level.
+- Fall back safely when OpenAI is unavailable.
+- Avoid auto-editing learner code.
 
 ## Feedback Principles
 
