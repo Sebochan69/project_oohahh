@@ -3,7 +3,11 @@ import { VALIDATION_STATES, VALIDATION_STATE_LABELS } from '../../types/validati
 export function ValidationLegend() {
   return (
     <aside className="validation-legend" aria-label="Correctness state legend">
-      <h3>Correctness</h3>
+      <div>
+        <span>Graph guide</span>
+        <h3>Correctness states</h3>
+        <p>Node badges show whether a step is waiting, running, correct, partial, or blocked by an error.</p>
+      </div>
       <ul>
         {VALIDATION_STATES.map((state) => (
           <li key={state}>

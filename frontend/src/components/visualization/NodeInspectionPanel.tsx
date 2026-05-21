@@ -19,7 +19,9 @@ export function NodeInspectionPanel({ nodeData }: NodeInspectionPanelProps) {
   if (!nodeData) {
     return (
       <aside className="node-inspector node-inspector--empty" aria-label="Node inspection panel">
-        <p>Hover or click a graph node to inspect its static analysis details.</p>
+        <span>Inspector</span>
+        <h3>No node selected</h3>
+        <p>Hover or click a graph node to see what it represents and where it came from.</p>
       </aside>
     );
   }
