@@ -13,7 +13,8 @@ Each lesson includes:
 - `title`: learner-facing lesson name.
 - `description`: concise task summary.
 - `lesson_type`: optional lesson family, currently `python_foundation` or
-  `backend_lifecycle`. Existing V1 Python lessons may omit this field.
+  `backend_lifecycle` or `ai_rag_pipeline`. Existing V1 Python lessons may omit
+  this field.
 - `difficulty`: `beginner`, `intermediate`, or `advanced`.
 - `topic`: course or concept area.
 - `mode_support`: supported learner modes, such as `beginner` and `engineer`.
@@ -48,6 +49,31 @@ They drive the current backend lifecycle prototype, which renders mock
 lesson-defined request flow without executing FastAPI code or sending HTTP
 requests.
 
+## Optional AI/RAG Pipeline Fields
+
+AI/RAG lessons may include planning metadata for future mock pipeline
+visualization:
+
+- `user_query`: learner question or prompt input.
+- `documents`: source documents with id, title, path, type, and content.
+- `chunks`: chunk metadata derived from documents.
+- `embedding_model`: descriptive embedding model metadata. No embedding call is
+  made by the current app.
+- `vector_store`: descriptive vector store/index metadata. No vector database
+  dependency is used by the current app.
+- `retrieved_context`: mock retrieved chunks, scores, and previews.
+- `expected_response`: expected grounded answer shape.
+- `citation_sources`: links between answer claims and source chunks.
+- `hallucination_risk_points`: visible risk markers for weak or unsupported
+  responses.
+- `pipeline_nodes`: future graph nodes such as `user_query`, `document`,
+  `chunker`, `embedding_model`, `vector_store`, `retriever`,
+  `context_builder`, `llm`, `response`, `citation_source`, and `warning_risk`.
+
+These fields are optional and are not used by the current frontend lesson
+selector, runtime runner, OpenAI mentor endpoint, or any RAG execution path.
+They exist as schema groundwork and planning/reference lesson data only.
+
 ## Current Lessons
 
 - `python-foundations/print-welcome-message.lesson.json`: print a welcome
@@ -68,6 +94,9 @@ requests.
   dictionary.
 - `backend-lifecycle/fastapi-hello-route.lesson.json`: static FastAPI request
   lifecycle demo lesson loaded by the current frontend lesson selector.
+- `ai-rag/rag-pipeline-overview.lesson.json`: planning/reference sample for a
+  future RAG pipeline lesson. It is not wired into the current frontend lesson
+  selector.
 
 ## Boundaries
 

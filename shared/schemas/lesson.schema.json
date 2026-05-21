@@ -38,7 +38,7 @@
     "lesson_type": {
       "type": "string",
       "description": "Lesson family. Defaults conceptually to python_foundation when omitted for existing V1 lessons.",
-      "enum": ["python_foundation", "backend_lifecycle"]
+      "enum": ["python_foundation", "backend_lifecycle", "ai_rag_pipeline"]
     },
     "difficulty": {
       "type": "string",
@@ -121,6 +121,65 @@
       "description": "Optional backend lifecycle nodes that a future visualizer can render.",
       "items": {
         "$ref": "#/$defs/lifecycle_node"
+      }
+    },
+    "user_query": {
+      "type": "string",
+      "description": "Optional AI/RAG lesson user query or prompt input."
+    },
+    "documents": {
+      "type": "array",
+      "description": "Optional AI/RAG source documents for planning or mock visualization.",
+      "items": {
+        "$ref": "#/$defs/rag_document"
+      }
+    },
+    "chunks": {
+      "type": "array",
+      "description": "Optional AI/RAG chunk metadata derived from documents.",
+      "items": {
+        "$ref": "#/$defs/rag_chunk"
+      }
+    },
+    "embedding_model": {
+      "type": "object",
+      "description": "Optional AI/RAG embedding model metadata. This is descriptive only.",
+      "additionalProperties": true
+    },
+    "vector_store": {
+      "type": "object",
+      "description": "Optional AI/RAG vector store metadata. This does not imply a real dependency.",
+      "additionalProperties": true
+    },
+    "retrieved_context": {
+      "type": "array",
+      "description": "Optional AI/RAG retrieved context chunks or summaries.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "citation_sources": {
+      "type": "array",
+      "description": "Optional AI/RAG citation/source grounding metadata.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "hallucination_risk_points": {
+      "type": "array",
+      "description": "Optional AI/RAG risk markers for unsupported or weakly grounded responses.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "pipeline_nodes": {
+      "type": "array",
+      "description": "Optional AI/RAG pipeline nodes for future mock graph rendering.",
+      "items": {
+        "$ref": "#/$defs/rag_pipeline_node"
       }
     },
     "required_concepts": {
@@ -214,6 +273,90 @@
         "line_number": {
           "type": "integer",
           "minimum": 1
+        }
+      }
+    },
+    "rag_document": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "title", "content"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string"
+        },
+        "content_type": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "rag_chunk": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "document_id", "text"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "document_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "type": "string"
+        },
+        "token_estimate": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "rag_pipeline_node": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "type", "label"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "user_query",
+            "document",
+            "chunker",
+            "embedding_model",
+            "vector_store",
+            "retriever",
+            "context_builder",
+            "llm",
+            "response",
+            "citation_source",
+            "warning_risk"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true
         }
       }
     }
