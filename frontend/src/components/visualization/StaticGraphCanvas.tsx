@@ -10,8 +10,9 @@ import {
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { StaticGraphData, StaticGraphNode, StaticGraphNodeData } from '../../types/graph';
+import { NodeInspectionPanel } from './NodeInspectionPanel';
 import { ClassNode } from './nodes/ClassNode';
 import { FileNode } from './nodes/FileNode';
 import { FunctionNode } from './nodes/FunctionNode';
@@ -82,25 +83,33 @@ function toReactFlowEdges(graphData: StaticGraphData): Edge[] {
 }
 
 export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
+  const [inspectedNode, setInspectedNode] = useState<StaticGraphNodeData | null>(null);
   const nodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
   const edges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
 
   return (
-    <div className="static-graph-canvas">
-      <ReactFlowProvider>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          fitView
-          fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.25}
-        >
-          <Background />
-          <MiniMap pannable zoomable />
-          <Controls />
-        </ReactFlow>
-      </ReactFlowProvider>
+    <div className="static-graph-workspace">
+      <div className="static-graph-canvas">
+        <ReactFlowProvider>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            fitView
+            fitViewOptions={{ padding: 0.2 }}
+            minZoom={0.25}
+            onNodeClick={(_, node) => setInspectedNode(node.data as StaticGraphNodeData)}
+            onNodeMouseEnter={(_, node) => setInspectedNode(node.data as StaticGraphNodeData)}
+          >
+            <Background />
+            <MiniMap pannable zoomable />
+            <Controls />
+          </ReactFlow>
+        </ReactFlowProvider>
+      </div>
+
+      <NodeInspectionPanel nodeData={inspectedNode} />
+
       <details className="graph-debug">
         <summary>Graph JSON</summary>
         <pre>{JSON.stringify(graphData, null, 2)}</pre>
