@@ -1127,7 +1127,7 @@ select {
 
 .lesson-validation-summary {
   display: grid;
-  grid-template-columns: minmax(180px, 18%) minmax(0, 1fr) minmax(220px, 26%) minmax(220px, 26%);
+  grid-template-columns: minmax(170px, 16%) minmax(0, 1fr) minmax(180px, 18%) minmax(220px, 24%) minmax(220px, 24%);
   gap: 12px;
   align-items: start;
   border: 1px solid #d7e0ea;
@@ -1174,20 +1174,27 @@ select {
   white-space: pre-wrap;
 }
 
-.lesson-validation-summary__concepts {
+.lesson-validation-summary__concepts,
+.lesson-validation-summary__errors {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.lesson-validation-summary__concepts ul {
+.lesson-validation-summary__errors {
+  grid-template-columns: 1fr;
+}
+
+.lesson-validation-summary__concepts ul,
+.lesson-validation-summary__errors ul {
   display: grid;
   gap: 4px;
   margin: 4px 0 0;
   padding-left: 18px;
 }
 
-.lesson-validation-summary__concepts li {
+.lesson-validation-summary__concepts li,
+.lesson-validation-summary__errors li {
   color: #223047;
   font-size: 0.8rem;
   line-height: 1.35;
@@ -1359,6 +1366,7 @@ select {
   .runtime-output__streams,
   .lesson-validation-summary,
   .lesson-validation-summary__concepts,
+  .lesson-validation-summary__errors,
   .timeline-event__summary,
   .timeline-event__json-grid {
     grid-template-columns: 1fr;

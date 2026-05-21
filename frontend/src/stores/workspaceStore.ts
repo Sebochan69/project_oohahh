@@ -81,6 +81,8 @@ function notEvaluatedLessonValidation(message: string): LessonValidationResult {
       found: [],
       missing: [],
     },
+    has_runtime_error: false,
+    runtime_error_messages: [],
   };
 }
 
