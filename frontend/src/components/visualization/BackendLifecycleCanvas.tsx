@@ -13,6 +13,8 @@ import '@xyflow/react/dist/style.css';
 import { useMemo } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { BackendLifecycleNodeType, Lesson } from '../../types/lesson';
+import { VALIDATION_STATE_LABELS, type BackendLifecycleValidationResult, type ValidationState, validationStateClassName } from '../../types/validation';
+import { validateBackendLifecycleLesson } from '../../utils/validateBackendLifecycleLesson';
 import { BackendLifecycleNode, type BackendLifecycleNodeData } from './nodes/BackendLifecycleNode';
 
 type BackendLifecycleCanvasProps = {
@@ -108,7 +110,25 @@ function payloadForType(type: BackendLifecycleNodeType, lesson: Lesson) {
   return undefined;
 }
 
-function buildNodes(lesson: Lesson): Node<BackendLifecycleNodeData>[] {
+function validationStateForNode(
+  type: BackendLifecycleNodeType,
+  validationResult: BackendLifecycleValidationResult,
+): ValidationState {
+  if (validationResult.status === 'not_evaluated') {
+    return 'not_evaluated';
+  }
+
+  const hasFailedRelatedCheck = validationResult.checks.some(
+    (check) => check.related_node_type === type && check.state === 'incorrect',
+  );
+
+  return hasFailedRelatedCheck ? 'incorrect' : 'correct';
+}
+
+function buildNodes(
+  lesson: Lesson,
+  validationResult: BackendLifecycleValidationResult,
+): Node<BackendLifecycleNodeData>[] {
   return (lesson.lifecycle_nodes ?? []).map((node, index) => {
     const explanation = explanationForType(node.type);
 
@@ -132,6 +152,7 @@ function buildNodes(lesson: Lesson): Node<BackendLifecycleNodeData>[] {
           line_number: node.line_number,
           lesson_id: lesson.id,
         },
+        validation_state: validationStateForNode(node.type, validationResult),
       },
     };
   });
@@ -197,7 +218,11 @@ function formatValue(value: unknown, fallback: string) {
 export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) {
   const learningMode = useWorkspaceStore((state) => state.learningMode);
   const isEngineerMode = learningMode === 'engineer';
-  const nodes = useMemo(() => (lesson ? buildNodes(lesson) : []), [lesson]);
+  const validationResult = useMemo(() => validateBackendLifecycleLesson(lesson ?? null), [lesson]);
+  const nodes = useMemo(
+    () => (lesson ? buildNodes(lesson, validationResult) : []),
+    [lesson, validationResult],
+  );
   const edges = useMemo(() => buildEdges(nodes), [nodes]);
 
   if (!lesson || lesson.lesson_type !== 'backend_lifecycle') {
@@ -247,6 +272,21 @@ export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) 
             ? 'This graph is rendered from static lesson metadata. It does not execute FastAPI code or send an HTTP request.'
             : 'This graph shows how the lesson request moves through backend lifecycle steps.'}
         </p>
+        <div className={`backend-lifecycle-validation ${validationStateClassName(validationResult.status)}`}>
+          <span>Validation</span>
+          <h4>{VALIDATION_STATE_LABELS[validationResult.status]}</h4>
+          <p>{validationResult.message}</p>
+          {validationResult.checks.length > 0 && (
+            <ul>
+              {validationResult.checks.map((item) => (
+                <li key={item.id} className={validationStateClassName(item.state)}>
+                  <strong>{item.label}</strong>
+                  <span>{item.message}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <dl>
           <div>
             <dt>Request</dt>

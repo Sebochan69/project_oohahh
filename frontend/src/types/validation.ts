@@ -43,6 +43,21 @@ export type LessonValidationResult = {
   runtime_error_messages: string[];
 };
 
+export type BackendLifecycleValidationCheck = {
+  id: string;
+  label: string;
+  state: LessonValidationStatus;
+  message: string;
+  related_node_type?: string;
+};
+
+export type BackendLifecycleValidationResult = {
+  status: LessonValidationStatus;
+  message: string;
+  checks: BackendLifecycleValidationCheck[];
+  missing_lifecycle_nodes: string[];
+};
+
 export const DEFAULT_VALIDATION_STATE: ValidationState = 'not_evaluated';
 
 export const VALIDATION_STATE_LABELS: Record<ValidationState, string> = {
