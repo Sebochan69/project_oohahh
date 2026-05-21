@@ -113,5 +113,7 @@ Expected response:
 - [Architecture](ARCHITECTURE.md)
 - [Roadmap](ROADMAP.md)
 - [Git Workflow](docs/git-workflow.md)
+- [Smoke Test](docs/smoke-test.md)
+- [Demo Flow](docs/demo-flow.md)
 - [Codex Guidance](AGENTS.md)
 - [Learning Philosophy](SKILLS.md)
