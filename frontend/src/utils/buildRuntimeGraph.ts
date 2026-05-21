@@ -5,6 +5,8 @@ import type {
   RuntimeGraphNodeType,
 } from '../types/graph';
 import type { RuntimeTraceEvent } from '../types/trace';
+import type { ValidationState } from '../types/validation';
+import { DEFAULT_VALIDATION_STATE } from '../types/validation';
 
 const SUPPORTED_EVENT_TYPES = new Set<RuntimeGraphNodeType>([
   'execution_started',
@@ -32,6 +34,7 @@ export function buildRuntimeGraph(events: RuntimeTraceEvent[], currentEventIndex
   const activeNodeId = activeEvent ? runtimeNodeId(activeEvent) : null;
   const nodes: RuntimeGraphNode[] = events.map((event) => {
     const nodeId = runtimeNodeId(event);
+    const validationState: ValidationState = nodeId === activeNodeId ? 'running' : DEFAULT_VALIDATION_STATE;
 
     return {
       id: nodeId,
@@ -45,6 +48,7 @@ export function buildRuntimeGraph(events: RuntimeTraceEvent[], currentEventIndex
         scope: event.scope,
         payload: event.payload,
         is_active: nodeId === activeNodeId,
+        validation_state: validationState,
       },
     };
   });

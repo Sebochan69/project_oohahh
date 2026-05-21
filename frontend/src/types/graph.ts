@@ -1,3 +1,5 @@
+import type { ValidationState } from './validation';
+
 export type StaticGraphNodeType = 'file' | 'function' | 'class' | 'external_module';
 
 export type StaticGraphEdgeType = 'contains' | 'imports';
@@ -7,6 +9,7 @@ export type StaticGraphNodeData = {
   line_number?: number | null;
   name: string;
   type: StaticGraphNodeType;
+  validation_state: ValidationState;
   is_entry?: boolean;
   import_type?: string;
 };
@@ -58,6 +61,7 @@ export type RuntimeGraphNodeData = {
   scope: Record<string, unknown>;
   payload: Record<string, unknown>;
   is_active: boolean;
+  validation_state: ValidationState;
 };
 
 export type RuntimeGraphEdgeData = {
