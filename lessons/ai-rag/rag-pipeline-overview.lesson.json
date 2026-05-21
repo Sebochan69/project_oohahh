@@ -1,0 +1,227 @@
+{
+  "id": "ai-rag.rag-pipeline-overview",
+  "title": "RAG Pipeline Overview",
+  "description": "Trace how a question can move through documents, chunks, embeddings, retrieval, context assembly, and a grounded LLM response.",
+  "lesson_type": "ai_rag_pipeline",
+  "difficulty": "beginner",
+  "topic": "AI/RAG pipeline",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "rag-notes.md",
+      "content": "# RAG Pipeline Overview\n\nThis planning lesson uses static metadata only. It does not call embedding models, query a vector database, or generate an LLM response.\n"
+    }
+  ],
+  "learning_objectives": [
+    "Identify the major stages in a RAG pipeline.",
+    "Explain why documents are chunked before retrieval.",
+    "Describe how citations connect an answer back to source material.",
+    "Recognize hallucination risk points in retrieval and response generation."
+  ],
+  "expected_output": {},
+  "user_query": "What does PROJECT OOH-AHH teach about runtime trace events?",
+  "documents": [
+    {
+      "id": "doc-architecture",
+      "title": "Architecture Notes",
+      "path": "ARCHITECTURE.md",
+      "content_type": "markdown",
+      "content": "PROJECT OOH-AHH uses runtime trace events to make execution flow visible for learners."
+    }
+  ],
+  "chunks": [
+    {
+      "id": "doc-architecture:chunk-01",
+      "document_id": "doc-architecture",
+      "text": "PROJECT OOH-AHH uses runtime trace events to make execution flow visible for learners.",
+      "token_estimate": 14
+    }
+  ],
+  "embedding_model": {
+    "name": "mock-embedding-model",
+    "dimension": 1536,
+    "note": "Planning metadata only; no embedding call is made."
+  },
+  "vector_store": {
+    "name": "mock-vector-store",
+    "collection": "ooh-ahh-demo-docs",
+    "note": "Planning metadata only; no vector database dependency is used."
+  },
+  "retrieved_context": [
+    {
+      "chunk_id": "doc-architecture:chunk-01",
+      "score": 0.88,
+      "text_preview": "runtime trace events make execution flow visible"
+    }
+  ],
+  "expected_response": {
+    "answer": "PROJECT OOH-AHH teaches runtime trace events by showing how code execution moves step by step.",
+    "citations": ["doc-architecture:chunk-01"]
+  },
+  "citation_sources": [
+    {
+      "id": "source-runtime-traces",
+      "chunk_id": "doc-architecture:chunk-01",
+      "document_id": "doc-architecture",
+      "claim": "runtime trace events make execution flow visible"
+    }
+  ],
+  "hallucination_risk_points": [
+    {
+      "id": "risk-unsupported-claim",
+      "stage": "response",
+      "severity": "medium",
+      "message": "A response becomes risky if it claims details that are not present in retrieved chunks."
+    },
+    {
+      "id": "risk-low-retrieval-score",
+      "stage": "retrieval",
+      "severity": "low",
+      "message": "Weak retrieval can leave the LLM without enough source context."
+    }
+  ],
+  "pipeline_nodes": [
+    {
+      "id": "user-query",
+      "type": "user_query",
+      "label": "User Query",
+      "description": "The learner asks a question.",
+      "payload": {
+        "query": "What does PROJECT OOH-AHH teach about runtime trace events?"
+      }
+    },
+    {
+      "id": "source-document",
+      "type": "document",
+      "label": "Document",
+      "description": "A trusted source document is available for retrieval.",
+      "payload": {
+        "document_id": "doc-architecture"
+      }
+    },
+    {
+      "id": "chunker",
+      "type": "chunker",
+      "label": "Chunker",
+      "description": "The document is split into a retrievable chunk.",
+      "payload": {
+        "chunk_ids": ["doc-architecture:chunk-01"]
+      }
+    },
+    {
+      "id": "embedding-model",
+      "type": "embedding_model",
+      "label": "Embedding Model",
+      "description": "Mock embedding metadata represents text for similarity search.",
+      "payload": {
+        "model": "mock-embedding-model"
+      }
+    },
+    {
+      "id": "vector-store",
+      "type": "vector_store",
+      "label": "Vector Store",
+      "description": "The mock vector store indexes chunk metadata for retrieval.",
+      "payload": {
+        "collection": "ooh-ahh-demo-docs"
+      }
+    },
+    {
+      "id": "retriever",
+      "type": "retriever",
+      "label": "Retriever",
+      "description": "Retrieval selects the most relevant chunk for the query.",
+      "payload": {
+        "top_k": 1,
+        "selected_chunk_ids": ["doc-architecture:chunk-01"]
+      }
+    },
+    {
+      "id": "context-builder",
+      "type": "context_builder",
+      "label": "Context Builder",
+      "description": "The query and retrieved source are assembled for the LLM.",
+      "payload": {
+        "context_chunk_ids": ["doc-architecture:chunk-01"]
+      }
+    },
+    {
+      "id": "llm",
+      "type": "llm",
+      "label": "LLM",
+      "description": "A future model would generate a response from the assembled context.",
+      "payload": {
+        "mode": "mock"
+      }
+    },
+    {
+      "id": "response",
+      "type": "response",
+      "label": "Response",
+      "description": "The planned response should stay grounded in the retrieved source.",
+      "payload": {
+        "citation_required": true
+      }
+    },
+    {
+      "id": "citation-source",
+      "type": "citation_source",
+      "label": "Citation",
+      "description": "The citation links the response claim to the retrieved chunk.",
+      "payload": {
+        "chunk_id": "doc-architecture:chunk-01"
+      }
+    },
+    {
+      "id": "risk-warning",
+      "type": "warning_risk",
+      "label": "Risk",
+      "description": "Unsupported claims are a hallucination risk point.",
+      "payload": {
+        "risk_type": "unsupported_claim"
+      }
+    }
+  ],
+  "required_concepts": [
+    "user_query",
+    "document_loading",
+    "chunking",
+    "embedding_generation",
+    "vector_store_indexing",
+    "retrieval",
+    "context_assembly",
+    "llm_response",
+    "citation_grounding",
+    "hallucination_risk"
+  ],
+  "validation": {
+    "strategy": "ai_rag_pipeline_metadata_only",
+    "rules": [
+      {
+        "type": "required_pipeline_nodes",
+        "nodes": [
+          "user_query",
+          "document",
+          "chunker",
+          "embedding_model",
+          "vector_store",
+          "retriever",
+          "context_builder",
+          "llm",
+          "response",
+          "citation_source",
+          "warning_risk"
+        ]
+      },
+      {
+        "type": "citation_required",
+        "source_chunk_id": "doc-architecture:chunk-01"
+      }
+    ]
+  },
+  "hints": [
+    "Follow the pipeline from the user query to the cited response.",
+    "Chunks are the pieces the retriever can search over.",
+    "A response is stronger when each important claim points back to a source."
+  ]
+}

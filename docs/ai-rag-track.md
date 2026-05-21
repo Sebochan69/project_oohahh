@@ -134,6 +134,25 @@ mock data.
 
 ## Node Payload Examples
 
+The lesson schema now supports optional AI/RAG metadata fields for planning
+lessons:
+
+- `lesson_type: ai_rag_pipeline`
+- `user_query`
+- `documents`
+- `chunks`
+- `embedding_model`
+- `vector_store`
+- `retrieved_context`
+- `expected_response`
+- `citation_sources`
+- `hallucination_risk_points`
+- `pipeline_nodes`
+
+The first planning/reference lesson is
+`lessons/ai-rag/rag-pipeline-overview.lesson.json`. It is static metadata only
+and is not a RAG executor.
+
 User query:
 
 ```json

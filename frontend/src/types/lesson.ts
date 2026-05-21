@@ -13,7 +13,7 @@ export type LessonExpectedOutput = {
   exit_code?: number;
 };
 
-export type LessonType = 'python_foundation' | 'backend_lifecycle';
+export type LessonType = 'python_foundation' | 'backend_lifecycle' | 'ai_rag_pipeline';
 
 export type BackendLifecycleNodeType =
   | 'client'
@@ -36,6 +36,27 @@ export type LessonLifecycleNode = {
   line_number?: number;
 };
 
+export type AiRagPipelineNodeType =
+  | 'user_query'
+  | 'document'
+  | 'chunker'
+  | 'embedding_model'
+  | 'vector_store'
+  | 'retriever'
+  | 'context_builder'
+  | 'llm'
+  | 'response'
+  | 'citation_source'
+  | 'warning_risk';
+
+export type AiRagPipelineNode = {
+  id: string;
+  type: AiRagPipelineNodeType;
+  label: string;
+  description?: string;
+  payload?: Record<string, unknown>;
+};
+
 export type Lesson = {
   id: string;
   title: string;
@@ -54,6 +75,15 @@ export type Lesson = {
   expected_response?: unknown;
   expected_status_code?: number;
   lifecycle_nodes?: LessonLifecycleNode[];
+  user_query?: string;
+  documents?: Record<string, unknown>[];
+  chunks?: Record<string, unknown>[];
+  embedding_model?: Record<string, unknown>;
+  vector_store?: Record<string, unknown>;
+  retrieved_context?: Record<string, unknown>[];
+  citation_sources?: Record<string, unknown>[];
+  hallucination_risk_points?: Record<string, unknown>[];
+  pipeline_nodes?: AiRagPipelineNode[];
   required_concepts: string[];
   validation: {
     strategy: string;
