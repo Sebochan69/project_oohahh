@@ -1011,7 +1011,8 @@ select {
 }
 
 .static-node.validation-state--not_evaluated,
-.runtime-node.validation-state--not_evaluated {
+.runtime-node.validation-state--not_evaluated,
+.backend-lifecycle-node.validation-state--not_evaluated {
   box-shadow: 0 10px 24px rgba(24, 39, 75, 0.12);
 }
 
@@ -1026,13 +1027,15 @@ select {
 
 .static-node.validation-state--running,
 .runtime-node.validation-state--running,
+.backend-lifecycle-node.validation-state--running,
 .validation-legend__swatch.validation-state--running {
   border-color: #2563eb;
   background: #eff6ff;
 }
 
 .static-node.validation-state--running,
-.runtime-node.validation-state--running {
+.runtime-node.validation-state--running,
+.backend-lifecycle-node.validation-state--running {
   box-shadow:
     0 0 0 3px rgba(37, 99, 235, 0.18),
     0 12px 28px rgba(37, 99, 235, 0.2);
@@ -1049,6 +1052,7 @@ select {
 
 .static-node.validation-state--correct,
 .runtime-node.validation-state--correct,
+.backend-lifecycle-node.validation-state--correct,
 .validation-legend__swatch.validation-state--correct {
   border-color: #16a34a;
   background: #f0fdf4;
@@ -1065,6 +1069,7 @@ select {
 
 .static-node.validation-state--partially_correct,
 .runtime-node.validation-state--partially_correct,
+.backend-lifecycle-node.validation-state--partially_correct,
 .validation-legend__swatch.validation-state--partially_correct {
   border-color: #ca8a04;
   background: #fefce8;
@@ -1081,13 +1086,15 @@ select {
 
 .static-node.validation-state--incorrect,
 .runtime-node.validation-state--incorrect,
+.backend-lifecycle-node.validation-state--incorrect,
 .validation-legend__swatch.validation-state--incorrect {
   border-color: #e11d48;
   background: #fff1f2;
 }
 
 .static-node.validation-state--incorrect,
-.runtime-node.validation-state--incorrect {
+.runtime-node.validation-state--incorrect,
+.backend-lifecycle-node.validation-state--incorrect {
   box-shadow:
     0 0 0 3px rgba(225, 29, 72, 0.14),
     0 12px 28px rgba(127, 29, 29, 0.16);
@@ -1104,6 +1111,7 @@ select {
 
 .static-node.validation-state--inherited_error,
 .runtime-node.validation-state--inherited_error,
+.backend-lifecycle-node.validation-state--inherited_error,
 .validation-legend__swatch.validation-state--inherited_error {
   border-color: #ea580c;
   background: #fff7ed;
@@ -1401,6 +1409,72 @@ select {
   color: #465a70;
   font-size: 0.88rem;
   line-height: 1.5;
+}
+
+.backend-lifecycle-validation {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 10px;
+}
+
+.backend-lifecycle-validation > span {
+  color: #6b7d91;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.backend-lifecycle-validation h4 {
+  margin: 0;
+  color: #223047;
+  font-size: 0.92rem;
+}
+
+.backend-lifecycle-validation p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.backend-lifecycle-validation ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.backend-lifecycle-validation li {
+  display: grid;
+  gap: 3px;
+  border-left: 3px solid #cbd5e1;
+  list-style: none;
+  padding-left: 8px;
+}
+
+.backend-lifecycle-validation li.validation-state--correct {
+  border-left-color: #16a34a;
+}
+
+.backend-lifecycle-validation li.validation-state--partially_correct {
+  border-left-color: #ca8a04;
+}
+
+.backend-lifecycle-validation li.validation-state--incorrect {
+  border-left-color: #e11d48;
+}
+
+.backend-lifecycle-validation li strong {
+  color: #223047;
+  font-size: 0.78rem;
+}
+
+.backend-lifecycle-validation li span {
+  color: #526579;
+  font-size: 0.76rem;
+  line-height: 1.35;
 }
 
 .backend-lifecycle-inspector dl {

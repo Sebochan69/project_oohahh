@@ -1,6 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import { useWorkspaceStore } from '../../../stores/workspaceStore';
 import type { BackendLifecycleNodeType } from '../../../types/lesson';
+import { VALIDATION_STATE_LABELS, type ValidationState, validationStateClassName } from '../../../types/validation';
 
 export type BackendLifecycleNodeData = {
   type: BackendLifecycleNodeType;
@@ -11,6 +12,7 @@ export type BackendLifecycleNodeData = {
   statusCode?: number;
   payload?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  validation_state: ValidationState;
 };
 
 type BackendLifecycleNodeProps = {
@@ -26,11 +28,16 @@ export function BackendLifecycleNode({ data }: BackendLifecycleNodeProps) {
   const isEngineerMode = learningMode === 'engineer';
 
   return (
-    <div className={`backend-lifecycle-node backend-lifecycle-node--${data.type}`}>
+    <div
+      className={`backend-lifecycle-node backend-lifecycle-node--${data.type} ${validationStateClassName(
+        data.validation_state,
+      )}`}
+    >
       <Handle type="target" position={Position.Left} />
       <div className="backend-lifecycle-node__type">{formatType(data.type)}</div>
       <div className="backend-lifecycle-node__label">{data.label}</div>
       <p>{isEngineerMode ? data.engineerExplanation : data.beginnerExplanation}</p>
+      <div className="node-validation-label">{VALIDATION_STATE_LABELS[data.validation_state]}</div>
 
       {isEngineerMode && (
         <dl className="backend-lifecycle-node__details">
