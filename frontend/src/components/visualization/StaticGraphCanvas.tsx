@@ -5,6 +5,8 @@ import {
   MiniMap,
   ReactFlow,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
   type Edge,
   type Node,
   type NodeTypes,
@@ -85,12 +87,16 @@ function toReactFlowEdges(graphData: StaticGraphData): Edge[] {
 
 export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
   const [inspectedNode, setInspectedNode] = useState<StaticGraphNodeData | null>(null);
-  const nodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
-  const edges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
+  const initialNodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
+  const initialEdges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   useEffect(() => {
     setInspectedNode(null);
-  }, [graphData]);
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [graphData, initialNodes, initialEdges, setEdges, setNodes]);
 
   return (
     <div className="static-graph-workspace">
@@ -100,6 +106,8 @@ export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
             fitView
             fitViewOptions={{ padding: 0.2 }}
             minZoom={0.25}

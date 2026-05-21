@@ -5,12 +5,14 @@ import {
   MiniMap,
   ReactFlow,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
   type Edge,
   type Node,
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { BackendLifecycleNodeType, Lesson } from '../../types/lesson';
 import { VALIDATION_STATE_LABELS, type BackendLifecycleValidationResult, type ValidationState, validationStateClassName } from '../../types/validation';
@@ -219,11 +221,18 @@ export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) 
   const learningMode = useWorkspaceStore((state) => state.learningMode);
   const isEngineerMode = learningMode === 'engineer';
   const validationResult = useMemo(() => validateBackendLifecycleLesson(lesson ?? null), [lesson]);
-  const nodes = useMemo(
+  const initialNodes = useMemo(
     () => (lesson ? buildNodes(lesson, validationResult) : []),
     [lesson, validationResult],
   );
-  const edges = useMemo(() => buildEdges(nodes), [nodes]);
+  const initialEdges = useMemo(() => buildEdges(initialNodes), [initialNodes]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [initialNodes, initialEdges, setEdges, setNodes]);
 
   if (!lesson || lesson.lesson_type !== 'backend_lifecycle') {
     return (
@@ -253,6 +262,8 @@ export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) 
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
             fitView
             fitViewOptions={{ padding: 0.2 }}
             minZoom={0.25}

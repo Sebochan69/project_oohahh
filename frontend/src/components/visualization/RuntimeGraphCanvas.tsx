@@ -5,12 +5,14 @@ import {
   MiniMap,
   ReactFlow,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
   type Edge,
   type Node,
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { RuntimeGraphData, RuntimeGraphNode, RuntimeGraphNodeData } from '../../types/graph';
 import { ValidationLegend } from './ValidationLegend';
 import { RuntimeEventNode } from './nodes/RuntimeEventNode';
@@ -68,8 +70,15 @@ function toReactFlowEdges(graphData: RuntimeGraphData): Edge[] {
 }
 
 export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
-  const nodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
-  const edges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
+  const initialNodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
+  const initialEdges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [initialNodes, initialEdges, setEdges, setNodes]);
 
   return (
     <div className="runtime-graph-workspace">
@@ -79,6 +88,8 @@ export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
             fitView
             fitViewOptions={{ padding: 0.22 }}
             minZoom={0.25}

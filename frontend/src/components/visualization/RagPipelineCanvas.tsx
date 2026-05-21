@@ -5,12 +5,14 @@ import {
   MiniMap,
   ReactFlow,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
   type Edge,
   type Node,
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { AiRagPipelineNode, AiRagPipelineNodeType, Lesson } from '../../types/lesson';
 import {
@@ -276,11 +278,18 @@ export function RagPipelineCanvas({ lesson }: RagPipelineCanvasProps) {
   const learningMode = useWorkspaceStore((state) => state.learningMode);
   const isEngineerMode = learningMode === 'engineer';
   const validationResult = useMemo(() => validateRagPipelineLesson(lesson ?? null), [lesson]);
-  const nodes = useMemo(
+  const initialNodes = useMemo(
     () => (lesson ? buildNodes(lesson, validationResult) : []),
     [lesson, validationResult],
   );
-  const edges = useMemo(() => buildEdges(nodes, validationResult), [nodes, validationResult]);
+  const initialEdges = useMemo(() => buildEdges(initialNodes, validationResult), [initialNodes, validationResult]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [initialNodes, initialEdges, setEdges, setNodes]);
 
   if (!lesson || lesson.lesson_type !== 'ai_rag_pipeline') {
     return (
@@ -310,6 +319,8 @@ export function RagPipelineCanvas({ lesson }: RagPipelineCanvasProps) {
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
             fitView
             fitViewOptions={{ padding: 0.2 }}
             minZoom={0.2}
