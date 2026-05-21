@@ -1,0 +1,38 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.dictionary-access",
+  "title": "Dictionary Access",
+  "description": "Read a value from a dictionary and print it.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "profile = {\"name\": \"Ada\", \"role\": \"learner\"}\n# Print the name stored in profile\n"
+    }
+  ],
+  "learning_objectives": [
+    "Create or read a dictionary.",
+    "Access a dictionary value by key."
+  ],
+  "expected_output": {
+    "stdout": "Ada\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["dict_usage", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "Ada\n"
+      }
+    ]
+  },
+  "hints": [
+    "Use the key name to access the value.",
+    "Print the dictionary lookup result."
+  ]
+}

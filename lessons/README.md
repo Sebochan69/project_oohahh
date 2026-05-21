@@ -24,8 +24,22 @@ Each lesson includes:
 
 ## Current Lessons
 
-- `python-foundations/print-welcome-message.lesson.json`: beginner Python task
-  for printing `Welcome to OOH-AHH`.
+- `python-foundations/print-welcome-message.lesson.json`: print a welcome
+  message.
+- `python-foundations/variable-assignment.lesson.json`: store a string in a
+  variable and print it.
+- `python-foundations/update-a-variable.lesson.json`: update a numeric variable
+  before printing it.
+- `python-foundations/for-loop-basics.lesson.json`: iterate over a list with a
+  `for` loop.
+- `python-foundations/if-statement-basics.lesson.json`: use a simple
+  conditional branch.
+- `python-foundations/function-return-value.lesson.json`: define and call a
+  function that returns a value.
+- `python-foundations/list-filtering.lesson.json`: filter list values with a
+  loop and condition.
+- `python-foundations/dictionary-access.lesson.json`: read a value from a
+  dictionary.
 
 ## Boundaries
 

@@ -1,0 +1,39 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.function-return-value",
+  "title": "Function Return Value",
+  "description": "Create a function that returns a value, then print the returned result.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "# Define a function named make_message that returns OOH-AHH\n# Then call it and print the result\n"
+    }
+  ],
+  "learning_objectives": [
+    "Define a function with def.",
+    "Return a value from a function.",
+    "Call a function and use its result."
+  ],
+  "expected_output": {
+    "stdout": "OOH-AHH\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["function_definition", "function_call", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "OOH-AHH\n"
+      }
+    ]
+  },
+  "hints": [
+    "Use return inside the function body.",
+    "Call the function inside print to display its returned value."
+  ]
+}

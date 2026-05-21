@@ -1,0 +1,38 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.update-a-variable",
+  "title": "Update a Variable",
+  "description": "Start with a number, update it, and print the new value.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "score = 1\n# Increase score by 4, then print it\n"
+    }
+  ],
+  "learning_objectives": [
+    "Read the current value of a variable.",
+    "Update a variable using its previous value."
+  ],
+  "expected_output": {
+    "stdout": "5\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["variable_assignment", "print_statement"],
+  "validation": {
+    "strategy": "stdout_and_required_concepts",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "expected_stdout": "5\n"
+      }
+    ]
+  },
+  "hints": [
+    "Use the existing score value on the right side of =.",
+    "Print score after it has been updated."
+  ]
+}
