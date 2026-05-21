@@ -63,21 +63,38 @@ Expected outcome:
 - The app opens at `http://localhost:5173` or the URL printed by Vite.
 - The workspace shows PROJECT OOH-AHH.
 
-## 4. Lesson Loading
+## 4. Multi-Track Navigation
 
 Steps:
 
 1. Open the lesson selector.
-2. Select "Print Welcome Message".
+2. Confirm lessons are grouped by track:
+   - Python Foundations
+   - Backend Lifecycle
+   - AI/RAG Pipeline
+
+Expected outcome:
+
+- Each track appears as a separate selector group.
+- Lesson option labels include the track short label.
+- The lesson panel shows the current track name and track description.
+
+## 5. Python Lesson Loading
+
+Steps:
+
+1. Open the lesson selector.
+2. Select "Python - Print Welcome Message".
 3. Click Load.
 
 Expected outcome:
 
 - Lesson title, description, difficulty, topic, and objectives are visible.
+- The current track shows Python Foundations.
 - The workspace files are replaced with the lesson starter files.
 - `main.py` is selected.
 
-## 5. File Explorer
+## 6. File Explorer
 
 Steps:
 
@@ -92,7 +109,7 @@ Expected outcome:
 - The app does not reload.
 - `main.py` remains usable.
 
-## 6. Monaco Editor Editing
+## 7. Monaco Editor Editing
 
 Steps:
 
@@ -108,7 +125,7 @@ Expected outcome:
 - Python syntax highlighting is visible.
 - The editor content updates in frontend state.
 
-## 7. Static Analysis Graph
+## 8. Python Static Analysis Graph
 
 Steps:
 
@@ -121,7 +138,7 @@ Expected outcome:
 - The visualization panel renders a static React Flow graph.
 - Static analysis errors, if any, appear without crashing the app.
 
-## 8. Node Inspection
+## 9. Node Inspection
 
 Steps:
 
@@ -132,7 +149,7 @@ Expected outcome:
 - The inspection panel updates with node type, name, file path, line number when
   available, metadata, and a short explanation.
 
-## 9. Runtime Trace
+## 10. Python Runtime Trace
 
 Steps:
 
@@ -146,7 +163,7 @@ Expected outcome:
 - stdout shows `Welcome to OOH-AHH`.
 - stderr and errors are empty for the recommended lesson solution.
 
-## 10. Timeline Playback
+## 11. Timeline Playback
 
 Steps:
 
@@ -161,7 +178,7 @@ Expected outcome:
 - Reset returns to the first event.
 - The active runtime graph node follows the current event.
 
-## 11. Validation Result
+## 12. Python Validation Result
 
 Expected outcome for the recommended solution:
 
@@ -177,29 +194,68 @@ Expected outcome:
 - Validation changes to incorrect or partially correct, depending on concepts
   found and output mismatch.
 
-## 12. Beginner / Engineer Mode
+## 13. Backend Lifecycle Track
 
 Steps:
 
-1. Toggle Beginner Mode.
-2. Inspect the timeline event details.
-3. Toggle Engineer Mode.
-4. Inspect the same event again.
+1. Select "Backend - FastAPI Request Lifecycle".
+2. Click Load.
+3. Inspect the visualization panel.
+4. Toggle Beginner Mode and Engineer Mode.
 
 Expected outcome:
 
-- Beginner Mode shows simplified event type, explanation, line number, variable
-  change details, and validation summary.
-- Engineer Mode shows event id, step, file path, line number, scope, payload,
-  and validation metadata.
+- The current track shows Backend Lifecycle.
+- `BackendLifecycleCanvas` renders client, route, validation, service,
+  repository, database, response, and error nodes.
+- The graph uses lesson-defined/mock lifecycle data only.
+- Beginner Mode shows simpler lifecycle explanations.
+- Engineer Mode shows deeper request, payload, response, and metadata details.
+- The backend lifecycle validation summary appears and does not crash.
 
-## 13. AI Mentor
+## 14. AI/RAG Pipeline Track
 
 Steps:
 
-1. Select or step to a runtime event.
-2. Click Explain This.
-3. Click Give Hint.
+1. Select "AI/RAG - RAG Pipeline Overview".
+2. Click Load.
+3. Inspect the visualization panel.
+4. Toggle Beginner Mode and Engineer Mode.
+
+Expected outcome:
+
+- The current track shows AI/RAG Pipeline.
+- `RagPipelineCanvas` renders query, document, chunker, embedding model, vector
+  store, retriever, context builder, LLM, response, citation, and risk nodes.
+- The graph uses lesson-defined/mock pipeline data only.
+- Hallucination/risk overlays are visible.
+- Beginner Mode explains risk in learner-friendly language.
+- Engineer Mode shows deeper retrieval, context, citation, and payload metadata.
+- The AI/RAG validation summary appears and does not crash.
+
+## 15. Beginner / Engineer Mode Across Tracks
+
+Steps:
+
+1. Load one lesson from each track.
+2. Toggle Beginner Mode.
+3. Toggle Engineer Mode.
+
+Expected outcome:
+
+- Python timeline details become simpler in Beginner Mode and deeper in Engineer
+  Mode.
+- Backend lifecycle node details change explanation depth.
+- AI/RAG node details change explanation depth.
+- The selected mode does not crash any visualization.
+
+## 16. AI Mentor Across Tracks
+
+Steps:
+
+1. Load a Python lesson, run it, then click Explain This and Give Hint.
+2. Load a Backend Lifecycle lesson, then click Explain This and Give Hint.
+3. Load an AI/RAG Pipeline lesson, then click Explain This and Give Hint.
 
 Expected outcome:
 
@@ -208,6 +264,22 @@ Expected outcome:
 - If OpenAI is not configured or the request fails, local fallback guidance is
   shown.
 - The mentor does not auto-edit code or provide a full solution.
+- Backend and AI/RAG lessons may have no runtime step selected; the mentor still
+  shows a response or local fallback without crashing.
+
+## 17. Unsupported Lesson Type Fallback
+
+Developer-only check:
+
+1. Temporarily load or mock a lesson with an unknown `lesson_type`.
+2. Open the visualization panel.
+
+Expected outcome:
+
+- The app shows a graceful unsupported-track empty state.
+- The message asks the learner to choose Python Foundations, Backend Lifecycle,
+  or AI/RAG Pipeline.
+- Existing supported lesson types remain unaffected.
 
 ## Troubleshooting
 
@@ -224,3 +296,8 @@ Expected outcome:
   request fails.
 - Import errors during runtime: expected in V1 because controlled execution
   blocks imports. Static analysis still reports import syntax.
+- Backend Lifecycle and AI/RAG graphs are static prototypes. They do not execute
+  real FastAPI apps, send HTTP requests, call embedding APIs, or query a vector
+  database.
+- If Analyze fails with `Failed to fetch`, confirm the frontend origin is allowed
+  by backend CORS. The default local origin is `http://127.0.0.1:5173`.
