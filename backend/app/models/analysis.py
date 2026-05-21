@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -21,10 +23,19 @@ class StaticFileSummary(BaseModel):
 class ImportSummary(BaseModel):
     file_path: str
     module: str
+    name: str | None = None
+    import_type: Literal["import", "from_import"]
     line_number: int | None = None
 
 
 class FunctionSummary(BaseModel):
+    file_path: str
+    name: str
+    line_number: int | None = None
+    argument_names: list[str] = Field(default_factory=list)
+
+
+class ClassSummary(BaseModel):
     file_path: str
     name: str
     line_number: int | None = None
@@ -40,4 +51,5 @@ class StaticAnalysisResponse(BaseModel):
     files: list[StaticFileSummary]
     imports: list[ImportSummary]
     functions: list[FunctionSummary]
+    classes: list[ClassSummary]
     errors: list[AnalysisError]
