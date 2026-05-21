@@ -52,6 +52,13 @@ export function LessonPanel() {
         </select>
       </label>
 
+      {!activeLesson && (
+        <div className="lesson-panel__empty-state">
+          No lesson loaded yet. Pick one from the library and press Load to replace the in-memory
+          files.
+        </div>
+      )}
+
       <p className="lesson-panel__description">{lesson.description}</p>
 
       <dl className="lesson-panel__meta">

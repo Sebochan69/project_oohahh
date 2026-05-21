@@ -182,24 +182,34 @@ export function AIMentorPanel() {
 
       <div className="ai-mentor-panel__context">
         <span>{activeLesson ? activeLesson.title : 'No lesson loaded'}</span>
-        <span>{hasRuntimeContext ? `Step ${currentEvent?.step ?? activeRuntimeNode?.data.step}` : 'No runtime step yet'}</span>
+        <span>
+          {hasRuntimeContext ? `Step ${currentEvent?.step ?? activeRuntimeNode?.data.step}` : 'No runtime step yet'}
+        </span>
         <span>{lessonValidationResult.status.replace(/_/g, ' ')}</span>
       </div>
 
-      {isLoading && <div className="ai-mentor-panel__status">Asking mentor...</div>}
-      {errorMessage && <div className="ai-mentor-panel__error">{errorMessage}. Showing local fallback.</div>}
+      {isLoading && <div className="ai-mentor-panel__status">Preparing a focused mentor response...</div>}
+      {errorMessage && (
+        <div className="ai-mentor-panel__error">
+          Mentor backend was unavailable: {errorMessage}. Showing local guidance instead.
+        </div>
+      )}
 
       <div className="ai-mentor-panel__response">
         {response ? (
           <>
-            <span>{response.kind} · {response.source === 'backend' ? 'backend' : 'local fallback'}</span>
+            <span>{response.kind} - {response.source === 'backend' ? 'backend' : 'local fallback'}</span>
             <p>{response.message}</p>
-            {response.backendResponse && (
-              <small>{response.backendResponse.next_suggested_action}</small>
-            )}
+            {response.backendResponse && <small>{response.backendResponse.next_suggested_action}</small>}
           </>
         ) : (
-          <p>Ask for an explanation or hint after running code. Responses are local placeholders for now.</p>
+          <>
+            <span>Waiting for a question</span>
+            <p>
+              Run code, select a timeline step, then ask for an explanation or a hint. The mentor
+              will use the current lesson, validation result, and selected event.
+            </p>
+          </>
         )}
       </div>
 

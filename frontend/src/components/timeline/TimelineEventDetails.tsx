@@ -54,7 +54,9 @@ export function TimelineEventDetails({ event }: TimelineEventDetailsProps) {
   if (!event) {
     return (
       <section className="timeline-event timeline-event--empty">
-        <p>No runtime event selected.</p>
+        <span>Timeline</span>
+        <h3>No step selected</h3>
+        <p>Run your code, then use Next or Play to walk through execution one event at a time.</p>
       </section>
     );
   }

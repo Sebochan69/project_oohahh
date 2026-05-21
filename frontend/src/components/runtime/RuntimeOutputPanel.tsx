@@ -17,7 +17,11 @@ export function RuntimeOutputPanel() {
   if (isTracing) {
     return (
       <div className="runtime-output runtime-output--status">
-        <p>Running controlled trace...</p>
+        <div className="empty-state-card">
+          <span>Run / Verify</span>
+          <h3>Executing safely</h3>
+          <p>Capturing stdout, errors, variable changes, and timeline events.</p>
+        </div>
       </div>
     );
   }
@@ -25,7 +29,11 @@ export function RuntimeOutputPanel() {
   if (traceError) {
     return (
       <div className="runtime-output runtime-output--error">
-        <p>{traceError}</p>
+        <div className="empty-state-card empty-state-card--error">
+          <span>Run needs attention</span>
+          <h3>Runtime request did not finish</h3>
+          <p>{traceError}</p>
+        </div>
       </div>
     );
   }
@@ -38,7 +46,9 @@ export function RuntimeOutputPanel() {
           <TimelineEventDetails event={undefined} />
         </div>
         <div className="runtime-output__empty-message">
-          <p>Run / Verify to inspect stdout, stderr, errors, and runtime events.</p>
+          <span>Runtime output</span>
+          <h3>No trace yet</h3>
+          <p>Press Run / Verify to see stdout, stderr, lesson validation, and step-by-step events.</p>
         </div>
       </div>
     );
