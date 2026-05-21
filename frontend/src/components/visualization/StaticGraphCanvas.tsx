@@ -13,6 +13,7 @@ import '@xyflow/react/dist/style.css';
 import { useMemo, useState } from 'react';
 import type { StaticGraphData, StaticGraphNode, StaticGraphNodeData } from '../../types/graph';
 import { NodeInspectionPanel } from './NodeInspectionPanel';
+import { ValidationLegend } from './ValidationLegend';
 import { ClassNode } from './nodes/ClassNode';
 import { FileNode } from './nodes/FileNode';
 import { FunctionNode } from './nodes/FunctionNode';
@@ -109,6 +110,7 @@ export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
       </div>
 
       <NodeInspectionPanel nodeData={inspectedNode} />
+      <ValidationLegend />
 
       <details className="graph-debug">
         <summary>Graph JSON</summary>

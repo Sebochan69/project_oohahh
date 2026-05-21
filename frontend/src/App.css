@@ -493,8 +493,55 @@ select {
   white-space: nowrap;
 }
 
+.validation-legend {
+  grid-column: 2;
+  border-left: 1px solid #d7e0ea;
+  border-top: 1px solid #d7e0ea;
+  background: #ffffff;
+  padding: 14px 16px;
+}
+
+.validation-legend h3 {
+  margin: 0 0 10px;
+  color: #25364a;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.validation-legend ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.validation-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #42546a;
+  font-size: 0.82rem;
+  font-weight: 700;
+  list-style: none;
+}
+
+.validation-legend__swatch {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border: 2px solid #cbd5e1;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
 .validation-state--not_evaluated {
   outline: 0 solid transparent;
+}
+
+.static-node.validation-state--not_evaluated,
+.runtime-node.validation-state--not_evaluated {
+  box-shadow: 0 10px 24px rgba(24, 39, 75, 0.12);
 }
 
 .validation-state--not_evaluated .node-validation-label {
@@ -506,6 +553,20 @@ select {
   border-color: #60a5fa;
 }
 
+.static-node.validation-state--running,
+.runtime-node.validation-state--running,
+.validation-legend__swatch.validation-state--running {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.static-node.validation-state--running,
+.runtime-node.validation-state--running {
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.18),
+    0 12px 28px rgba(37, 99, 235, 0.2);
+}
+
 .validation-state--running .node-validation-label {
   background: #dbeafe;
   color: #1d4ed8;
@@ -513,6 +574,13 @@ select {
 
 .validation-state--correct {
   border-color: #34d399;
+}
+
+.static-node.validation-state--correct,
+.runtime-node.validation-state--correct,
+.validation-legend__swatch.validation-state--correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
 }
 
 .validation-state--correct .node-validation-label {
@@ -524,6 +592,13 @@ select {
   border-color: #facc15;
 }
 
+.static-node.validation-state--partially_correct,
+.runtime-node.validation-state--partially_correct,
+.validation-legend__swatch.validation-state--partially_correct {
+  border-color: #ca8a04;
+  background: #fefce8;
+}
+
 .validation-state--partially_correct .node-validation-label {
   background: #fef9c3;
   color: #854d0e;
@@ -533,6 +608,20 @@ select {
   border-color: #fb7185;
 }
 
+.static-node.validation-state--incorrect,
+.runtime-node.validation-state--incorrect,
+.validation-legend__swatch.validation-state--incorrect {
+  border-color: #e11d48;
+  background: #fff1f2;
+}
+
+.static-node.validation-state--incorrect,
+.runtime-node.validation-state--incorrect {
+  box-shadow:
+    0 0 0 3px rgba(225, 29, 72, 0.14),
+    0 12px 28px rgba(127, 29, 29, 0.16);
+}
+
 .validation-state--incorrect .node-validation-label {
   background: #ffe4e6;
   color: #be123c;
@@ -540,6 +629,13 @@ select {
 
 .validation-state--inherited_error {
   border-color: #f97316;
+}
+
+.static-node.validation-state--inherited_error,
+.runtime-node.validation-state--inherited_error,
+.validation-legend__swatch.validation-state--inherited_error {
+  border-color: #ea580c;
+  background: #fff7ed;
 }
 
 .validation-state--inherited_error .node-validation-label {
@@ -651,11 +747,13 @@ select {
 .runtime-graph-workspace {
   min-height: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 28%);
   grid-template-rows: minmax(0, 1fr) auto;
   background: #f8fafc;
 }
 
 .runtime-graph-canvas {
+  grid-row: 1 / span 2;
   min-height: 0;
   background: #f8fafc;
 }
@@ -1040,12 +1138,26 @@ select {
 
   .static-graph-workspace {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(320px, 1fr) minmax(180px, auto) auto;
+    grid-template-rows: minmax(320px, 1fr) minmax(180px, auto) auto auto;
+  }
+
+  .runtime-graph-workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(320px, 1fr) auto auto;
   }
 
   .node-inspector {
     border-left: 0;
     border-top: 1px solid #d7e0ea;
+  }
+
+  .validation-legend {
+    grid-column: auto;
+    border-left: 0;
+  }
+
+  .runtime-graph-canvas {
+    grid-row: auto;
   }
 
   .runtime-output--result {

@@ -12,6 +12,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useMemo } from 'react';
 import type { RuntimeGraphData, RuntimeGraphNode, RuntimeGraphNodeData } from '../../types/graph';
+import { ValidationLegend } from './ValidationLegend';
 import { RuntimeEventNode } from './nodes/RuntimeEventNode';
 
 type RuntimeGraphCanvasProps = {
@@ -88,6 +89,8 @@ export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
           </ReactFlow>
         </ReactFlowProvider>
       </div>
+
+      <ValidationLegend />
 
       <details className="graph-debug">
         <summary>Runtime Graph JSON</summary>
