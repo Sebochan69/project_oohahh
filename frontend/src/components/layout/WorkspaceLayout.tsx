@@ -2,6 +2,7 @@ import { AnalysisPanel } from '../analysis/AnalysisPanel';
 import { AnalyzeButton } from '../analysis/AnalyzeButton';
 import { CodeEditor } from '../editor/CodeEditor';
 import { FileExplorer } from '../editor/FileExplorer';
+import { LessonPanel } from '../lessons/LessonPanel';
 import { RunVerifyButton } from '../runtime/RunVerifyButton';
 import { RuntimeOutputPanel } from '../runtime/RuntimeOutputPanel';
 
@@ -13,6 +14,7 @@ export function WorkspaceLayout() {
           <span className="panel-kicker">Left panel</span>
           <h2 id="code-panel-title">Code Workspace</h2>
         </div>
+        <LessonPanel />
         <div className="code-workspace">
           <FileExplorer />
           <CodeEditor />

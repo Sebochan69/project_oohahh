@@ -3,6 +3,7 @@ import { runRuntimeTrace as requestRuntimeTrace } from '../api/runtimeTrace';
 import { analyzeStatic } from '../api/staticAnalysis';
 import type { StaticAnalysisResult } from '../types/analysis';
 import type { RuntimeGraphData, StaticGraphData } from '../types/graph';
+import type { Lesson } from '../types/lesson';
 import type { RuntimeTraceResult } from '../types/trace';
 import { buildRuntimeGraph } from '../utils/buildRuntimeGraph';
 import { buildStaticGraph } from '../utils/buildStaticGraph';
@@ -21,6 +22,8 @@ type WorkspaceState = {
   files: Record<string, WorkspaceFile>;
   graphData: StaticGraphData | null;
   currentEventIndex: number;
+  activeLesson: Lesson | null;
+  activeLessonStarterFiles: Record<string, WorkspaceFile> | null;
   isAnalyzing: boolean;
   isTimelinePlaying: boolean;
   isTracing: boolean;
@@ -33,7 +36,9 @@ type WorkspaceState = {
   goToPreviousTimelineEvent: () => void;
   pauseTimeline: () => void;
   playTimeline: () => void;
+  loadLesson: (lesson: Lesson) => void;
   renameFile: (oldName: string, nextName: string) => boolean;
+  resetLesson: () => void;
   resetTimeline: () => void;
   runRuntimeTrace: () => Promise<void>;
   runStaticAnalysis: () => Promise<void>;
@@ -75,6 +80,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   },
   graphData: null,
   currentEventIndex: 0,
+  activeLesson: null,
+  activeLessonStarterFiles: null,
   isAnalyzing: false,
   isTimelinePlaying: false,
   isTracing: false,
@@ -161,6 +168,32 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         isTimelinePlaying: true,
       };
     }),
+  loadLesson: (lesson) => {
+    const starterFiles = lesson.starter_files.reduce<Record<string, WorkspaceFile>>((files, starterFile) => {
+      files[starterFile.path] = {
+        name: starterFile.path,
+        content: starterFile.content,
+      };
+
+      return files;
+    }, {});
+    const activeFileName = lesson.starter_files[0]?.path ?? 'main.py';
+
+    set({
+      activeFileName,
+      activeLesson: lesson,
+      activeLessonStarterFiles: starterFiles,
+      analysisError: null,
+      analysisResult: null,
+      currentEventIndex: 0,
+      files: starterFiles,
+      graphData: null,
+      isTimelinePlaying: false,
+      runtimeGraphData: null,
+      traceError: null,
+      traceResult: null,
+    });
+  },
   renameFile: (oldName, nextName) => {
     let didRename = false;
 
@@ -228,6 +261,34 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       isTimelinePlaying: false,
       runtimeGraphData: buildRuntimeGraph(state.traceResult?.events ?? [], 0),
     })),
+  resetLesson: () =>
+    set((state) => {
+      if (!state.activeLessonStarterFiles) {
+        return state;
+      }
+
+      const files = Object.fromEntries(
+        Object.entries(state.activeLessonStarterFiles).map(([fileName, file]) => [
+          fileName,
+          {
+            ...file,
+          },
+        ]),
+      );
+
+      return {
+        activeFileName: state.activeLesson?.starter_files[0]?.path ?? Object.keys(files)[0] ?? 'main.py',
+        analysisError: null,
+        analysisResult: null,
+        currentEventIndex: 0,
+        files,
+        graphData: null,
+        isTimelinePlaying: false,
+        runtimeGraphData: null,
+        traceError: null,
+        traceResult: null,
+      };
+    }),
   runStaticAnalysis: async () => {
     const { activeFileName, files } = useWorkspaceStore.getState();
 
