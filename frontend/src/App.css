@@ -1125,6 +1125,69 @@ select {
   gap: 12px;
 }
 
+.lesson-validation-summary {
+  display: grid;
+  grid-template-columns: minmax(180px, 22%) minmax(0, 1fr) minmax(240px, 36%);
+  gap: 12px;
+  align-items: start;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.lesson-validation-summary span,
+.lesson-validation-summary dt {
+  color: #6b7d91;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.lesson-validation-summary h3 {
+  margin: 4px 0 0;
+  color: #223047;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.lesson-validation-summary p {
+  margin: 0;
+  color: #465a70;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.lesson-validation-summary dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.lesson-validation-summary dd {
+  margin: 2px 0 0;
+  color: #223047;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.lesson-validation-summary.validation-state--correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.lesson-validation-summary.validation-state--incorrect {
+  border-color: #e11d48;
+  background: #fff1f2;
+}
+
+.lesson-validation-summary.validation-state--not_evaluated {
+  background: #ffffff;
+}
+
 .runtime-output__empty-message {
   min-height: 92px;
   display: grid;
@@ -1275,6 +1338,7 @@ select {
 
   .runtime-output__timeline,
   .runtime-output__streams,
+  .lesson-validation-summary,
   .timeline-event__summary,
   .timeline-event__json-grid {
     grid-template-columns: 1fr;

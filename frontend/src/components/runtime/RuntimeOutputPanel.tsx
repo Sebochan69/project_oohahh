@@ -1,4 +1,5 @@
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import { LessonValidationSummary } from './LessonValidationSummary';
 import { TimelineControls } from '../timeline/TimelineControls';
 import { TimelineEventDetails } from '../timeline/TimelineEventDetails';
 
@@ -51,6 +52,7 @@ export function RuntimeOutputPanel() {
         <TimelineControls />
         <TimelineEventDetails event={currentEvent} />
       </div>
+      <LessonValidationSummary />
       <div className="runtime-output__streams">
         <section className="runtime-output__section">
           <h3>stdout</h3>
