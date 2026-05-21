@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { analyzeStatic } from '../api/staticAnalysis';
+import type { StaticAnalysisResult } from '../api/staticAnalysis';
 
 const STARTER_CODE = 'print("Welcome to OOH-AHH")';
 
@@ -9,10 +11,14 @@ export type WorkspaceFile = {
 
 type WorkspaceState = {
   activeFileName: string;
+  analysisError: string | null;
+  analysisResult: StaticAnalysisResult | null;
   files: Record<string, WorkspaceFile>;
+  isAnalyzing: boolean;
   createFile: () => void;
   deleteFile: (fileName: string) => void;
   renameFile: (oldName: string, nextName: string) => boolean;
+  runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
   updateFileContent: (fileName: string, content: string) => void;
 };
@@ -41,12 +47,15 @@ function normalizePythonFileName(fileName: string) {
 
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   activeFileName: 'main.py',
+  analysisError: null,
+  analysisResult: null,
   files: {
     'main.py': {
       name: 'main.py',
       content: STARTER_CODE,
     },
   },
+  isAnalyzing: false,
   createFile: () =>
     set((state) => {
       const fileName = createUntitledFileName(state.files);
@@ -103,6 +112,31 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     });
 
     return didRename;
+  },
+  runStaticAnalysis: async () => {
+    const { activeFileName, files } = useWorkspaceStore.getState();
+
+    set({
+      analysisError: null,
+      isAnalyzing: true,
+    });
+
+    try {
+      const analysisResult = await analyzeStatic({
+        entryFile: activeFileName,
+        files: Object.values(files),
+      });
+
+      set({
+        analysisResult,
+        isAnalyzing: false,
+      });
+    } catch (error) {
+      set({
+        analysisError: error instanceof Error ? error.message : 'Static analysis request failed.',
+        isAnalyzing: false,
+      });
+    }
   },
   selectFile: (fileName) =>
     set((state) => {

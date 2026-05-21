@@ -1,3 +1,5 @@
+import { AnalysisPanel } from '../analysis/AnalysisPanel';
+import { AnalyzeButton } from '../analysis/AnalyzeButton';
 import { CodeEditor } from '../editor/CodeEditor';
 import { FileExplorer } from '../editor/FileExplorer';
 
@@ -16,13 +18,14 @@ export function WorkspaceLayout() {
       </aside>
 
       <main className="workspace-panel workspace-panel--visual" aria-labelledby="visual-panel-title">
-        <div className="panel-header">
-          <span className="panel-kicker">Right panel</span>
-          <h2 id="visual-panel-title">Visualization Canvas</h2>
+        <div className="panel-header panel-header--with-action">
+          <div>
+            <span className="panel-kicker">Right panel</span>
+            <h2 id="visual-panel-title">Static Analysis Result</h2>
+          </div>
+          <AnalyzeButton />
         </div>
-        <div className="placeholder-surface placeholder-surface--canvas">
-          <p>Future execution graph canvas placeholder.</p>
-        </div>
+        <AnalysisPanel />
       </main>
 
       <section className="workspace-panel workspace-panel--timeline" aria-labelledby="timeline-panel-title">
