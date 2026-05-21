@@ -896,6 +896,7 @@ select {
 }
 
 .static-graph-canvas {
+  grid-row: 1 / span 2;
   min-height: 0;
   background: #f8fafc;
 }
@@ -2400,6 +2401,7 @@ select {
     border-left: 0;
   }
 
+  .static-graph-canvas,
   .runtime-graph-canvas {
     grid-row: auto;
   }

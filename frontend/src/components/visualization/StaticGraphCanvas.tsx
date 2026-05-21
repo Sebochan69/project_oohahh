@@ -34,21 +34,21 @@ const nodeTypes: NodeTypes = {
 function positionForNode(node: StaticGraphNode, index: number, fileIndexes: Map<string, number>) {
   const filePath = node.data.file_path ?? node.data.name;
   const fileIndex = fileIndexes.get(filePath) ?? index;
-  const rowY = fileIndex * 210;
+  const rowY = fileIndex * 170;
 
   if (node.type === 'file') {
-    return { x: 40, y: rowY };
+    return { x: 24, y: rowY };
   }
 
   if (node.type === 'function') {
-    return { x: 330, y: rowY + 20 + index * 8 };
+    return { x: 250, y: rowY + 12 + index * 6 };
   }
 
   if (node.type === 'class') {
-    return { x: 610, y: rowY + 80 + index * 8 };
+    return { x: 480, y: rowY + 56 + index * 6 };
   }
 
-  return { x: 900, y: index * 150 };
+  return { x: 700, y: 28 + index * 110 };
 }
 
 function toReactFlowNodes(graphData: StaticGraphData): Node<StaticGraphNodeData>[] {
@@ -109,8 +109,8 @@ export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             fitView
-            fitViewOptions={{ padding: 0.2 }}
-            minZoom={0.25}
+            fitViewOptions={{ padding: 0.08 }}
+            minZoom={0.35}
             onNodeClick={(_, node) => setInspectedNode(node.data as StaticGraphNodeData)}
             onNodeMouseEnter={(_, node) => setInspectedNode(node.data as StaticGraphNodeData)}
           >
