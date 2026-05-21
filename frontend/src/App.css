@@ -103,6 +103,10 @@ select {
   overflow: hidden;
 }
 
+.workspace-panel--code {
+  background: #111827;
+}
+
 .workspace-panel--timeline {
   grid-column: 1 / -1;
 }
@@ -110,6 +114,11 @@ select {
 .panel-header {
   border-bottom: 1px solid #e3e9f0;
   padding: 14px 16px;
+}
+
+.workspace-panel--code .panel-header {
+  border-bottom-color: #243244;
+  background: #111827;
 }
 
 .panel-kicker {
@@ -122,11 +131,62 @@ select {
   text-transform: uppercase;
 }
 
+.workspace-panel--code .panel-kicker {
+  color: #8fa3ba;
+}
+
 .panel-header h2 {
   margin: 0;
   color: #182433;
   font-size: 1rem;
   line-height: 1.3;
+}
+
+.workspace-panel--code .panel-header h2 {
+  color: #f8fafc;
+}
+
+.code-editor {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: #0f172a;
+}
+
+.file-tabs {
+  display: flex;
+  min-height: 40px;
+  align-items: end;
+  gap: 2px;
+  border-bottom: 1px solid #263449;
+  background: #182235;
+  padding: 0 8px;
+}
+
+.file-tab {
+  min-width: 92px;
+  min-height: 34px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  color: #aebed0;
+  cursor: default;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 0 14px;
+  text-align: left;
+}
+
+.file-tab.is-active {
+  border-color: #263449;
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.code-editor__surface {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .placeholder-surface {
