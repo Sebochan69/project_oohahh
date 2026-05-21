@@ -271,6 +271,36 @@ select {
   margin: 0;
 }
 
+.lesson-panel__backend-meta {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  border: 1px solid #2f4058;
+  border-radius: 7px;
+  background: #111827;
+  padding: 9px 10px;
+}
+
+.lesson-panel__backend-meta div {
+  min-width: 0;
+}
+
+.lesson-panel__backend-meta dt {
+  color: #8fa3ba;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.lesson-panel__backend-meta dd {
+  margin: 2px 0 0;
+  color: #eef5ff;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .lesson-panel__meta div {
   min-width: 0;
 }
@@ -1377,6 +1407,39 @@ select {
   display: grid;
   gap: 12px;
   margin: 0;
+}
+
+.backend-lifecycle-empty {
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  background: #f8fafc;
+  padding: 20px;
+  text-align: center;
+}
+
+.backend-lifecycle-empty span {
+  display: block;
+  margin-bottom: 6px;
+  color: #6b7d91;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.backend-lifecycle-empty h3 {
+  margin: 0 0 8px;
+  color: #223047;
+  font-size: 1rem;
+}
+
+.backend-lifecycle-empty p {
+  max-width: 420px;
+  margin: 0;
+  color: #526579;
+  font-size: 0.92rem;
+  line-height: 1.55;
 }
 
 .runtime-graph-workspace {

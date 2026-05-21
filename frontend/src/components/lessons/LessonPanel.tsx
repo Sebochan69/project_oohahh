@@ -18,6 +18,7 @@ export function LessonPanel() {
     [activeLesson, selectedLessonId],
   );
   const isActiveLessonSelected = activeLesson?.id === lesson.id;
+  const isBackendLifecycleLesson = lesson.lesson_type === 'backend_lifecycle';
 
   return (
     <section className="lesson-panel" aria-label="Lesson loader">
@@ -60,6 +61,23 @@ export function LessonPanel() {
       )}
 
       <p className="lesson-panel__description">{lesson.description}</p>
+
+      {isBackendLifecycleLesson && (
+        <dl className="lesson-panel__backend-meta">
+          <div>
+            <dt>Request</dt>
+            <dd>{`${lesson.request_method ?? 'GET'} ${lesson.request_path ?? '(missing path)'}`}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{lesson.expected_status_code ?? '(missing)'}</dd>
+          </div>
+          <div>
+            <dt>Expected response</dt>
+            <dd>{lesson.expected_response ? JSON.stringify(lesson.expected_response) : '(missing)'}</dd>
+          </div>
+        </dl>
+      )}
 
       <dl className="lesson-panel__meta">
         <div>

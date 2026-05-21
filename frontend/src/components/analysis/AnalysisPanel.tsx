@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import { BackendLifecycleCanvas } from '../visualization/BackendLifecycleCanvas';
 import { RuntimeGraphCanvas } from '../visualization/RuntimeGraphCanvas';
@@ -10,21 +9,19 @@ export function AnalysisPanel() {
   const isAnalyzing = useWorkspaceStore((state) => state.isAnalyzing);
   const isTracing = useWorkspaceStore((state) => state.isTracing);
   const runtimeGraphData = useWorkspaceStore((state) => state.runtimeGraphData);
-  const [showBackendPrototype, setShowBackendPrototype] = useState(false);
+  const activeLesson = useWorkspaceStore((state) => state.activeLesson);
+  const isBackendLifecycleLesson = activeLesson?.lesson_type === 'backend_lifecycle';
 
-  if (showBackendPrototype) {
+  if (isBackendLifecycleLesson) {
     return (
       <div className="backend-lifecycle-view">
         <div className="backend-lifecycle-view__toolbar">
           <div>
-            <span>V2 prototype</span>
+            <span>V2 backend lesson</span>
             <h3>FastAPI request lifecycle</h3>
           </div>
-          <button type="button" onClick={() => setShowBackendPrototype(false)}>
-            Back to Python graphs
-          </button>
         </div>
-        <BackendLifecycleCanvas />
+        <BackendLifecycleCanvas lesson={activeLesson} />
       </div>
     );
   }
@@ -76,9 +73,6 @@ export function AnalysisPanel() {
           <span>Visualization</span>
           <h3>No graph yet</h3>
           <p>Choose a lesson or write Python, then use Analyze for structure or Run / Verify for execution flow.</p>
-          <button type="button" onClick={() => setShowBackendPrototype(true)}>
-            Show backend lifecycle prototype
-          </button>
         </div>
       </div>
     );

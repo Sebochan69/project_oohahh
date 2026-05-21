@@ -41,12 +41,44 @@
       "line_number": 5
     },
     {
+      "id": "request-validation",
+      "type": "validation",
+      "label": "Request validation",
+      "description": "The request has no body or query params, so it is accepted."
+    },
+    {
+      "id": "hello-service",
+      "type": "service",
+      "label": "Service placeholder",
+      "description": "Future service logic would decide which message to return.",
+      "file_path": "app.py",
+      "line_number": 6
+    },
+    {
+      "id": "message-repository",
+      "type": "repository",
+      "label": "Repository placeholder",
+      "description": "Future repository logic would isolate data access."
+    },
+    {
+      "id": "mock-message-db",
+      "type": "database",
+      "label": "Mock DB placeholder",
+      "description": "A deterministic mock record stands in for stored data."
+    },
+    {
       "id": "json-response",
       "type": "response",
       "label": "JSON response",
       "description": "The returned dictionary becomes a JSON response with status 200.",
       "file_path": "app.py",
       "line_number": 7
+    },
+    {
+      "id": "validation-error",
+      "type": "error",
+      "label": "Error branch placeholder",
+      "description": "If validation failed, the request would move to an error response instead."
     }
   ],
   "required_concepts": [

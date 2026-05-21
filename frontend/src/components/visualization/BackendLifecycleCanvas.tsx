@@ -12,7 +12,12 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useMemo } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import type { BackendLifecycleNodeType, Lesson } from '../../types/lesson';
 import { BackendLifecycleNode, type BackendLifecycleNodeData } from './nodes/BackendLifecycleNode';
+
+type BackendLifecycleCanvasProps = {
+  lesson?: Lesson;
+};
 
 const nodeTypes: NodeTypes = {
   client: BackendLifecycleNode,
@@ -25,145 +30,195 @@ const nodeTypes: NodeTypes = {
   error: BackendLifecycleNode,
 };
 
-const lifecycleNodes: Node<BackendLifecycleNodeData>[] = [
-  {
-    id: 'client',
-    type: 'client',
-    position: { x: 40, y: 120 },
-    data: {
-      type: 'client',
-      label: 'Client request',
-      beginnerExplanation: 'A browser or API client asks the backend for data.',
-      engineerExplanation: 'Incoming HTTP request with method GET and path /hello.',
-      requestPath: 'GET /hello',
-      payload: { query_params: {}, request_body: null },
-      metadata: { source: 'browser_or_api_client' },
-    },
-  },
-  {
-    id: 'route',
-    type: 'route',
-    position: { x: 300, y: 120 },
-    data: {
-      type: 'route',
-      label: 'Route handler',
-      beginnerExplanation: 'FastAPI finds the code that matches this path.',
-      engineerExplanation: 'Route decorator @app.get("/hello") selects hello().',
-      requestPath: '/hello',
-      metadata: { file_path: 'app.py', line_number: 5 },
-    },
-  },
-  {
-    id: 'validation',
-    type: 'validation',
-    position: { x: 560, y: 120 },
-    data: {
-      type: 'validation',
-      label: 'Validation',
-      beginnerExplanation: 'The backend checks that the request shape is allowed.',
-      engineerExplanation: 'No body is required, so validation produces an empty validated payload.',
-      payload: { validated_payload: {} },
-      metadata: { model: null },
-    },
-  },
-  {
-    id: 'service',
-    type: 'service',
-    position: { x: 820, y: 120 },
-    data: {
-      type: 'service',
-      label: 'Service logic',
-      beginnerExplanation: 'The app decides what message should be returned.',
-      engineerExplanation: 'Service placeholder returns a domain value for the response payload.',
-      payload: { message: 'Hello from OOH-AHH' },
-      metadata: { function_name: 'build_hello_message' },
-    },
-  },
-  {
-    id: 'repository',
-    type: 'repository',
-    position: { x: 1080, y: 60 },
-    data: {
-      type: 'repository',
-      label: 'Repository',
-      beginnerExplanation: 'This layer would ask stored data for information.',
-      engineerExplanation: 'Repository placeholder isolates data access from service logic.',
-      payload: { lookup_key: 'hello_message' },
-      metadata: { method: 'get_message' },
-    },
-  },
-  {
-    id: 'database',
-    type: 'database',
-    position: { x: 1340, y: 60 },
-    data: {
-      type: 'database',
-      label: 'Mock DB',
-      beginnerExplanation: 'A mock database stands in for stored data.',
-      engineerExplanation: 'In-memory mock returns a deterministic record without external persistence.',
-      payload: { record: { message: 'Hello from OOH-AHH' } },
-      metadata: { storage: 'mock' },
-    },
-  },
-  {
-    id: 'response',
-    type: 'response',
-    position: { x: 1340, y: 220 },
-    data: {
-      type: 'response',
-      label: 'JSON response',
-      beginnerExplanation: 'The backend sends a JSON answer back to the client.',
-      engineerExplanation: 'Response payload serializes to JSON with HTTP 200.',
-      statusCode: 200,
-      payload: { message: 'Hello from OOH-AHH' },
-      metadata: { media_type: 'application/json' },
-    },
-  },
-  {
-    id: 'error',
-    type: 'error',
-    position: { x: 820, y: 300 },
-    data: {
-      type: 'error',
-      label: 'Error branch',
-      beginnerExplanation: 'If validation fails, the request skips normal app logic.',
-      engineerExplanation: 'Validation errors would short-circuit to an error response, such as 422.',
-      statusCode: 422,
-      payload: { detail: 'Validation error placeholder' },
-      metadata: { branch: 'validation_failure' },
-    },
-  },
+const nodeOrder: BackendLifecycleNodeType[] = [
+  'client',
+  'route',
+  'validation',
+  'service',
+  'repository',
+  'database',
+  'response',
+  'error',
 ];
 
-const lifecycleEdges: Edge[] = [
-  ['client', 'route', 'request'],
-  ['route', 'validation', 'parse'],
-  ['validation', 'service', 'valid'],
-  ['service', 'repository', 'read'],
-  ['repository', 'database', 'query'],
-  ['database', 'response', 'data'],
-  ['service', 'response', 'payload'],
-  ['validation', 'error', 'invalid'],
-  ['error', 'response', 'error response'],
-].map(([source, target, label]) => ({
-  id: `${source}-${target}`,
-  source,
-  target,
-  label,
-  type: 'smoothstep',
-  animated: source === 'client' || source === 'validation',
-  markerEnd: { type: MarkerType.ArrowClosed },
-  style: {
-    stroke: source === 'error' || target === 'error' ? '#e11d48' : '#2563eb',
-    strokeWidth: 2,
-  },
-}));
+function nodePosition(type: BackendLifecycleNodeType, index: number) {
+  if (type === 'error') {
+    return { x: 820, y: 300 };
+  }
 
-export function BackendLifecycleCanvas() {
+  const orderedIndex = nodeOrder.includes(type) ? nodeOrder.indexOf(type) : index;
+  const rowOffset = type === 'repository' || type === 'database' ? -60 : 0;
+
+  return {
+    x: 40 + Math.min(orderedIndex, 6) * 250,
+    y: 140 + rowOffset,
+  };
+}
+
+function explanationForType(type: BackendLifecycleNodeType) {
+  const beginner: Record<BackendLifecycleNodeType, string> = {
+    client: 'A browser or API client asks the backend for data.',
+    route: 'FastAPI finds the code that matches this request.',
+    validation: 'The backend checks that the request shape is allowed.',
+    service: 'The app decides what should happen next.',
+    repository: 'This layer would ask stored data for information.',
+    database: 'A mock database stands in for stored data.',
+    response: 'The backend sends an answer back to the client.',
+    error: 'If something fails, the request follows an error path.',
+  };
+  const engineer: Record<BackendLifecycleNodeType, string> = {
+    client: 'Incoming HTTP request context for the lifecycle trace.',
+    route: 'Route metadata maps method/path to a handler function.',
+    validation: 'Validated payload placeholder produced before business logic.',
+    service: 'Service layer placeholder for application orchestration.',
+    repository: 'Repository placeholder for data access boundaries.',
+    database: 'Mock DB placeholder for deterministic storage interaction.',
+    response: 'Response placeholder with serialized payload and status code.',
+    error: 'Error branch placeholder for validation or lifecycle failures.',
+  };
+
+  return { beginner: beginner[type], engineer: engineer[type] };
+}
+
+function payloadForType(type: BackendLifecycleNodeType, lesson: Lesson) {
+  if (type === 'client') {
+    return {
+      request_body: lesson.request_body ?? null,
+      query_params: lesson.query_params ?? {},
+    };
+  }
+
+  if (type === 'validation') {
+    return {
+      validated_payload: lesson.request_body ?? {},
+      query_params: lesson.query_params ?? {},
+    };
+  }
+
+  if (type === 'response') {
+    return lesson.expected_response && typeof lesson.expected_response === 'object'
+      ? (lesson.expected_response as Record<string, unknown>)
+      : { response: lesson.expected_response ?? null };
+  }
+
+  if (type === 'error') {
+    return { detail: 'Error branch placeholder' };
+  }
+
+  return undefined;
+}
+
+function buildNodes(lesson: Lesson): Node<BackendLifecycleNodeData>[] {
+  return (lesson.lifecycle_nodes ?? []).map((node, index) => {
+    const explanation = explanationForType(node.type);
+
+    return {
+      id: node.id,
+      type: node.type,
+      position: nodePosition(node.type, index),
+      data: {
+        type: node.type,
+        label: node.label,
+        beginnerExplanation: node.description ?? explanation.beginner,
+        engineerExplanation: node.description ?? explanation.engineer,
+        requestPath:
+          node.type === 'client' || node.type === 'route'
+            ? `${lesson.request_method ?? 'GET'} ${lesson.request_path ?? '(missing path)'}`
+            : undefined,
+        statusCode: node.type === 'response' ? lesson.expected_status_code : node.type === 'error' ? 422 : undefined,
+        payload: payloadForType(node.type, lesson),
+        metadata: {
+          file_path: node.file_path,
+          line_number: node.line_number,
+          lesson_id: lesson.id,
+        },
+      },
+    };
+  });
+}
+
+function buildEdges(nodes: Node<BackendLifecycleNodeData>[]): Edge[] {
+  const normalNodes = nodes.filter((node) => node.data.type !== 'error');
+  const edges = normalNodes.slice(1).map((node, index) => {
+    const source = normalNodes[index];
+
+    return {
+      id: `${source.id}-${node.id}`,
+      source: source.id,
+      target: node.id,
+      label: index === 0 ? 'request' : 'next',
+      type: 'smoothstep',
+      animated: index === 0,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: '#2563eb', strokeWidth: 2 },
+    };
+  });
+  const validationNode = nodes.find((node) => node.data.type === 'validation');
+  const errorNode = nodes.find((node) => node.data.type === 'error');
+  const responseNode = nodes.find((node) => node.data.type === 'response');
+
+  if (validationNode && errorNode) {
+    edges.push({
+      id: `${validationNode.id}-${errorNode.id}`,
+      source: validationNode.id,
+      target: errorNode.id,
+      label: 'invalid',
+      type: 'smoothstep',
+      animated: true,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: '#e11d48', strokeWidth: 2 },
+    });
+  }
+
+  if (errorNode && responseNode) {
+    edges.push({
+      id: `${errorNode.id}-${responseNode.id}`,
+      source: errorNode.id,
+      target: responseNode.id,
+      label: 'error response',
+      type: 'smoothstep',
+      animated: false,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: '#e11d48', strokeWidth: 2 },
+    });
+  }
+
+  return edges;
+}
+
+function formatValue(value: unknown, fallback: string) {
+  if (value === undefined) {
+    return fallback;
+  }
+
+  return JSON.stringify(value);
+}
+
+export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) {
   const learningMode = useWorkspaceStore((state) => state.learningMode);
   const isEngineerMode = learningMode === 'engineer';
-  const nodes = useMemo(() => lifecycleNodes, []);
-  const edges = useMemo(() => lifecycleEdges, []);
+  const nodes = useMemo(() => (lesson ? buildNodes(lesson) : []), [lesson]);
+  const edges = useMemo(() => buildEdges(nodes), [nodes]);
+
+  if (!lesson || lesson.lesson_type !== 'backend_lifecycle') {
+    return (
+      <div className="backend-lifecycle-empty">
+        <span>Backend lifecycle</span>
+        <h3>No backend lifecycle lesson loaded</h3>
+        <p>Load a backend lifecycle lesson to render request lifecycle nodes from lesson metadata.</p>
+      </div>
+    );
+  }
+
+  if (nodes.length === 0) {
+    return (
+      <div className="backend-lifecycle-empty">
+        <span>Backend lifecycle</span>
+        <h3>Lifecycle data missing</h3>
+        <p>This lesson is marked as backend lifecycle, but it does not define lifecycle_nodes yet.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="backend-lifecycle-workspace">
@@ -185,25 +240,37 @@ export function BackendLifecycleCanvas() {
       </div>
 
       <aside className="backend-lifecycle-inspector">
-        <span>Backend lifecycle prototype</span>
-        <h3>{isEngineerMode ? 'Engineer details' : 'Beginner view'}</h3>
+        <span>Backend lifecycle lesson</span>
+        <h3>{lesson.title}</h3>
         <p>
           {isEngineerMode
-            ? 'This static graph shows placeholder request path, payload, status, and layer metadata for a future FastAPI lifecycle track.'
-            : 'This static graph shows how a request travels from a client to backend code and back as a response.'}
+            ? 'This graph is rendered from static lesson metadata. It does not execute FastAPI code or send an HTTP request.'
+            : 'This graph shows how the lesson request moves through backend lifecycle steps.'}
         </p>
         <dl>
           <div>
+            <dt>Request</dt>
+            <dd>{`${lesson.request_method ?? 'GET'} ${lesson.request_path ?? '(missing path)'}`}</dd>
+          </div>
+          <div>
             <dt>Request body</dt>
-            <dd>{isEngineerMode ? 'null' : 'No body needed'}</dd>
+            <dd>{formatValue(lesson.request_body, isEngineerMode ? 'null' : 'No body needed')}</dd>
+          </div>
+          <div>
+            <dt>Query params</dt>
+            <dd>{formatValue(lesson.query_params, '{}')}</dd>
           </div>
           <div>
             <dt>Validated payload</dt>
-            <dd>{isEngineerMode ? '{}' : 'The request is allowed'}</dd>
+            <dd>{formatValue(lesson.request_body ?? lesson.query_params, isEngineerMode ? '{}' : 'The request is allowed')}</dd>
           </div>
           <div>
             <dt>Response payload</dt>
-            <dd>{'{"message":"Hello from OOH-AHH"}'}</dd>
+            <dd>{formatValue(lesson.expected_response, '(missing expected response)')}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{lesson.expected_status_code ?? '(missing status)'}</dd>
           </div>
         </dl>
       </aside>
