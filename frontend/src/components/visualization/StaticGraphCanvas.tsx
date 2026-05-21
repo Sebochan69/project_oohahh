@@ -10,7 +10,7 @@ import {
   type NodeTypes,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { StaticGraphData, StaticGraphNode, StaticGraphNodeData } from '../../types/graph';
 import { NodeInspectionPanel } from './NodeInspectionPanel';
 import { ValidationLegend } from './ValidationLegend';
@@ -87,6 +87,10 @@ export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
   const [inspectedNode, setInspectedNode] = useState<StaticGraphNodeData | null>(null);
   const nodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
   const edges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
+
+  useEffect(() => {
+    setInspectedNode(null);
+  }, [graphData]);
 
   return (
     <div className="static-graph-workspace">
