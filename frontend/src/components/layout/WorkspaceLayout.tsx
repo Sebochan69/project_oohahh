@@ -2,6 +2,8 @@ import { AnalysisPanel } from '../analysis/AnalysisPanel';
 import { AnalyzeButton } from '../analysis/AnalyzeButton';
 import { CodeEditor } from '../editor/CodeEditor';
 import { FileExplorer } from '../editor/FileExplorer';
+import { RunVerifyButton } from '../runtime/RunVerifyButton';
+import { RuntimeOutputPanel } from '../runtime/RuntimeOutputPanel';
 
 export function WorkspaceLayout() {
   return (
@@ -29,13 +31,14 @@ export function WorkspaceLayout() {
       </main>
 
       <section className="workspace-panel workspace-panel--timeline" aria-labelledby="timeline-panel-title">
-        <div className="panel-header">
-          <span className="panel-kicker">Bottom panel</span>
-          <h2 id="timeline-panel-title">Timeline / Output</h2>
+        <div className="panel-header panel-header--with-action">
+          <div>
+            <span className="panel-kicker">Bottom panel</span>
+            <h2 id="timeline-panel-title">Timeline / Output</h2>
+          </div>
+          <RunVerifyButton />
         </div>
-        <div className="placeholder-surface placeholder-surface--timeline">
-          <p>Future timeline replay and output placeholder.</p>
-        </div>
+        <RuntimeOutputPanel />
       </section>
     </section>
   );
