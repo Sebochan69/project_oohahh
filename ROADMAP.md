@@ -1,59 +1,50 @@
-# ROADMAP.md
+# Roadmap
 
-## Ticket 0: Project Foundation & Governance
+## V1 Prototype: Current Stabilization Target
 
-Status: In progress
+V1 establishes the learning loop:
 
-Scope:
+- In-memory Python workspace
+- Monaco editor
+- Python foundations lesson library
+- Static AST analysis API
+- Controlled runtime trace API
+- Static and runtime React Flow graphs
+- Timeline playback
+- Basic stdout and required-concept validation
+- Correctness state overlays
+- Beginner/Engineer mode presentation
+- AI Mentor API and frontend panel with OpenAI/fallback behavior
+- Smoke test and demo flow documentation
 
-- Create root documentation and governance files
-- Define V1 boundaries
-- Document architecture philosophy
-- Document learning philosophy
-- Define Git workflow expectations
+## V1 Remaining Hardening
 
-Out of scope:
+- Improve runtime trace coverage for functions, loops, and conditionals
+- Tighten controlled execution boundaries and document remaining risks
+- Add focused automated tests around backend APIs and frontend utilities
+- Improve graph layout for larger examples
+- Expand lesson validation beyond stdout and simple concept detection
 
-- Frontend scaffolding
-- Backend scaffolding
-- Runtime execution code
-- Package installation
-- CI/CD configuration
+## V2 Learning Platform
 
-## V1 Roadmap
+- Persist learner work and lesson progress
+- Add curriculum navigation and lesson sequencing
+- Support richer process validation against trace behavior
+- Add misconception-specific mentor flows
+- Improve prompt evaluation and response quality checks
+- Add instructor-friendly review artifacts
 
-### Phase 1: Learning Runtime Definition
+## Future Debug Mode
 
-- Define lesson and exercise data shapes
-- Define static analysis output shape
-- Define runtime trace event schema
-- Define validation overlay model
+Future debug mode is separate from V1 learning mode. It may explore:
 
-### Phase 2: Python Fundamentals Runtime
+- More realistic stack frames and call graphs
+- Richer import/module tracing
+- Debugger-like stepping semantics
+- Larger project inspection
+- Production-style debugging concepts
 
-- Support variables, conditions, loops, and functions
-- Support lists and dictionaries
-- Support constrained multi-file imports
-- Emit structured runtime trace events
-
-### Phase 3: Visualization Experience
-
-- Convert analysis and trace events into graph nodes and edges
-- Render execution flow with React Flow
-- Support replay of runtime events
-- Provide beginner and engineer mode views
-
-### Phase 4: Validation and Feedback
-
-- Attach correctness feedback to graph nodes and source locations
-- Compare expected behavior with actual trace events
-- Identify common misconceptions
-
-### Phase 5: AI Mentor
-
-- Generate hints grounded in source, trace, and validation context
-- Provide explanations at beginner and engineer levels
-- Detect likely misconceptions and suggest next steps
+Future debug mode is not a production debugger commitment.
 
 ## Later, Not V1
 

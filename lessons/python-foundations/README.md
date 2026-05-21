@@ -1,7 +1,18 @@
 # Python Foundations
 
-This folder is reserved for future Python fundamentals lessons.
+This folder contains beginner-friendly V1 lesson JSON files for Python
+fundamentals.
 
-Planned V1 topics include variables, conditions, loops, functions, lists,
-dictionaries, and constrained multi-file imports. No lesson content is defined
-in Ticket 1.
+Current topics include:
+
+- Printing output
+- Variable assignment and updates
+- For loops
+- If statements
+- Function return values
+- List filtering
+- Dictionary access
+
+Lessons are frontend-local JSON data. Loading a lesson replaces the current
+in-memory workspace files with starter files; it does not persist learner work
+or run backend lesson storage.

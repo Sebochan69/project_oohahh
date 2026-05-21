@@ -2,16 +2,18 @@
 
 This folder contains shared JSON Schema contracts for PROJECT OOH-AHH.
 
-Ticket 2 defines schema contracts only. It does not implement the runtime
-tracer, React Flow rendering, validation engine, AI mentor integration, or
-lesson content.
+The current prototype uses these schemas as documentation and compatibility
+contracts across backend tracing, frontend graph/timeline views, validation, and
+AI mentor context.
 
 ## Files
 
 - `trace-event.schema.json`: shared trace event contract for runtime execution,
   visualization, timeline replay, validation overlays, and AI mentor context.
 - `validation.schema.json`: validation state and feedback contract that can be
-  attached to trace events or future graph/timeline artifacts.
+  attached to trace events, graph nodes, timeline context, and mentor context.
+- `lesson.schema.json`: lesson metadata, starter files, expected output,
+  required concepts, validation metadata, and hints.
 
 ## V1 Trace Event Types
 
@@ -27,6 +29,11 @@ lesson content.
 - `loop_iteration`: a loop advanced through an iteration.
 - `condition_evaluated`: a conditional expression was evaluated.
 - `error_raised`: an error or exception occurred.
+
+The current runtime emitter implements `execution_started`,
+`line_executed`, `variable_created`, `variable_updated`, `error_raised`, and
+`execution_finished`. The remaining V1 event types are schema contracts for
+future richer tracing.
 
 ## Trace Event Shape
 
@@ -57,26 +64,25 @@ Validation states are:
 
 ## How Systems Use These Schemas
 
-The backend will emit trace events from future static analysis and runtime
-tracing work. It should keep event payloads serializable, stable, and grounded
-in source code or runtime facts.
+The backend emits runtime trace events and static analysis responses that are
+kept serializable, stable, and grounded in source code or runtime facts.
 
-The frontend will consume trace events to build timeline replay and future graph
-views. The `visual` field provides optional hints, but the schema does not bind
-the product to a specific renderer or React Flow node shape.
+The frontend consumes trace events to build timeline replay and runtime graph
+views. The `visual` field provides optional renderer-neutral hints, but the
+schema does not bind the product to a specific React Flow node shape.
 
-The validation layer will attach correctness state and feedback to trace events,
-future graph nodes, or lesson expectations. Validation should point to concrete
-events and avoid opaque pass/fail messages.
+The validation layer attaches correctness state to graph nodes, timeline
+context, and lesson summaries. Validation should point to concrete events and
+avoid opaque pass/fail messages.
 
-The AI mentor will use code, trace events, validation results, and learner mode
-to produce grounded hints, explanations, and misconception feedback. AI output
-should cite or refer to concrete trace facts whenever possible.
+The AI mentor uses code-adjacent context, selected events/nodes, validation
+results, misconceptions, and learner mode to produce grounded hints and
+explanations. OpenAI is optional and fallback behavior is required.
 
 ## Design Notes
 
-- These schemas are generic enough for Python V1 and future backend,
-  architecture, and AI explanation views.
+- These schemas are generic enough for Python V1 and later architecture or AI
+  explanation views.
 - Trace events are not the runtime tracer implementation.
 - Validation schemas are not lesson rules.
 - Visualization hints are not a graph rendering implementation.

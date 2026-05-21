@@ -29,13 +29,14 @@ be present.
 - Python fundamentals exercises
 - Variables, conditions, loops, functions
 - Lists and dictionaries
-- Multi-file imports
+- In-memory multi-file workspace
+- Static import detection
 - Static analysis
 - Runtime trace events
 - React Flow visualization
 - Node-level correctness feedback
 - Beginner mode and engineer mode
-- AI mentor hints, explanations, and misconception detection
+- AI mentor hints, explanations, and local misconception detection
 
 ## V1 Non-Goals
 
@@ -46,6 +47,8 @@ be present.
 - Collaborative editing
 - Full terminal emulation
 - Multi-language support
+- Runtime imports and arbitrary external packages
+- Production-grade sandboxing
 
 ## Success Criteria
 
