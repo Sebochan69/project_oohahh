@@ -354,6 +354,14 @@
         "description": {
           "type": "string"
         },
+        "beginner_explanation": {
+          "type": "string",
+          "description": "Short learner-friendly explanation for Beginner Mode."
+        },
+        "engineer_explanation": {
+          "type": "string",
+          "description": "More technical explanation for Engineer Mode."
+        },
         "payload": {
           "type": "object",
           "additionalProperties": true

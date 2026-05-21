@@ -12,6 +12,11 @@ Backend lifecycle demo:
 - `lessons/backend-lifecycle/fastapi-hello-route.lesson.json`
 - Details: `docs/backend-lifecycle-demo.md`
 
+AI/RAG demo:
+
+- `lessons/ai-rag/rag-pipeline-overview.lesson.json`
+- Details: `docs/ai-rag-demo.md`
+
 ## Setup
 
 1. Start the backend from the repository root:
@@ -121,6 +126,34 @@ Backend lifecycle demo:
    Expected outcome: Beginner Mode keeps the flow explanation simpler, while
    Engineer Mode shows deeper lifecycle and payload metadata from the lesson.
 
+## AI/RAG Demo
+
+1. Load the "RAG Pipeline Overview" lesson.
+
+   Expected outcome: the visualization switches to the AI/RAG static graph.
+   This graph is rendered from lesson-defined mock pipeline data.
+
+2. Explain the flow from query to citations.
+
+   Expected outcome: the graph shows query, documents, chunks, embeddings,
+   retrieval, context, LLM response, citations, and hallucination risk nodes.
+
+3. Show the risk overlay.
+
+   Expected outcome: the hallucination risk node is visually distinct and the
+   validation panel explains weak grounding or unsupported-answer risk.
+
+4. Toggle Beginner Mode and Engineer Mode.
+
+   Expected outcome: Beginner Mode gives simpler explanations, while Engineer
+   Mode exposes payload and retrieval/context metadata.
+
+5. Point out the boundary.
+
+   Expected outcome: the presenter makes clear that OOH-AHH is not calling
+   embeddings, using a vector database, retrieving live documents, or calling an
+   LLM in this demo.
+
 ## Good Demo Variations
 
 - Change the printed text so it does not match the expected stdout, then run
@@ -131,6 +164,8 @@ Backend lifecycle demo:
   payloads.
 - Load the backend lifecycle lesson to show request lifecycle concepts without
   running real FastAPI code.
+- Load the AI/RAG lesson to show retrieval and hallucination risk concepts
+  without running a real RAG pipeline.
 
 ## Troubleshooting
 
@@ -146,3 +181,5 @@ Backend lifecycle demo:
   analysis can detect import syntax, but runtime imports are blocked.
 - If the backend lifecycle graph appears, remember it is static lesson metadata.
   Analyze and Run / Verify remain Python-focused in this prototype.
+- If the AI/RAG graph appears, remember it is static lesson metadata. The risk
+  overlay is educational and does not come from a live model run.

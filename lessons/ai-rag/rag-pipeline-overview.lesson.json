@@ -1,7 +1,7 @@
 {
   "id": "ai-rag.rag-pipeline-overview",
   "title": "RAG Pipeline Overview",
-  "description": "Trace how a question can move through documents, chunks, embeddings, retrieval, context assembly, and a grounded LLM response.",
+  "description": "Trace a static RAG flow from query to documents, chunks, embeddings, retrieval, context, LLM response, and citations.",
   "lesson_type": "ai_rag_pipeline",
   "difficulty": "beginner",
   "topic": "AI/RAG pipeline",
@@ -86,6 +86,8 @@
       "type": "user_query",
       "label": "User Query",
       "description": "The learner asks a question.",
+      "beginner_explanation": "The learner starts by asking a question.",
+      "engineer_explanation": "Prompt input enters the pipeline as the query that retrieval will try to support.",
       "payload": {
         "query": "What does PROJECT OOH-AHH teach about runtime trace events?"
       }
@@ -95,6 +97,8 @@
       "type": "document",
       "label": "Document",
       "description": "A trusted source document is available for retrieval.",
+      "beginner_explanation": "The system needs trusted source material before it can ground an answer.",
+      "engineer_explanation": "Document metadata identifies the source boundary used for chunking and retrieval.",
       "payload": {
         "document_id": "doc-architecture"
       }
@@ -104,6 +108,8 @@
       "type": "chunker",
       "label": "Chunker",
       "description": "The document is split into a retrievable chunk.",
+      "beginner_explanation": "The document is split into a smaller piece that is easier to search.",
+      "engineer_explanation": "Chunk metadata records the retrievable unit, source document id, and token estimate.",
       "payload": {
         "chunk_ids": ["doc-architecture:chunk-01"]
       }
@@ -113,6 +119,8 @@
       "type": "embedding_model",
       "label": "Embedding Model",
       "description": "Mock embedding metadata represents text for similarity search.",
+      "beginner_explanation": "The chunk is turned into a search-friendly meaning pattern.",
+      "engineer_explanation": "Mock embedding metadata stands in for vector generation; no embedding API is called.",
       "payload": {
         "model": "mock-embedding-model"
       }
@@ -122,6 +130,8 @@
       "type": "vector_store",
       "label": "Vector Store",
       "description": "The mock vector store indexes chunk metadata for retrieval.",
+      "beginner_explanation": "The searchable chunk is placed where retrieval can find it later.",
+      "engineer_explanation": "Mock vector store metadata describes the collection/index without adding a database dependency.",
       "payload": {
         "collection": "ooh-ahh-demo-docs"
       }
@@ -131,6 +141,8 @@
       "type": "retriever",
       "label": "Retriever",
       "description": "Retrieval selects the most relevant chunk for the query.",
+      "beginner_explanation": "The system picks the source chunk that best matches the question.",
+      "engineer_explanation": "Retrieval uses static top-k match metadata, including selected chunk ids and score placeholders.",
       "payload": {
         "top_k": 1,
         "selected_chunk_ids": ["doc-architecture:chunk-01"]
@@ -141,6 +153,8 @@
       "type": "context_builder",
       "label": "Context Builder",
       "description": "The query and retrieved source are assembled for the LLM.",
+      "beginner_explanation": "The question and selected source are bundled together for the answer step.",
+      "engineer_explanation": "Context assembly records which retrieved chunk ids would be included in the model prompt.",
       "payload": {
         "context_chunk_ids": ["doc-architecture:chunk-01"]
       }
@@ -150,6 +164,8 @@
       "type": "llm",
       "label": "LLM",
       "description": "A future model would generate a response from the assembled context.",
+      "beginner_explanation": "A future AI model would write an answer using the supplied source.",
+      "engineer_explanation": "The LLM node is a static placeholder; no model request or generation occurs.",
       "payload": {
         "mode": "mock"
       }
@@ -159,6 +175,8 @@
       "type": "response",
       "label": "Response",
       "description": "The planned response should stay grounded in the retrieved source.",
+      "beginner_explanation": "The answer should say only what the selected source supports.",
+      "engineer_explanation": "Expected response metadata includes the planned answer and citation ids for grounding checks.",
       "payload": {
         "citation_required": true
       }
@@ -168,6 +186,8 @@
       "type": "citation_source",
       "label": "Citation",
       "description": "The citation links the response claim to the retrieved chunk.",
+      "beginner_explanation": "The citation shows which source supports the answer.",
+      "engineer_explanation": "Citation metadata maps a response claim to a retrieved chunk and document id.",
       "payload": {
         "chunk_id": "doc-architecture:chunk-01"
       }
@@ -177,6 +197,8 @@
       "type": "hallucination_risk",
       "label": "Risk",
       "description": "Unsupported claims are a hallucination risk point.",
+      "beginner_explanation": "This warning marks where an answer could make a claim without enough source support.",
+      "engineer_explanation": "Risk metadata flags unsupported answer generation or weak retrieval grounding in static lesson data.",
       "payload": {
         "risk_type": "unsupported_claim"
       }

@@ -66,14 +66,16 @@ visualization:
 - `citation_sources`: links between answer claims and source chunks.
 - `hallucination_risk_points`: visible risk markers for weak or unsupported
   responses.
-- `pipeline_nodes`: future graph nodes such as `user_query`, `document`,
+- `pipeline_nodes`: static graph nodes such as `user_query`, `document`,
   `chunker`, `embedding_model`, `vector_store`, `retriever`,
   `context_builder`, `llm`, `response`, `citation_source`, and
   `hallucination_risk`.
+- `beginner_explanation`: optional learner-friendly text for a pipeline node.
+- `engineer_explanation`: optional technical text for a pipeline node.
 
-These fields are optional and are not used by the current frontend lesson
-selector, runtime runner, OpenAI mentor endpoint, or any RAG execution path.
-They exist as schema groundwork and planning/reference lesson data only.
+These fields drive the current static AI/RAG graph prototype. They are not used
+by the runtime runner, OpenAI mentor endpoint, backend APIs, or any real RAG
+execution path.
 
 ## Current Lessons
 
@@ -95,9 +97,8 @@ They exist as schema groundwork and planning/reference lesson data only.
   dictionary.
 - `backend-lifecycle/fastapi-hello-route.lesson.json`: static FastAPI request
   lifecycle demo lesson loaded by the current frontend lesson selector.
-- `ai-rag/rag-pipeline-overview.lesson.json`: planning/reference sample for a
-  future RAG pipeline lesson. It is not wired into the current frontend lesson
-  selector.
+- `ai-rag/rag-pipeline-overview.lesson.json`: static RAG pipeline demo lesson
+  loaded by the current frontend lesson selector.
 
 ## Boundaries
 
