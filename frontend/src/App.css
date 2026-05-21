@@ -146,7 +146,123 @@ select {
   color: #f8fafc;
 }
 
+.code-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(150px, 34%) minmax(0, 1fr);
+  background: #0f172a;
+}
+
+.file-explorer {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border-right: 1px solid #263449;
+  background: #151f2f;
+}
+
+.file-explorer__header {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #263449;
+  color: #d8e2ee;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  padding: 0 10px 0 12px;
+  text-transform: uppercase;
+}
+
+.file-explorer__list {
+  min-height: 0;
+  overflow: auto;
+  padding: 6px;
+}
+
+.file-row {
+  min-width: 0;
+  min-height: 34px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px;
+  border-radius: 6px;
+  color: #b6c4d4;
+}
+
+.file-row.is-active {
+  background: #223149;
+  color: #ffffff;
+}
+
+.file-row__name {
+  min-width: 0;
+  min-height: 34px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0 8px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 4px;
+}
+
+.icon-button {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9fb0c3;
+  cursor: pointer;
+  padding: 0;
+}
+
+.icon-button:hover:not(:disabled),
+.icon-button:focus-visible {
+  background: #2f4058;
+  color: #ffffff;
+}
+
+.icon-button:disabled {
+  color: #536275;
+  cursor: not-allowed;
+}
+
+.rename-form {
+  min-width: 0;
+  padding: 3px 4px;
+}
+
+.rename-form input {
+  width: 100%;
+  min-width: 0;
+  min-height: 28px;
+  border: 1px solid #4a90d9;
+  border-radius: 5px;
+  background: #0f172a;
+  color: #ffffff;
+  outline: 0;
+  padding: 0 6px;
+}
+
 .code-editor {
+  min-width: 0;
   min-height: 0;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -164,6 +280,7 @@ select {
 }
 
 .file-tab {
+  max-width: 100%;
   min-width: 92px;
   min-height: 34px;
   border: 1px solid transparent;
@@ -174,8 +291,11 @@ select {
   cursor: default;
   font-size: 0.86rem;
   font-weight: 700;
+  overflow: hidden;
   padding: 0 14px;
   text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .file-tab.is-active {
@@ -234,5 +354,15 @@ select {
 
   .workspace-panel--timeline {
     grid-column: auto;
+  }
+
+  .code-workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(120px, auto) minmax(260px, 1fr);
+  }
+
+  .file-explorer {
+    border-right: 0;
+    border-bottom: 1px solid #263449;
   }
 }

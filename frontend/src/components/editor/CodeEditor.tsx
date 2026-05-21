@@ -8,17 +8,17 @@ loader.config({ monaco });
 
 export function CodeEditor() {
   const activeFileName = useWorkspaceStore((state) => state.activeFileName);
-  const code = useWorkspaceStore((state) => state.files[state.activeFileName]);
+  const activeFile = useWorkspaceStore((state) => state.files[state.activeFileName]);
   const updateFileContent = useWorkspaceStore((state) => state.updateFileContent);
 
   return (
     <div className="code-editor">
-      <FileTabs activeFileName={activeFileName} />
+      <FileTabs />
       <div className="code-editor__surface">
         <Editor
           path={activeFileName}
           language="python"
-          value={code}
+          value={activeFile?.content ?? ''}
           theme="vs-dark"
           onChange={(value) => updateFileContent(activeFileName, value ?? '')}
           options={{

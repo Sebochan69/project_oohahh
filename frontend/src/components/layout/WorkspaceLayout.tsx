@@ -1,4 +1,5 @@
 import { CodeEditor } from '../editor/CodeEditor';
+import { FileExplorer } from '../editor/FileExplorer';
 
 export function WorkspaceLayout() {
   return (
@@ -8,7 +9,10 @@ export function WorkspaceLayout() {
           <span className="panel-kicker">Left panel</span>
           <h2 id="code-panel-title">Code Workspace</h2>
         </div>
-        <CodeEditor />
+        <div className="code-workspace">
+          <FileExplorer />
+          <CodeEditor />
+        </div>
       </aside>
 
       <main className="workspace-panel workspace-panel--visual" aria-labelledby="visual-panel-title">
