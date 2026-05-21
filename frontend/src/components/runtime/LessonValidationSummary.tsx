@@ -13,6 +13,16 @@ export function LessonValidationSummary() {
         <h3>{VALIDATION_STATE_LABELS[lessonValidationResult.status]}</h3>
       </div>
       <p>{lessonValidationResult.message}</p>
+      <dl>
+        <div>
+          <dt>Output</dt>
+          <dd>{VALIDATION_STATE_LABELS[lessonValidationResult.output_status]}</dd>
+        </div>
+        <div>
+          <dt>Runtime errors</dt>
+          <dd>{lessonValidationResult.has_runtime_error ? 'Present' : 'None'}</dd>
+        </div>
+      </dl>
       {activeLesson && lessonValidationResult.expected_stdout !== undefined && (
         <dl>
           <div>
@@ -24,6 +34,16 @@ export function LessonValidationSummary() {
             <dd>{lessonValidationResult.actual_stdout || '(empty)'}</dd>
           </div>
         </dl>
+      )}
+      {lessonValidationResult.runtime_error_messages.length > 0 && (
+        <div className="lesson-validation-summary__errors">
+          <span>Runtime error details</span>
+          <ul>
+            {lessonValidationResult.runtime_error_messages.map((message) => (
+              <li key={message}>{message}</li>
+            ))}
+          </ul>
+        </div>
       )}
       {activeLesson && lessonValidationResult.concepts.required.length > 0 && (
         <div className="lesson-validation-summary__concepts">

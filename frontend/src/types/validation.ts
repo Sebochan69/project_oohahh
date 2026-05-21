@@ -9,7 +9,12 @@ export const VALIDATION_STATES = [
 
 export type ValidationState = (typeof VALIDATION_STATES)[number];
 
-export type LessonValidationStatus = Extract<ValidationState, 'not_evaluated' | 'correct' | 'incorrect'>;
+export type LessonValidationStatus = Extract<
+  ValidationState,
+  'not_evaluated' | 'correct' | 'partially_correct' | 'incorrect'
+>;
+
+export type OutputValidationStatus = Extract<ValidationState, 'not_evaluated' | 'correct' | 'incorrect'>;
 
 export type RequiredConceptKey =
   | 'print_statement'
@@ -32,8 +37,10 @@ export type LessonValidationResult = {
   message: string;
   expected_stdout?: string;
   actual_stdout?: string;
-  output_status: LessonValidationStatus;
+  output_status: OutputValidationStatus;
   concepts: ConceptValidationResult;
+  has_runtime_error: boolean;
+  runtime_error_messages: string[];
 };
 
 export const DEFAULT_VALIDATION_STATE: ValidationState = 'not_evaluated';

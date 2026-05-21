@@ -1,6 +1,11 @@
 import type { Lesson } from '../types/lesson';
 import type { RuntimeTraceResult } from '../types/trace';
-import type { ConceptValidationResult, LessonValidationResult, RequiredConceptKey } from '../types/validation';
+import type {
+  ConceptValidationResult,
+  LessonValidationResult,
+  OutputValidationStatus,
+  RequiredConceptKey,
+} from '../types/validation';
 
 type ValidationWorkspaceFile = {
   content: string;
@@ -62,6 +67,18 @@ function validateConcepts(
   };
 }
 
+function runtimeErrorMessages(traceResult: RuntimeTraceResult) {
+  return traceResult.errors.map((error) => error.message);
+}
+
+function outputStatusForExpectedStdout(expectedStdout: string | undefined, actualStdout: string): OutputValidationStatus {
+  if (expectedStdout === undefined) {
+    return 'not_evaluated';
+  }
+
+  return normalizeStdout(actualStdout) === normalizeStdout(expectedStdout) ? 'correct' : 'incorrect';
+}
+
 export function validateLessonOutput(
   lesson: Lesson | null,
   traceResult: RuntimeTraceResult,
@@ -69,6 +86,8 @@ export function validateLessonOutput(
 ): LessonValidationResult {
   const expectedStdout = lesson?.expected_output.stdout;
   const concepts = validateConcepts(lesson, files);
+  const runtimeErrors = runtimeErrorMessages(traceResult);
+  const hasRuntimeError = runtimeErrors.length > 0;
 
   if (!lesson) {
     return {
@@ -77,15 +96,27 @@ export function validateLessonOutput(
       message: 'No lesson is loaded, so output and concept validation were not evaluated.',
       actual_stdout: traceResult.stdout,
       concepts,
+      has_runtime_error: hasRuntimeError,
+      runtime_error_messages: runtimeErrors,
     };
   }
 
-  const outputStatus = expectedStdout === undefined
-    ? 'not_evaluated'
-    : normalizeStdout(traceResult.stdout) === normalizeStdout(expectedStdout)
-      ? 'correct'
-      : 'incorrect';
+  const outputStatus = outputStatusForExpectedStdout(expectedStdout, traceResult.stdout);
   const hasMissingConcepts = concepts.missing.length > 0;
+  const hasFoundConcepts = concepts.found.length > 0;
+
+  if (hasRuntimeError) {
+    return {
+      status: 'incorrect',
+      output_status: outputStatus,
+      message: 'Runtime error occurred before the lesson could pass.',
+      expected_stdout: expectedStdout,
+      actual_stdout: traceResult.stdout,
+      concepts,
+      has_runtime_error: hasRuntimeError,
+      runtime_error_messages: runtimeErrors,
+    };
+  }
 
   if (outputStatus === 'correct' && !hasMissingConcepts) {
     return {
@@ -95,17 +126,34 @@ export function validateLessonOutput(
       expected_stdout: expectedStdout,
       actual_stdout: traceResult.stdout,
       concepts,
+      has_runtime_error: hasRuntimeError,
+      runtime_error_messages: runtimeErrors,
     };
   }
 
   if (outputStatus === 'correct' && hasMissingConcepts) {
     return {
-      status: 'incorrect',
+      status: 'partially_correct',
       output_status: outputStatus,
       message: 'Correct output, but lesson goal not met. Some required concepts are missing.',
       expected_stdout: expectedStdout,
       actual_stdout: traceResult.stdout,
       concepts,
+      has_runtime_error: hasRuntimeError,
+      runtime_error_messages: runtimeErrors,
+    };
+  }
+
+  if (outputStatus === 'incorrect' && hasFoundConcepts) {
+    return {
+      status: 'partially_correct',
+      output_status: outputStatus,
+      message: 'Some required concepts were found, but stdout does not match yet.',
+      expected_stdout: expectedStdout,
+      actual_stdout: traceResult.stdout,
+      concepts,
+      has_runtime_error: hasRuntimeError,
+      runtime_error_messages: runtimeErrors,
     };
   }
 
@@ -119,5 +167,7 @@ export function validateLessonOutput(
     expected_stdout: expectedStdout,
     actual_stdout: traceResult.stdout,
     concepts,
+    has_runtime_error: hasRuntimeError,
+    runtime_error_messages: runtimeErrors,
   };
 }
