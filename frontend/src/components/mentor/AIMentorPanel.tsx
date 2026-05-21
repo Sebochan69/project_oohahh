@@ -2,6 +2,7 @@ import { Lightbulb, MessageCircle } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { RuntimeTraceEvent } from '../../types/trace';
+import { detectMisconceptions } from '../../utils/detectMisconceptions';
 
 type MentorResponseKind = 'explanation' | 'hint';
 
@@ -80,6 +81,15 @@ export function AIMentorPanel() {
     () => runtimeGraphData?.nodes.find((node) => node.id === runtimeGraphData.activeNodeId),
     [runtimeGraphData],
   );
+  const misconceptions = useMemo(
+    () =>
+      detectMisconceptions({
+        currentEvent,
+        lessonValidationResult,
+        activeRuntimeNode: activeRuntimeNode?.data,
+      }),
+    [activeRuntimeNode, currentEvent, lessonValidationResult],
+  );
   const hasRuntimeContext = Boolean(currentEvent || activeRuntimeNode);
 
   function explainThis() {
@@ -134,6 +144,23 @@ export function AIMentorPanel() {
           </>
         ) : (
           <p>Ask for an explanation or hint after running code. Responses are local placeholders for now.</p>
+        )}
+      </div>
+
+      <div className="ai-mentor-panel__misconceptions">
+        <span>Possible misconceptions</span>
+        {misconceptions.length > 0 ? (
+          <ul>
+            {misconceptions.map((misconception) => (
+              <li key={misconception.id} className={`ai-mentor-panel__misconception is-${misconception.severity}`}>
+                <strong>{misconception.message}</strong>
+                <p>{misconception.suggested_focus}</p>
+                {misconception.related_event_id && <small>Related event: {misconception.related_event_id}</small>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No local misconception pattern detected yet.</p>
         )}
       </div>
     </aside>
