@@ -3,7 +3,7 @@ import { runRuntimeTrace as requestRuntimeTrace } from '../api/runtimeTrace';
 import { analyzeStatic } from '../api/staticAnalysis';
 import type { StaticAnalysisResult } from '../types/analysis';
 import type { RuntimeGraphData, StaticGraphData } from '../types/graph';
-import type { Lesson } from '../types/lesson';
+import type { Lesson, LessonMode } from '../types/lesson';
 import type { RuntimeTraceResult } from '../types/trace';
 import type { LessonValidationResult } from '../types/validation';
 import { buildRuntimeGraph } from '../utils/buildRuntimeGraph';
@@ -26,6 +26,7 @@ type WorkspaceState = {
   currentEventIndex: number;
   activeLesson: Lesson | null;
   activeLessonStarterFiles: Record<string, WorkspaceFile> | null;
+  learningMode: LessonMode;
   isAnalyzing: boolean;
   isTimelinePlaying: boolean;
   isTracing: boolean;
@@ -46,6 +47,7 @@ type WorkspaceState = {
   runRuntimeTrace: () => Promise<void>;
   runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
+  setLearningMode: (mode: LessonMode) => void;
   updateFileContent: (fileName: string, content: string) => void;
 };
 
@@ -100,6 +102,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   currentEventIndex: 0,
   activeLesson: null,
   activeLessonStarterFiles: null,
+  learningMode: 'beginner',
   isAnalyzing: false,
   isTimelinePlaying: false,
   isTracing: false,
@@ -356,6 +359,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       return {
         activeFileName: fileName,
       };
+    }),
+  setLearningMode: (mode) =>
+    set({
+      learningMode: mode,
     }),
   updateFileContent: (fileName, content) =>
     set((state) => {
