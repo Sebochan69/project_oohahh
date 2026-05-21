@@ -132,6 +132,21 @@ Never commit real API keys.
   presence, and basic concept detection.
 - AI Mentor responses are single-turn and do not edit learner code.
 
+## V1 Release Candidate Checklist
+
+- Frontend starts with `npm run dev`.
+- Backend starts with `uvicorn app.main:app --reload`.
+- `/health` returns `{"status":"ok","service":"ooh-ahh-backend"}`.
+- Lesson loading, file explorer actions, and Monaco editing work in memory.
+- Analyze renders the static graph and supports node inspection.
+- Run / Verify renders runtime events, stdout/stderr/errors, validation, and the
+  runtime graph.
+- Timeline controls step through runtime events.
+- Beginner Mode and Engineer Mode show different detail levels.
+- AI Mentor returns OpenAI responses when configured and fallback guidance when
+  `OPENAI_API_KEY` is missing.
+- Known limitations are documented in [V1 Release Notes](docs/release-notes-v1.md).
+
 ## Documentation
 
 - [Product Definition](docs/product-definition.md)
@@ -140,5 +155,6 @@ Never commit real API keys.
 - [Git Workflow](docs/git-workflow.md)
 - [Smoke Test](docs/smoke-test.md)
 - [Demo Flow](docs/demo-flow.md)
+- [V1 Release Notes](docs/release-notes-v1.md)
 - [Codex Guidance](AGENTS.md)
 - [Learning Philosophy](SKILLS.md)
