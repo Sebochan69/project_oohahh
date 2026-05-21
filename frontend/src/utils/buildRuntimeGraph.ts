@@ -27,6 +27,14 @@ function runtimeNodeType(eventType: string): RuntimeGraphNodeType {
     : 'runtime_event';
 }
 
+function validationStateForEvent(event: RuntimeTraceEvent, isActive: boolean): ValidationState {
+  if (event.type === 'error_raised') {
+    return 'incorrect';
+  }
+
+  return isActive ? 'running' : DEFAULT_VALIDATION_STATE;
+}
+
 export function buildRuntimeGraph(events: RuntimeTraceEvent[], currentEventIndex: number): RuntimeGraphData {
   const normalizedCurrentIndex =
     events.length === 0 ? -1 : Math.min(Math.max(currentEventIndex, 0), events.length - 1);
@@ -34,7 +42,8 @@ export function buildRuntimeGraph(events: RuntimeTraceEvent[], currentEventIndex
   const activeNodeId = activeEvent ? runtimeNodeId(activeEvent) : null;
   const nodes: RuntimeGraphNode[] = events.map((event) => {
     const nodeId = runtimeNodeId(event);
-    const validationState: ValidationState = nodeId === activeNodeId ? 'running' : DEFAULT_VALIDATION_STATE;
+    const isActive = nodeId === activeNodeId;
+    const validationState = validationStateForEvent(event, isActive);
 
     return {
       id: nodeId,
@@ -47,7 +56,7 @@ export function buildRuntimeGraph(events: RuntimeTraceEvent[], currentEventIndex
         line_number: event.line_number,
         scope: event.scope,
         payload: event.payload,
-        is_active: nodeId === activeNodeId,
+        is_active: isActive,
         validation_state: validationState,
       },
     };
