@@ -1,7 +1,7 @@
 {
-  "id": "backend-lifecycle.fastapi-hello-route",
-  "title": "FastAPI Hello Route",
-  "description": "Trace how a simple GET request reaches a FastAPI route and becomes a JSON response.",
+  "id": "backend-lifecycle.fastapi-request-lifecycle",
+  "title": "FastAPI Request Lifecycle",
+  "description": "Follow one request from client to route, validation, service, repository, mock database, and response.",
   "lesson_type": "backend_lifecycle",
   "difficulty": "beginner",
   "topic": "Backend request lifecycle",
@@ -9,81 +9,107 @@
   "starter_files": [
     {
       "path": "app.py",
-      "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/hello\")\ndef hello():\n    return {\"message\": \"Hello from OOH-AHH\"}\n"
+      "content": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.post(\"/messages\")\ndef create_message(payload: dict):\n    saved_message = {\"id\": 1, \"text\": payload[\"text\"]}\n    return saved_message\n"
     }
   ],
   "learning_objectives": [
-    "Identify the client, route, and response parts of a backend request.",
-    "Explain how a GET request maps to a FastAPI route function.",
-    "Describe how a Python dictionary becomes a JSON response."
+    "Trace how a client request enters a backend route.",
+    "Identify where validation, service logic, repository access, and database interaction fit in the lifecycle.",
+    "Explain how a backend response is produced from request data."
   ],
   "expected_output": {},
-  "request_method": "GET",
-  "request_path": "/hello",
+  "request_method": "POST",
+  "request_path": "/messages",
+  "request_body": {
+    "text": "Welcome to OOH-AHH"
+  },
   "query_params": {},
   "expected_response": {
-    "message": "Hello from OOH-AHH"
+    "id": 1,
+    "text": "Welcome to OOH-AHH"
   },
   "expected_status_code": 200,
   "lifecycle_nodes": [
     {
       "id": "client-request",
       "type": "client",
-      "label": "Client request",
-      "description": "A browser or API client asks for GET /hello."
+      "label": "Client",
+      "description": "The client sends POST /messages with a JSON body.",
+      "beginner_explanation": "A browser or app asks the backend to create a message.",
+      "engineer_explanation": "Incoming HTTP request: POST /messages with JSON body {\"text\":\"Welcome to OOH-AHH\"}."
     },
     {
-      "id": "hello-route",
+      "id": "messages-route",
       "type": "route",
-      "label": "GET /hello route",
-      "description": "FastAPI matches the path and method to the hello route function.",
+      "label": "Route",
+      "description": "FastAPI matches POST /messages to create_message.",
+      "beginner_explanation": "FastAPI finds the function that belongs to this method and path.",
+      "engineer_explanation": "Route matching resolves method POST and path /messages to the create_message handler.",
       "file_path": "app.py",
       "line_number": 5
     },
     {
       "id": "request-validation",
       "type": "validation",
-      "label": "Request validation",
-      "description": "The request has no body or query params, so it is accepted."
-    },
-    {
-      "id": "hello-service",
-      "type": "service",
-      "label": "Service placeholder",
-      "description": "Future service logic would decide which message to return.",
+      "label": "Validation",
+      "description": "The request body is shaped into the payload parameter.",
+      "beginner_explanation": "The backend checks that the request data can be used by the route.",
+      "engineer_explanation": "Validation prepares request body data before business logic receives it.",
       "file_path": "app.py",
       "line_number": 6
     },
     {
-      "id": "message-repository",
-      "type": "repository",
-      "label": "Repository placeholder",
-      "description": "Future repository logic would isolate data access."
-    },
-    {
-      "id": "mock-message-db",
-      "type": "database",
-      "label": "Mock DB placeholder",
-      "description": "A deterministic mock record stands in for stored data."
-    },
-    {
-      "id": "json-response",
-      "type": "response",
-      "label": "JSON response",
-      "description": "The returned dictionary becomes a JSON response with status 200.",
+      "id": "message-service",
+      "type": "service",
+      "label": "Service",
+      "description": "Service logic decides how the message should be created.",
+      "beginner_explanation": "The app decides what should happen with the request.",
+      "engineer_explanation": "Service layer placeholder for orchestration between route and data access.",
       "file_path": "app.py",
       "line_number": 7
     },
     {
-      "id": "validation-error",
+      "id": "message-repository",
+      "type": "repository",
+      "label": "Repository",
+      "description": "Repository logic hides how data is saved or fetched.",
+      "beginner_explanation": "This layer would ask for stored data or save new data.",
+      "engineer_explanation": "Repository layer placeholder for isolating persistence operations."
+    },
+    {
+      "id": "mock-message-db",
+      "type": "database",
+      "label": "Mock DB",
+      "description": "A mock database returns a deterministic saved message.",
+      "beginner_explanation": "A pretend database gives back the saved message.",
+      "engineer_explanation": "Mock database placeholder returns a stable record without real persistence."
+    },
+    {
+      "id": "json-response",
+      "type": "response",
+      "label": "Response",
+      "description": "The saved message is serialized as a JSON response.",
+      "beginner_explanation": "The backend sends the created message back to the client.",
+      "engineer_explanation": "Response generation serializes the Python dictionary to JSON with status 200.",
+      "file_path": "app.py",
+      "line_number": 8
+    },
+    {
+      "id": "error-branch",
       "type": "error",
-      "label": "Error branch placeholder",
-      "description": "If validation failed, the request would move to an error response instead."
+      "label": "Error Path",
+      "description": "If validation or service logic failed, the lifecycle would branch to an error response.",
+      "beginner_explanation": "If the request is not usable, the backend sends an error instead.",
+      "engineer_explanation": "Error branch placeholder for future validation and exception responses."
     }
   ],
   "required_concepts": [
-    "http_get_request",
+    "http_post_request",
     "fastapi_route",
+    "request_validation",
+    "service_layer",
+    "repository_layer",
+    "mock_database",
     "json_response"
   ],
   "validation": {
@@ -91,21 +117,29 @@
     "rules": [
       {
         "type": "expected_request",
-        "method": "GET",
-        "path": "/hello"
+        "method": "POST",
+        "path": "/messages",
+        "body": {
+          "text": "Welcome to OOH-AHH"
+        }
       },
       {
         "type": "expected_response",
         "status_code": 200,
         "body": {
-          "message": "Hello from OOH-AHH"
+          "id": 1,
+          "text": "Welcome to OOH-AHH"
         }
+      },
+      {
+        "type": "required_lifecycle_nodes",
+        "nodes": ["client", "route", "validation", "service", "repository", "database", "response", "error"]
       }
     ]
   },
   "hints": [
-    "Start by finding the decorator that names the HTTP method and path.",
-    "The route function body decides what data is returned.",
-    "In FastAPI, returning a dictionary usually becomes a JSON response."
+    "Start with the client and follow each arrow until the response.",
+    "The route chooses the function, while the service and repository describe future app boundaries.",
+    "Engineer Mode shows the request body, response payload, and metadata placeholders."
   ]
 }

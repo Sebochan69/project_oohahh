@@ -13,7 +13,8 @@ AI mentor context.
 - `validation.schema.json`: validation state and feedback contract that can be
   attached to trace events, graph nodes, timeline context, and mentor context.
 - `lesson.schema.json`: lesson metadata, starter files, expected output,
-  required concepts, validation metadata, and hints.
+  required concepts, validation metadata, hints, and optional backend lifecycle
+  metadata.
 
 ## V1 Trace Event Types
 

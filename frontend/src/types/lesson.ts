@@ -30,6 +30,8 @@ export type LessonLifecycleNode = {
   type: BackendLifecycleNodeType;
   label: string;
   description?: string;
+  beginner_explanation?: string;
+  engineer_explanation?: string;
   file_path?: string;
   line_number?: number;
 };
