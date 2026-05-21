@@ -1,4 +1,5 @@
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import { StaticGraphCanvas } from '../visualization/StaticGraphCanvas';
 
 export function AnalysisPanel() {
   const analysisError = useWorkspaceStore((state) => state.analysisError);
@@ -24,14 +25,10 @@ export function AnalysisPanel() {
   if (!graphData) {
     return (
       <div className="analysis-panel analysis-panel--empty">
-        <p>Run static analysis to generate graph-ready JSON.</p>
+        <p>Run static analysis to render the static graph.</p>
       </div>
     );
   }
 
-  return (
-    <pre className="analysis-panel analysis-panel--result">
-      {JSON.stringify(graphData, null, 2)}
-    </pre>
-  );
+  return <StaticGraphCanvas graphData={graphData} />;
 }
