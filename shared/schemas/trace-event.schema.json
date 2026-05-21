@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ooh-ahh.local/schemas/trace-event.schema.json",
+  "title": "OOH-AHH Trace Event",
+  "description": "Shared runtime event contract for visualization, timeline replay, validation overlays, and AI mentor explanations.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique id for this event within a trace session."
+    },
+    "type": {
+      "type": "string",
+      "description": "V1 trace event type.",
+      "enum": [
+        "execution_started",
+        "execution_finished",
+        "line_executed",
+        "variable_created",
+        "variable_updated",
+        "function_called",
+        "function_returned",
+        "loop_started",
+        "loop_iteration",
+        "condition_evaluated",
+        "error_raised"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp for when the event was recorded."
+    },
+    "step": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Monotonic zero-based order of this event in the trace timeline."
+    },
+    "file_path": {
+      "type": "string",
+      "description": "Project-relative source file path associated with the event."
+    },
+    "line_number": {
+      "type": ["integer", "null"],
+      "minimum": 1,
+      "description": "One-based source line number when the event maps to a source line."
+    },
+    "scope": {
+      "type": "object",
+      "description": "Runtime or analysis scope where the event occurred.",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable scope id for linking events."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable scope name, such as module or function name."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Scope category.",
+          "enum": ["module", "function", "loop", "conditional", "class", "global", "unknown"]
+        },
+        "parent_id": {
+          "type": ["string", "null"],
+          "description": "Parent scope id when this scope is nested."
+        }
+      },
+      "required": ["id", "kind"]
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event-specific data. Keep this serializable and grounded in runtime or analysis facts.",
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Variable, function, loop, condition, or error name when applicable."
+        },
+        "value": {
+          "description": "Observed value or return value when applicable."
+        },
+        "previous_value": {
+          "description": "Previous value for update events when available."
+        },
+        "expression": {
+          "type": "string",
+          "description": "Source expression related to the event."
+        },
+        "result": {
+          "description": "Evaluated result for conditions, calls, or expressions."
+        },
+        "args": {
+          "type": "array",
+          "description": "Function call positional arguments when available.",
+          "items": {}
+        },
+        "kwargs": {
+          "type": "object",
+          "description": "Function call keyword arguments when available.",
+          "additionalProperties": true
+        },
+        "iteration": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-based loop iteration index when applicable."
+        },
+        "error_type": {
+          "type": "string",
+          "description": "Error or exception type for error events."
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error message for error events."
+        }
+      }
+    },
+    "visual": {
+      "type": "object",
+      "description": "Hints for graph and timeline presentation without requiring a specific renderer.",
+      "additionalProperties": true,
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "description": "Preferred visualization node id associated with this event."
+        },
+        "parent_node_id": {
+          "type": ["string", "null"],
+          "description": "Preferred parent visualization node id."
+        },
+        "label": {
+          "type": "string",
+          "description": "Short display label."
+        },
+        "category": {
+          "type": "string",
+          "description": "Renderer-neutral visual category.",
+          "enum": ["execution", "data", "control_flow", "function", "loop", "condition", "error", "system"]
+        },
+        "emphasis": {
+          "type": "string",
+          "description": "Visual emphasis hint.",
+          "enum": ["normal", "highlight", "muted"]
+        }
+      }
+    },
+    "validation": {
+      "$ref": "validation.schema.json",
+      "description": "Optional validation state attached to this event."
+    }
+  },
+  "required": ["id", "type", "timestamp", "step", "file_path", "line_number", "scope", "payload"]
+}
