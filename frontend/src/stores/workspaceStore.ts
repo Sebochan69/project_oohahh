@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { runRuntimeTrace as requestRuntimeTrace } from '../api/runtimeTrace';
 import { analyzeStatic } from '../api/staticAnalysis';
 import type { StaticAnalysisResult } from '../types/analysis';
-import type { StaticGraphData } from '../types/graph';
+import type { RuntimeGraphData, StaticGraphData } from '../types/graph';
 import type { RuntimeTraceResult } from '../types/trace';
+import { buildRuntimeGraph } from '../utils/buildRuntimeGraph';
 import { buildStaticGraph } from '../utils/buildStaticGraph';
 
 const STARTER_CODE = 'print("Welcome to OOH-AHH")';
@@ -25,6 +26,7 @@ type WorkspaceState = {
   isTracing: boolean;
   traceError: string | null;
   traceResult: RuntimeTraceResult | null;
+  runtimeGraphData: RuntimeGraphData | null;
   createFile: () => void;
   deleteFile: (fileName: string) => void;
   goToNextTimelineEvent: () => void;
@@ -78,6 +80,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   isTracing: false,
   traceError: null,
   traceResult: null,
+  runtimeGraphData: null,
   createFile: () =>
     set((state) => {
       const fileName = createUntitledFileName(state.files);
@@ -116,21 +119,30 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         return {
           currentEventIndex: 0,
           isTimelinePlaying: false,
+          runtimeGraphData: buildRuntimeGraph([], 0),
         };
       }
 
       const nextIndex = Math.min(state.currentEventIndex + 1, eventCount - 1);
+      const events = state.traceResult?.events ?? [];
 
       return {
         currentEventIndex: nextIndex,
         isTimelinePlaying: nextIndex < eventCount - 1 ? state.isTimelinePlaying : false,
+        runtimeGraphData: buildRuntimeGraph(events, nextIndex),
       };
     }),
   goToPreviousTimelineEvent: () =>
-    set((state) => ({
-      currentEventIndex: Math.max(state.currentEventIndex - 1, 0),
-      isTimelinePlaying: false,
-    })),
+    set((state) => {
+      const previousIndex = Math.max(state.currentEventIndex - 1, 0);
+      const events = state.traceResult?.events ?? [];
+
+      return {
+        currentEventIndex: previousIndex,
+        isTimelinePlaying: false,
+        runtimeGraphData: buildRuntimeGraph(events, previousIndex),
+      };
+    }),
   pauseTimeline: () =>
     set({
       isTimelinePlaying: false,
@@ -183,6 +195,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       currentEventIndex: 0,
       isTimelinePlaying: false,
       isTracing: true,
+      runtimeGraphData: null,
       traceError: null,
     });
 
@@ -196,21 +209,24 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         currentEventIndex: 0,
         isTimelinePlaying: false,
         isTracing: false,
+        runtimeGraphData: buildRuntimeGraph(traceResult.events, 0),
         traceResult,
       });
     } catch (error) {
       set({
         isTimelinePlaying: false,
         isTracing: false,
+        runtimeGraphData: null,
         traceError: error instanceof Error ? error.message : 'Runtime trace request failed.',
       });
     }
   },
   resetTimeline: () =>
-    set({
+    set((state) => ({
       currentEventIndex: 0,
       isTimelinePlaying: false,
-    }),
+      runtimeGraphData: buildRuntimeGraph(state.traceResult?.events ?? [], 0),
+    })),
   runStaticAnalysis: async () => {
     const { activeFileName, files } = useWorkspaceStore.getState();
 

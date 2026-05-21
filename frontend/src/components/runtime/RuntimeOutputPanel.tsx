@@ -11,6 +11,7 @@ export function RuntimeOutputPanel() {
   const traceError = useWorkspaceStore((state) => state.traceError);
   const traceResult = useWorkspaceStore((state) => state.traceResult);
   const currentEventIndex = useWorkspaceStore((state) => state.currentEventIndex);
+  const runtimeGraphData = useWorkspaceStore((state) => state.runtimeGraphData);
 
   if (isTracing) {
     return (
@@ -66,6 +67,10 @@ export function RuntimeOutputPanel() {
         <section className="runtime-output__section runtime-output__section--events">
           <h3>events</h3>
           <pre>{JSON.stringify(traceResult.events, null, 2)}</pre>
+        </section>
+        <section className="runtime-output__section runtime-output__section--runtime-graph">
+          <h3>runtime graph</h3>
+          <pre>{JSON.stringify(runtimeGraphData, null, 2)}</pre>
         </section>
       </div>
     </div>
