@@ -47,7 +47,7 @@ export type AiRagPipelineNodeType =
   | 'llm'
   | 'response'
   | 'citation_source'
-  | 'warning_risk';
+  | 'hallucination_risk';
 
 export type AiRagPipelineNode = {
   id: string;

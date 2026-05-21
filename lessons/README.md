@@ -68,7 +68,8 @@ visualization:
   responses.
 - `pipeline_nodes`: future graph nodes such as `user_query`, `document`,
   `chunker`, `embedding_model`, `vector_store`, `retriever`,
-  `context_builder`, `llm`, `response`, `citation_source`, and `warning_risk`.
+  `context_builder`, `llm`, `response`, `citation_source`, and
+  `hallucination_risk`.
 
 These fields are optional and are not used by the current frontend lesson
 selector, runtime runner, OpenAI mentor endpoint, or any RAG execution path.

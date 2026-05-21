@@ -1,3 +1,4 @@
+import ragPipelineOverviewLesson from '../../../lessons/ai-rag/rag-pipeline-overview.lesson.json';
 import fastApiHelloRouteLesson from '../../../lessons/backend-lifecycle/fastapi-hello-route.lesson.json';
 import dictionaryAccessLesson from '../../../lessons/python-foundations/dictionary-access.lesson.json';
 import forLoopBasicsLesson from '../../../lessons/python-foundations/for-loop-basics.lesson.json';
@@ -19,6 +20,7 @@ export const SAMPLE_LESSONS = [
   listFilteringLesson,
   dictionaryAccessLesson,
   fastApiHelloRouteLesson,
+  ragPipelineOverviewLesson,
 ] as Lesson[];
 
 export const DEFAULT_SAMPLE_LESSON = SAMPLE_LESSONS[0];

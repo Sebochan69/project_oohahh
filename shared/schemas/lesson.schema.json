@@ -344,7 +344,7 @@
             "llm",
             "response",
             "citation_source",
-            "warning_risk"
+            "hallucination_risk"
           ]
         },
         "label": {
