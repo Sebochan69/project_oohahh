@@ -5,7 +5,7 @@ import type {
   RuntimeGraphNodeType,
 } from '../types/graph';
 import type { RuntimeTraceEvent } from '../types/trace';
-import type { ValidationState } from '../types/validation';
+import type { LessonValidationResult, ValidationState } from '../types/validation';
 import { DEFAULT_VALIDATION_STATE } from '../types/validation';
 
 const SUPPORTED_EVENT_TYPES = new Set<RuntimeGraphNodeType>([
@@ -27,23 +27,47 @@ function runtimeNodeType(eventType: string): RuntimeGraphNodeType {
     : 'runtime_event';
 }
 
-function validationStateForEvent(event: RuntimeTraceEvent, isActive: boolean): ValidationState {
+function isTerminalExecutionEvent(event: RuntimeTraceEvent) {
+  return event.type === 'execution_finished' || event.type === 'error_raised';
+}
+
+function validationStateForEvent(
+  event: RuntimeTraceEvent,
+  isActive: boolean,
+  isValidatedTerminalEvent: boolean,
+  lessonValidationResult?: LessonValidationResult | null,
+): ValidationState {
   if (event.type === 'error_raised') {
     return 'incorrect';
+  }
+
+  if (isValidatedTerminalEvent && lessonValidationResult && lessonValidationResult.status !== 'not_evaluated') {
+    return lessonValidationResult.status;
   }
 
   return isActive ? 'running' : DEFAULT_VALIDATION_STATE;
 }
 
-export function buildRuntimeGraph(events: RuntimeTraceEvent[], currentEventIndex: number): RuntimeGraphData {
+export function buildRuntimeGraph(
+  events: RuntimeTraceEvent[],
+  currentEventIndex: number,
+  lessonValidationResult?: LessonValidationResult | null,
+): RuntimeGraphData {
   const normalizedCurrentIndex =
     events.length === 0 ? -1 : Math.min(Math.max(currentEventIndex, 0), events.length - 1);
   const activeEvent = normalizedCurrentIndex >= 0 ? events[normalizedCurrentIndex] : undefined;
   const activeNodeId = activeEvent ? runtimeNodeId(activeEvent) : null;
+  const terminalValidationEvent = [...events].reverse().find(isTerminalExecutionEvent);
   const nodes: RuntimeGraphNode[] = events.map((event) => {
     const nodeId = runtimeNodeId(event);
     const isActive = nodeId === activeNodeId;
-    const validationState = validationStateForEvent(event, isActive);
+    const isValidatedTerminalEvent = Boolean(terminalValidationEvent && event.id === terminalValidationEvent.id);
+    const validationState = validationStateForEvent(
+      event,
+      isActive,
+      isValidatedTerminalEvent,
+      lessonValidationResult,
+    );
 
     return {
       id: nodeId,

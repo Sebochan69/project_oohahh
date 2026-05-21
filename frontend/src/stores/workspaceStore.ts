@@ -5,8 +5,10 @@ import type { StaticAnalysisResult } from '../types/analysis';
 import type { RuntimeGraphData, StaticGraphData } from '../types/graph';
 import type { Lesson } from '../types/lesson';
 import type { RuntimeTraceResult } from '../types/trace';
+import type { LessonValidationResult } from '../types/validation';
 import { buildRuntimeGraph } from '../utils/buildRuntimeGraph';
 import { buildStaticGraph } from '../utils/buildStaticGraph';
+import { validateLessonOutput } from '../utils/validateLessonOutput';
 
 const STARTER_CODE = 'print("Welcome to OOH-AHH")';
 
@@ -30,6 +32,7 @@ type WorkspaceState = {
   traceError: string | null;
   traceResult: RuntimeTraceResult | null;
   runtimeGraphData: RuntimeGraphData | null;
+  lessonValidationResult: LessonValidationResult;
   createFile: () => void;
   deleteFile: (fileName: string) => void;
   goToNextTimelineEvent: () => void;
@@ -88,6 +91,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   traceError: null,
   traceResult: null,
   runtimeGraphData: null,
+  lessonValidationResult: {
+    status: 'not_evaluated',
+    message: 'Run / Verify to evaluate a loaded lesson.',
+  },
   createFile: () =>
     set((state) => {
       const fileName = createUntitledFileName(state.files);
@@ -136,7 +143,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       return {
         currentEventIndex: nextIndex,
         isTimelinePlaying: nextIndex < eventCount - 1 ? state.isTimelinePlaying : false,
-        runtimeGraphData: buildRuntimeGraph(events, nextIndex),
+        runtimeGraphData: buildRuntimeGraph(events, nextIndex, state.lessonValidationResult),
       };
     }),
   goToPreviousTimelineEvent: () =>
@@ -147,7 +154,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       return {
         currentEventIndex: previousIndex,
         isTimelinePlaying: false,
-        runtimeGraphData: buildRuntimeGraph(events, previousIndex),
+        runtimeGraphData: buildRuntimeGraph(events, previousIndex, state.lessonValidationResult),
       };
     }),
   pauseTimeline: () =>
@@ -189,6 +196,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       files: starterFiles,
       graphData: null,
       isTimelinePlaying: false,
+      lessonValidationResult: {
+        status: 'not_evaluated',
+        message: 'Run / Verify to evaluate this lesson.',
+      },
       runtimeGraphData: null,
       traceError: null,
       traceResult: null,
@@ -222,13 +233,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     return didRename;
   },
   runRuntimeTrace: async () => {
-    const { activeFileName, files } = useWorkspaceStore.getState();
+    const { activeFileName, activeLesson, files } = useWorkspaceStore.getState();
 
     set({
       currentEventIndex: 0,
       isTimelinePlaying: false,
       isTracing: true,
       runtimeGraphData: null,
+      lessonValidationResult: {
+        status: 'not_evaluated',
+        message: 'Runtime execution is in progress.',
+      },
       graphData: null,
       traceError: null,
     });
@@ -238,18 +253,24 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         entryFile: activeFileName,
         files: Object.values(files),
       });
+      const lessonValidationResult = validateLessonOutput(activeLesson, traceResult);
 
       set({
         currentEventIndex: 0,
         isTimelinePlaying: false,
         isTracing: false,
-        runtimeGraphData: buildRuntimeGraph(traceResult.events, 0),
+        lessonValidationResult,
+        runtimeGraphData: buildRuntimeGraph(traceResult.events, 0, lessonValidationResult),
         traceResult,
       });
     } catch (error) {
       set({
         isTimelinePlaying: false,
         isTracing: false,
+        lessonValidationResult: {
+          status: 'not_evaluated',
+          message: 'Runtime execution did not complete, so lesson output was not evaluated.',
+        },
         runtimeGraphData: null,
         traceError: error instanceof Error ? error.message : 'Runtime trace request failed.',
       });
@@ -259,7 +280,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     set((state) => ({
       currentEventIndex: 0,
       isTimelinePlaying: false,
-      runtimeGraphData: buildRuntimeGraph(state.traceResult?.events ?? [], 0),
+      runtimeGraphData: buildRuntimeGraph(state.traceResult?.events ?? [], 0, state.lessonValidationResult),
     })),
   resetLesson: () =>
     set((state) => {
@@ -284,6 +305,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         files,
         graphData: null,
         isTimelinePlaying: false,
+        lessonValidationResult: {
+          status: 'not_evaluated',
+          message: 'Run / Verify to evaluate this lesson.',
+        },
         runtimeGraphData: null,
         traceError: null,
         traceResult: null,

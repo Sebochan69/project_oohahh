@@ -9,6 +9,15 @@ export const VALIDATION_STATES = [
 
 export type ValidationState = (typeof VALIDATION_STATES)[number];
 
+export type LessonValidationStatus = Extract<ValidationState, 'not_evaluated' | 'correct' | 'incorrect'>;
+
+export type LessonValidationResult = {
+  status: LessonValidationStatus;
+  message: string;
+  expected_stdout?: string;
+  actual_stdout?: string;
+};
+
 export const DEFAULT_VALIDATION_STATE: ValidationState = 'not_evaluated';
 
 export const VALIDATION_STATE_LABELS: Record<ValidationState, string> = {
