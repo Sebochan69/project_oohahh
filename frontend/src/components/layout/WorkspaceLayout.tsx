@@ -1,3 +1,6 @@
+import { CodeEditor } from '../editor/CodeEditor';
+import { FileExplorer } from '../editor/FileExplorer';
+
 export function WorkspaceLayout() {
   return (
     <section className="workspace-layout" aria-label="OOH-AHH workspace layout">
@@ -6,8 +9,9 @@ export function WorkspaceLayout() {
           <span className="panel-kicker">Left panel</span>
           <h2 id="code-panel-title">Code Workspace</h2>
         </div>
-        <div className="placeholder-surface">
-          <p>Future code editor and file workspace placeholder.</p>
+        <div className="code-workspace">
+          <FileExplorer />
+          <CodeEditor />
         </div>
       </aside>
 
