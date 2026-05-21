@@ -73,7 +73,7 @@ select {
   border-radius: 6px;
   background: transparent;
   color: #4a5b6e;
-  cursor: default;
+  cursor: pointer;
   font-weight: 700;
 }
 
@@ -1039,6 +1039,52 @@ select {
   overflow: hidden;
 }
 
+.timeline-event--beginner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 32%);
+  gap: 1px;
+  background: #e3e9f0;
+}
+
+.timeline-event__beginner-main,
+.timeline-event__validation {
+  min-width: 0;
+  background: #ffffff;
+  padding: 12px;
+}
+
+.timeline-event__beginner-main span,
+.timeline-event__validation span {
+  display: block;
+  margin-bottom: 5px;
+  color: #6b7d91;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.timeline-event__beginner-main h3 {
+  margin: 0 0 8px;
+  color: #223047;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.timeline-event__beginner-main p,
+.timeline-event__validation p {
+  margin: 6px 0 0;
+  color: #465a70;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.timeline-event__validation strong {
+  display: block;
+  color: #223047;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
 .timeline-event--empty {
   display: grid;
   place-items: center;
@@ -1055,7 +1101,7 @@ select {
 
 .timeline-event__summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
   background: #e3e9f0;
 }
@@ -1085,7 +1131,7 @@ select {
 
 .timeline-event__json-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: #e3e9f0;
   border-top: 1px solid #e3e9f0;
@@ -1367,6 +1413,7 @@ select {
   .lesson-validation-summary,
   .lesson-validation-summary__concepts,
   .lesson-validation-summary__errors,
+  .timeline-event--beginner,
   .timeline-event__summary,
   .timeline-event__json-grid {
     grid-template-columns: 1fr;
