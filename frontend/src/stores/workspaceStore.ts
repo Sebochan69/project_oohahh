@@ -1,7 +1,9 @@
 import { create } from 'zustand';
+import { runRuntimeTrace as requestRuntimeTrace } from '../api/runtimeTrace';
 import { analyzeStatic } from '../api/staticAnalysis';
 import type { StaticAnalysisResult } from '../types/analysis';
 import type { StaticGraphData } from '../types/graph';
+import type { RuntimeTraceResult } from '../types/trace';
 import { buildStaticGraph } from '../utils/buildStaticGraph';
 
 const STARTER_CODE = 'print("Welcome to OOH-AHH")';
@@ -18,9 +20,13 @@ type WorkspaceState = {
   files: Record<string, WorkspaceFile>;
   graphData: StaticGraphData | null;
   isAnalyzing: boolean;
+  isTracing: boolean;
+  traceError: string | null;
+  traceResult: RuntimeTraceResult | null;
   createFile: () => void;
   deleteFile: (fileName: string) => void;
   renameFile: (oldName: string, nextName: string) => boolean;
+  runRuntimeTrace: () => Promise<void>;
   runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
   updateFileContent: (fileName: string, content: string) => void;
@@ -60,6 +66,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   },
   graphData: null,
   isAnalyzing: false,
+  isTracing: false,
+  traceError: null,
+  traceResult: null,
   createFile: () =>
     set((state) => {
       const fileName = createUntitledFileName(state.files);
@@ -116,6 +125,31 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     });
 
     return didRename;
+  },
+  runRuntimeTrace: async () => {
+    const { activeFileName, files } = useWorkspaceStore.getState();
+
+    set({
+      isTracing: true,
+      traceError: null,
+    });
+
+    try {
+      const traceResult = await requestRuntimeTrace({
+        entryFile: activeFileName,
+        files: Object.values(files),
+      });
+
+      set({
+        isTracing: false,
+        traceResult,
+      });
+    } catch (error) {
+      set({
+        isTracing: false,
+        traceError: error instanceof Error ? error.message : 'Runtime trace request failed.',
+      });
+    }
   },
   runStaticAnalysis: async () => {
     const { activeFileName, files } = useWorkspaceStore.getState();
