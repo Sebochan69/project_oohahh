@@ -517,6 +517,100 @@ select {
   white-space: pre-wrap;
 }
 
+.visual-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.ai-mentor-panel {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid #d7e0ea;
+  background: #ffffff;
+  padding: 12px 14px;
+}
+
+.ai-mentor-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ai-mentor-panel__header span,
+.ai-mentor-panel__response span {
+  display: block;
+  margin-bottom: 4px;
+  color: #6b7d91;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ai-mentor-panel__header h3 {
+  margin: 0;
+  color: #223047;
+  font-size: 0.95rem;
+}
+
+.ai-mentor-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ai-mentor-panel__actions button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #c8d4df;
+  border-radius: 7px;
+  background: #f6f9fc;
+  color: #223047;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0 10px;
+}
+
+.ai-mentor-panel__actions button:hover,
+.ai-mentor-panel__actions button:focus-visible {
+  background: #eaf1f8;
+}
+
+.ai-mentor-panel__context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-mentor-panel__context span {
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #42546a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 5px 8px;
+  text-transform: capitalize;
+}
+
+.ai-mentor-panel__response {
+  border: 1px solid #e3e9f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 10px 12px;
+}
+
+.ai-mentor-panel__response p {
+  margin: 0;
+  color: #334155;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .static-graph-workspace {
   min-height: 0;
   display: grid;
@@ -1354,6 +1448,18 @@ select {
   .panel-header--with-action {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .ai-mentor-panel__header {
+    flex-direction: column;
+  }
+
+  .ai-mentor-panel__actions {
+    width: 100%;
+  }
+
+  .ai-mentor-panel__actions button {
+    flex: 1 1 150px;
   }
 
   .analyze-button,
