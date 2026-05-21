@@ -25,6 +25,30 @@ export function LessonValidationSummary() {
           </div>
         </dl>
       )}
+      {activeLesson && lessonValidationResult.concepts.required.length > 0 && (
+        <div className="lesson-validation-summary__concepts">
+          <div>
+            <span>Found concepts</span>
+            <ul>
+              {lessonValidationResult.concepts.found.length > 0 ? (
+                lessonValidationResult.concepts.found.map((concept) => <li key={concept}>{concept}</li>)
+              ) : (
+                <li>None yet</li>
+              )}
+            </ul>
+          </div>
+          <div>
+            <span>Missing concepts</span>
+            <ul>
+              {lessonValidationResult.concepts.missing.length > 0 ? (
+                lessonValidationResult.concepts.missing.map((concept) => <li key={concept}>{concept}</li>)
+              ) : (
+                <li>None</li>
+              )}
+            </ul>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
