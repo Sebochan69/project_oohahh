@@ -1,0 +1,39 @@
+{
+  "$schema": "../../shared/schemas/lesson.schema.json",
+  "id": "python-foundations.print-welcome-message",
+  "title": "Print Welcome Message",
+  "description": "Write a Python program that prints the OOH-AHH welcome message.",
+  "difficulty": "beginner",
+  "topic": "Python fundamentals",
+  "mode_support": ["beginner", "engineer"],
+  "starter_files": [
+    {
+      "path": "main.py",
+      "content": "# Print the welcome message below\n"
+    }
+  ],
+  "learning_objectives": [
+    "Use Python's print function to write text to stdout.",
+    "Understand that a program's output can be compared against an expected result."
+  ],
+  "expected_output": {
+    "stdout": "Welcome to OOH-AHH\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  "required_concepts": ["print", "strings", "stdout"],
+  "validation": {
+    "strategy": "placeholder_stdout_match",
+    "rules": [
+      {
+        "id": "stdout_matches_expected",
+        "description": "Future validation should compare stdout with the lesson expected output.",
+        "expected_stdout": "Welcome to OOH-AHH\n"
+      }
+    ]
+  },
+  "hints": [
+    "Use print with the welcome message inside quotes.",
+    "The expected output is case-sensitive."
+  ]
+}
