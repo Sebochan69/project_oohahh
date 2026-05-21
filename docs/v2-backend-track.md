@@ -85,6 +85,7 @@ request lifecycle without requiring execution support:
 - `expected_response`
 - `expected_status_code`
 - `lifecycle_nodes`
+- `beginner_explanation` and `engineer_explanation` on lifecycle nodes
 
 The current static demo lesson is
 `lessons/backend-lifecycle/fastapi-hello-route.lesson.json`.

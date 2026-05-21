@@ -40,6 +40,8 @@ Backend lifecycle lessons may include extra planning metadata:
 - `expected_status_code`: expected HTTP status code.
 - `lifecycle_nodes`: static visualization nodes for `client`, `route`,
   `validation`, `service`, `repository`, `database`, `response`, or `error`.
+- `beginner_explanation`: optional learner-friendly text for a lifecycle node.
+- `engineer_explanation`: optional technical text for a lifecycle node.
 
 These fields are optional and are not used by the V1 Python runtime validator.
 They drive the current backend lifecycle prototype, which renders mock
