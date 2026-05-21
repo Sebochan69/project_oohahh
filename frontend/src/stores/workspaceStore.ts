@@ -196,6 +196,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       isTimelinePlaying: false,
       isTracing: true,
       runtimeGraphData: null,
+      graphData: null,
       traceError: null,
     });
 
@@ -234,6 +235,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       analysisError: null,
       graphData: null,
       isAnalyzing: true,
+      isTimelinePlaying: false,
+      runtimeGraphData: null,
     });
 
     try {

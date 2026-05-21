@@ -575,6 +575,91 @@ select {
   white-space: pre-wrap;
 }
 
+.runtime-graph-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  background: #f8fafc;
+}
+
+.runtime-graph-canvas {
+  min-height: 0;
+  background: #f8fafc;
+}
+
+.runtime-node {
+  min-width: 170px;
+  max-width: 230px;
+  border: 1px solid #cbd6e2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #152233;
+  padding: 10px 12px;
+  box-shadow: 0 10px 24px rgba(24, 39, 75, 0.12);
+}
+
+.runtime-node.is-active {
+  border-color: #2563eb;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.18),
+    0 12px 28px rgba(37, 99, 235, 0.22);
+}
+
+.runtime-node--execution_started,
+.runtime-node--execution_finished {
+  background: #eef6ff;
+  border-color: #7ea6d8;
+}
+
+.runtime-node--line_executed {
+  background: #f8fafc;
+}
+
+.runtime-node--variable_created,
+.runtime-node--variable_updated {
+  background: #f0fbf5;
+  border-color: #92c6aa;
+}
+
+.runtime-node--error_raised {
+  background: #fff1f2;
+  border-color: #f87171;
+  color: #7f1d1d;
+}
+
+.runtime-node__type {
+  margin-bottom: 4px;
+  color: #5c7087;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.runtime-node--error_raised .runtime-node__type {
+  color: #b91c1c;
+}
+
+.runtime-node__label {
+  overflow-wrap: anywhere;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.runtime-node__meta {
+  display: grid;
+  gap: 2px;
+  margin-top: 6px;
+  color: #63758a;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.runtime-node--error_raised .runtime-node__meta {
+  color: #991b1b;
+}
+
 .runtime-output {
   min-height: 0;
   overflow: auto;
