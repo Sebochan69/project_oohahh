@@ -1,3 +1,4 @@
+import fastApiHelloRouteLesson from '../../../lessons/backend-lifecycle/fastapi-hello-route.lesson.json';
 import dictionaryAccessLesson from '../../../lessons/python-foundations/dictionary-access.lesson.json';
 import forLoopBasicsLesson from '../../../lessons/python-foundations/for-loop-basics.lesson.json';
 import functionReturnValueLesson from '../../../lessons/python-foundations/function-return-value.lesson.json';
@@ -17,6 +18,7 @@ export const SAMPLE_LESSONS = [
   functionReturnValueLesson,
   listFilteringLesson,
   dictionaryAccessLesson,
+  fastApiHelloRouteLesson,
 ] as Lesson[];
 
 export const DEFAULT_SAMPLE_LESSON = SAMPLE_LESSONS[0];

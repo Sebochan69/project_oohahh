@@ -1,15 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
 import { useWorkspaceStore } from '../../../stores/workspaceStore';
-
-export type BackendLifecycleNodeType =
-  | 'client'
-  | 'route'
-  | 'validation'
-  | 'service'
-  | 'repository'
-  | 'database'
-  | 'response'
-  | 'error';
+import type { BackendLifecycleNodeType } from '../../../types/lesson';
 
 export type BackendLifecycleNodeData = {
   type: BackendLifecycleNodeType;
@@ -59,6 +50,12 @@ export function BackendLifecycleNode({ data }: BackendLifecycleNodeProps) {
             <div>
               <dt>Payload</dt>
               <dd>{JSON.stringify(data.payload)}</dd>
+            </div>
+          )}
+          {data.metadata && (
+            <div>
+              <dt>Metadata</dt>
+              <dd>{JSON.stringify(data.metadata)}</dd>
             </div>
           )}
         </dl>
