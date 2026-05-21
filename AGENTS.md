@@ -4,22 +4,25 @@ This file guides Codex and other AI coding agents working on PROJECT OOH-AHH.
 
 ## Current Ticket Boundary
 
-Ticket 0 is documentation-only. Do not create frontend, backend, runtime,
-infrastructure, package manager, or build system files yet.
+Ticket 1 is monorepo and core app initialization only.
 
-Allowed work for Ticket 0:
+Allowed work for Ticket 1:
 
-- Root governance and documentation files
-- Documentation under `docs/`
-- Small wording improvements that clarify V1 boundaries
+- Minimal Vite, React, and TypeScript frontend shell
+- Minimal FastAPI backend shell
+- Backend `/health` endpoint
+- Placeholder `shared/` and `lessons/` folders
+- README setup and run instructions
 
-Disallowed work for Ticket 0:
+Disallowed work for Ticket 1:
 
-- React, Python, API, database, or runtime implementation files
-- Dependency installation or lockfiles
-- Generated scaffolds
-- CI configuration
+- Trace engine implementation
+- React Flow visualization implementation
+- Validation overlay implementation
+- AI mentor integration
+- Lesson content
 - Docker or Kubernetes files
+- CI configuration
 
 ## Project North Star
 

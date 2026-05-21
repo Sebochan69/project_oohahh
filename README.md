@@ -44,8 +44,61 @@ discipline of reading, reasoning about, and improving code.
 
 ## Repository Status
 
-Ticket 0 establishes project documentation and governance only. No frontend,
-backend, runtime, or infrastructure code should be added as part of this ticket.
+Ticket 1 initializes the monorepo and minimal frontend/backend app shells. It
+does not implement tracing, visualization, validation, AI mentor behavior, or
+lesson content.
+
+## Monorepo Layout
+
+```text
+frontend/   Vite, React, and TypeScript app shell
+backend/    FastAPI app shell
+shared/     Future shared contracts and schemas
+lessons/    Future lesson content
+docs/       Product and process documentation
+```
+
+## Frontend Setup
+
+From the repository root:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The Vite development server will print the local URL, usually
+`http://localhost:5173`.
+
+## Backend Setup
+
+From the repository root:
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+The API will run at `http://127.0.0.1:8000`.
+
+Health check:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok",
+  "service": "ooh-ahh-backend"
+}
+```
 
 ## Documentation
 
