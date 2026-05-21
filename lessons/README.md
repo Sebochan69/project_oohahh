@@ -38,14 +38,15 @@ Backend lifecycle lessons may include extra planning metadata:
 - `query_params`: sample query parameter values.
 - `expected_response`: expected JSON response payload.
 - `expected_status_code`: expected HTTP status code.
-- `lifecycle_nodes`: visualization nodes for `client`, `route`,
+- `lifecycle_nodes`: static visualization nodes for `client`, `route`,
   `validation`, `service`, `repository`, `database`, `response`, or `error`.
 - `beginner_explanation`: optional learner-friendly text for a lifecycle node.
 - `engineer_explanation`: optional technical text for a lifecycle node.
 
 These fields are optional and are not used by the V1 Python runtime validator.
-They exist so backend lifecycle lessons can describe request flow without
-executing FastAPI code or sending real HTTP requests.
+They drive the current backend lifecycle prototype, which renders mock
+lesson-defined request flow without executing FastAPI code or sending HTTP
+requests.
 
 ## Current Lessons
 
@@ -65,8 +66,8 @@ executing FastAPI code or sending real HTTP requests.
   loop and condition.
 - `python-foundations/dictionary-access.lesson.json`: read a value from a
   dictionary.
-- `backend-lifecycle/fastapi-hello-route.lesson.json`: static demo lesson for
-  the FastAPI request lifecycle visualization.
+- `backend-lifecycle/fastapi-hello-route.lesson.json`: static FastAPI request
+  lifecycle demo lesson loaded by the current frontend lesson selector.
 
 ## Boundaries
 
