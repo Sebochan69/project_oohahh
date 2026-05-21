@@ -1,4 +1,5 @@
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import { getLessonTrackKey, getLessonTrackInfo } from '../../lessons/lessonTracks';
 import { BackendLifecycleCanvas } from '../visualization/BackendLifecycleCanvas';
 import { RagPipelineCanvas } from '../visualization/RagPipelineCanvas';
 import { RuntimeGraphCanvas } from '../visualization/RuntimeGraphCanvas';
@@ -11,16 +12,19 @@ export function AnalysisPanel() {
   const isTracing = useWorkspaceStore((state) => state.isTracing);
   const runtimeGraphData = useWorkspaceStore((state) => state.runtimeGraphData);
   const activeLesson = useWorkspaceStore((state) => state.activeLesson);
-  const isBackendLifecycleLesson = activeLesson?.lesson_type === 'backend_lifecycle';
-  const isAiRagPipelineLesson = activeLesson?.lesson_type === 'ai_rag_pipeline';
+  const activeTrack = activeLesson ? getLessonTrackKey(activeLesson) : 'python_foundation';
+  const activeTrackInfo = activeLesson ? getLessonTrackInfo(activeLesson) : null;
+  const isBackendLifecycleLesson = activeTrack === 'backend_lifecycle';
+  const isAiRagPipelineLesson = activeTrack === 'ai_rag_pipeline';
+  const isUnsupportedLesson = activeTrack === 'unsupported';
 
-  if (isBackendLifecycleLesson) {
+  if (activeLesson && isBackendLifecycleLesson) {
     return (
       <div className="backend-lifecycle-view">
         <div className="backend-lifecycle-view__toolbar">
           <div>
             <span>V2 backend lesson</span>
-            <h3>FastAPI request lifecycle</h3>
+            <h3>{activeLesson.title}</h3>
           </div>
         </div>
         <BackendLifecycleCanvas lesson={activeLesson} />
@@ -28,16 +32,31 @@ export function AnalysisPanel() {
     );
   }
 
-  if (isAiRagPipelineLesson) {
+  if (activeLesson && isAiRagPipelineLesson) {
     return (
       <div className="rag-pipeline-view">
         <div className="rag-pipeline-view__toolbar">
           <div>
             <span>AI/RAG lesson</span>
-            <h3>RAG pipeline overview</h3>
+            <h3>{activeLesson.title}</h3>
           </div>
         </div>
         <RagPipelineCanvas lesson={activeLesson} />
+      </div>
+    );
+  }
+
+  if (isUnsupportedLesson) {
+    return (
+      <div className="analysis-panel analysis-panel--empty">
+        <div className="empty-state-card">
+          <span>{activeTrackInfo?.label ?? 'Unsupported Track'}</span>
+          <h3>Lesson type not supported yet</h3>
+          <p>
+            This lesson uses a track that the current OOH-AHH prototype cannot render. Choose a
+            Python Foundations, Backend Lifecycle, or AI/RAG Pipeline lesson.
+          </p>
+        </div>
       </div>
     );
   }

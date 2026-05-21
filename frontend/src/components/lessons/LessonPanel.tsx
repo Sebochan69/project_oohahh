@@ -1,5 +1,6 @@
 import { BookOpen, RotateCcw } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { getLessonTrackInfo, lessonsByTrack } from '../../lessons/lessonTracks';
 import { DEFAULT_SAMPLE_LESSON, SAMPLE_LESSONS } from '../../lessons/sampleLessons';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
 
@@ -20,6 +21,8 @@ export function LessonPanel() {
   const isActiveLessonSelected = activeLesson?.id === lesson.id;
   const isBackendLifecycleLesson = lesson.lesson_type === 'backend_lifecycle';
   const isAiRagPipelineLesson = lesson.lesson_type === 'ai_rag_pipeline';
+  const trackInfo = getLessonTrackInfo(lesson);
+  const lessonGroups = useMemo(() => lessonsByTrack(SAMPLE_LESSONS), []);
 
   return (
     <section className="lesson-panel" aria-label="Lesson loader">
@@ -46,10 +49,14 @@ export function LessonPanel() {
           value={selectedLessonId}
           onChange={(event) => setSelectedLessonId(event.target.value)}
         >
-          {SAMPLE_LESSONS.map((sampleLesson) => (
-            <option key={sampleLesson.id} value={sampleLesson.id}>
-              {sampleLesson.title}
-            </option>
+          {lessonGroups.map((group) => (
+            <optgroup key={group.track.key} label={group.track.label}>
+              {group.lessons.map((sampleLesson) => (
+                <option key={sampleLesson.id} value={sampleLesson.id}>
+                  {`${group.track.shortLabel} - ${sampleLesson.title}`}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </label>
@@ -62,6 +69,12 @@ export function LessonPanel() {
       )}
 
       <p className="lesson-panel__description">{lesson.description}</p>
+
+      <div className="lesson-panel__track-card">
+        <span>Current track</span>
+        <strong>{trackInfo.label}</strong>
+        <p>{trackInfo.description}</p>
+      </div>
 
       {isBackendLifecycleLesson && (
         <dl className="lesson-panel__backend-meta">
