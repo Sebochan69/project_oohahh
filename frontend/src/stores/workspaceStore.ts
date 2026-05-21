@@ -88,6 +88,20 @@ function notEvaluatedLessonValidation(message: string): LessonValidationResult {
   };
 }
 
+function resetDerivedWorkspaceState(message = 'Run / Verify to evaluate the current workspace.') {
+  return {
+    analysisError: null,
+    analysisResult: null,
+    currentEventIndex: 0,
+    graphData: null,
+    isTimelinePlaying: false,
+    lessonValidationResult: notEvaluatedLessonValidation(message),
+    runtimeGraphData: null,
+    traceError: null,
+    traceResult: null,
+  };
+}
+
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   activeFileName: 'main.py',
   analysisError: null,
@@ -116,6 +130,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
       return {
         activeFileName: fileName,
+        ...resetDerivedWorkspaceState(),
         files: {
           ...state.files,
           [fileName]: {
@@ -137,6 +152,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
       return {
         activeFileName,
+        ...resetDerivedWorkspaceState(),
         files: remainingFiles,
       };
     }),
@@ -232,6 +248,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
       return {
         activeFileName: state.activeFileName === oldName ? normalizedName : state.activeFileName,
+        ...resetDerivedWorkspaceState(),
         files: {
           ...remainingFiles,
           [normalizedName]: {
@@ -373,6 +390,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       }
 
       return {
+        ...resetDerivedWorkspaceState(),
         files: {
           ...state.files,
           [fileName]: {
