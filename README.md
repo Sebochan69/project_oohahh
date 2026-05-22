@@ -43,6 +43,7 @@ Implemented prototype capabilities:
   and hallucination-risk metadata
 - Correctness states and graph node badges
 - Beginner Mode and Engineer Mode detail levels across all tracks
+- Display preference for Light/Dark theme
 - AI Mentor panel using OpenAI when configured, with safe placeholder/fallback
   behavior when no key is available
 

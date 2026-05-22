@@ -57,6 +57,14 @@ select {
   line-height: 1.2;
 }
 
+.top-bar__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .mode-toggle {
   display: inline-grid;
   grid-template-columns: repeat(2, minmax(96px, 1fr));
@@ -78,6 +86,34 @@ select {
 }
 
 .mode-toggle__option.is-active {
+  background: #ffffff;
+  color: #123d5a;
+  box-shadow: 0 1px 4px rgba(18, 61, 90, 0.12);
+}
+
+.display-toggle {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(78px, 1fr));
+  gap: 4px;
+  border: 1px solid #cbd6e2;
+  border-radius: 8px;
+  background: #f4f7fa;
+  padding: 4px;
+}
+
+.display-toggle button {
+  min-height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #4a5b6e;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0 9px;
+}
+
+.display-toggle button.is-active {
   background: #ffffff;
   color: #123d5a;
   box-shadow: 0 1px 4px rgba(18, 61, 90, 0.12);
@@ -2497,6 +2533,218 @@ select {
   color: #5b6b7a;
   font-size: 0.95rem;
   line-height: 1.6;
+}
+
+.app-shell[data-theme='dark'] {
+  background: #0b1120;
+  color: #dbe7f3;
+}
+
+.app-shell[data-theme='dark'] .top-bar,
+.app-shell[data-theme='dark'] .workspace-panel,
+.app-shell[data-theme='dark'] .empty-state-card,
+.app-shell[data-theme='dark'] .node-inspector,
+.app-shell[data-theme='dark'] .validation-legend,
+.app-shell[data-theme='dark'] .ai-mentor-panel,
+.app-shell[data-theme='dark'] .backend-lifecycle-view__toolbar,
+.app-shell[data-theme='dark'] .rag-pipeline-view__toolbar,
+.app-shell[data-theme='dark'] .python-visualization-toolbar,
+.app-shell[data-theme='dark'] .backend-lifecycle-inspector,
+.app-shell[data-theme='dark'] .rag-pipeline-inspector,
+.app-shell[data-theme='dark'] .runtime-output__section,
+.app-shell[data-theme='dark'] .timeline-event,
+.app-shell[data-theme='dark'] .lesson-validation-summary,
+.app-shell[data-theme='dark'] .file-explorer,
+.app-shell[data-theme='dark'] .file-tabs,
+.app-shell[data-theme='dark'] .editor-shell,
+.app-shell[data-theme='dark'] .graph-debug,
+.app-shell[data-theme='dark'] .runtime-output,
+.app-shell[data-theme='dark'] .timeline-controls,
+.app-shell[data-theme='dark'] .timeline-event__summary,
+.app-shell[data-theme='dark'] .timeline-event__json-grid,
+.app-shell[data-theme='dark'] .track-summary-grid,
+.app-shell[data-theme='dark'] .backend-lifecycle-validation,
+.app-shell[data-theme='dark'] .rag-pipeline-validation {
+  border-color: #26364c;
+  background: #111827;
+  color: #dbe7f3;
+}
+
+.app-shell[data-theme='dark'] .workspace-layout,
+.app-shell[data-theme='dark'] .analysis-panel,
+.app-shell[data-theme='dark'] .analysis-panel--empty,
+.app-shell[data-theme='dark'] .analysis-panel--status,
+.app-shell[data-theme='dark'] .backend-lifecycle-view,
+.app-shell[data-theme='dark'] .backend-lifecycle-workspace,
+.app-shell[data-theme='dark'] .backend-lifecycle-canvas,
+.app-shell[data-theme='dark'] .rag-pipeline-view,
+.app-shell[data-theme='dark'] .rag-pipeline-workspace,
+.app-shell[data-theme='dark'] .rag-pipeline-canvas,
+.app-shell[data-theme='dark'] .static-graph-workspace,
+.app-shell[data-theme='dark'] .static-graph-canvas,
+.app-shell[data-theme='dark'] .runtime-graph-workspace,
+.app-shell[data-theme='dark'] .runtime-graph-canvas,
+.app-shell[data-theme='dark'] .python-visualization-view,
+.app-shell[data-theme='dark'] .visual-workspace,
+.app-shell[data-theme='dark'] .placeholder-surface,
+.app-shell[data-theme='dark'] .runtime-output--empty,
+.app-shell[data-theme='dark'] .runtime-output--result,
+.app-shell[data-theme='dark'] .graph-debug summary {
+  background: #0b1120;
+}
+
+.app-shell[data-theme='dark'] .react-flow {
+  background: #0b1120;
+}
+
+.app-shell[data-theme='dark'] .react-flow__controls,
+.app-shell[data-theme='dark'] .react-flow__minimap,
+.app-shell[data-theme='dark'] .react-flow__panel {
+  background: #111827;
+  color: #dbe7f3;
+}
+
+.app-shell[data-theme='dark'] .react-flow__controls-button {
+  border-color: #26364c;
+  background: #172033;
+  color: #dbe7f3;
+  fill: #dbe7f3;
+}
+
+.app-shell[data-theme='dark'] .top-bar__title,
+.app-shell[data-theme='dark'] .panel-header h2,
+.app-shell[data-theme='dark'] .empty-state-card h3,
+.app-shell[data-theme='dark'] .node-inspector h3,
+.app-shell[data-theme='dark'] .validation-legend h3,
+.app-shell[data-theme='dark'] .backend-lifecycle-view__toolbar h3,
+.app-shell[data-theme='dark'] .backend-lifecycle-inspector h3,
+.app-shell[data-theme='dark'] .rag-pipeline-view__toolbar h3,
+.app-shell[data-theme='dark'] .rag-pipeline-inspector h3,
+.app-shell[data-theme='dark'] .python-visualization-toolbar h3,
+.app-shell[data-theme='dark'] .runtime-output__section h3,
+.app-shell[data-theme='dark'] .lesson-validation-summary h3,
+.app-shell[data-theme='dark'] .file-explorer h3,
+.app-shell[data-theme='dark'] .timeline-event h3,
+.app-shell[data-theme='dark'] .ai-mentor-panel__header h3,
+.app-shell[data-theme='dark'] .backend-lifecycle-validation h4,
+.app-shell[data-theme='dark'] .rag-pipeline-validation h4 {
+  color: #f8fafc;
+}
+
+.app-shell[data-theme='dark'] .top-bar__eyebrow,
+.app-shell[data-theme='dark'] .panel-kicker,
+.app-shell[data-theme='dark'] .empty-state-card span,
+.app-shell[data-theme='dark'] .node-inspector span,
+.app-shell[data-theme='dark'] .validation-legend > div > span,
+.app-shell[data-theme='dark'] .backend-lifecycle-view__toolbar span,
+.app-shell[data-theme='dark'] .backend-lifecycle-inspector > span,
+.app-shell[data-theme='dark'] .rag-pipeline-view__toolbar span,
+.app-shell[data-theme='dark'] .rag-pipeline-inspector > span,
+.app-shell[data-theme='dark'] .python-visualization-toolbar span,
+.app-shell[data-theme='dark'] .ai-mentor-panel__header span,
+.app-shell[data-theme='dark'] .ai-mentor-panel__response span,
+.app-shell[data-theme='dark'] .ai-mentor-panel__misconceptions > span,
+.app-shell[data-theme='dark'] .lesson-validation-summary span,
+.app-shell[data-theme='dark'] .lesson-validation-summary dt,
+.app-shell[data-theme='dark'] .runtime-output__section h3 {
+  color: #9fb1c5;
+}
+
+.app-shell[data-theme='dark'] p,
+.app-shell[data-theme='dark'] dd,
+.app-shell[data-theme='dark'] .empty-state-card p,
+.app-shell[data-theme='dark'] .validation-legend p,
+.app-shell[data-theme='dark'] .validation-legend li,
+.app-shell[data-theme='dark'] .backend-lifecycle-inspector p,
+.app-shell[data-theme='dark'] .rag-pipeline-inspector p,
+.app-shell[data-theme='dark'] .python-visualization-toolbar p,
+.app-shell[data-theme='dark'] .placeholder-surface p,
+.app-shell[data-theme='dark'] .ai-mentor-panel__response p,
+.app-shell[data-theme='dark'] .ai-mentor-panel__misconceptions p,
+.app-shell[data-theme='dark'] .lesson-validation-summary p,
+.app-shell[data-theme='dark'] .timeline-event p,
+.app-shell[data-theme='dark'] .backend-lifecycle-validation li span,
+.app-shell[data-theme='dark'] .rag-pipeline-validation li span {
+  color: #c8d5e4;
+}
+
+.app-shell[data-theme='dark'] .mode-toggle,
+.app-shell[data-theme='dark'] .display-toggle,
+.app-shell[data-theme='dark'] .python-visualization-toggle {
+  border-color: #33445c;
+  background: #172033;
+}
+
+.app-shell[data-theme='dark'] .mode-toggle__option,
+.app-shell[data-theme='dark'] .display-toggle button,
+.app-shell[data-theme='dark'] .python-visualization-toggle button {
+  color: #c8d5e4;
+}
+
+.app-shell[data-theme='dark'] .mode-toggle__option.is-active,
+.app-shell[data-theme='dark'] .display-toggle button.is-active,
+.app-shell[data-theme='dark'] .python-visualization-toggle button.is-active {
+  background: #22314a;
+  color: #ffffff;
+}
+
+.app-shell[data-theme='dark'] .static-node,
+.app-shell[data-theme='dark'] .runtime-node,
+.app-shell[data-theme='dark'] .backend-lifecycle-node,
+.app-shell[data-theme='dark'] .rag-pipeline-node {
+  border-color: #4b5f7a;
+  background: #162235;
+  color: #edf5ff;
+}
+
+.app-shell[data-theme='dark'] .static-node__label,
+.app-shell[data-theme='dark'] .runtime-node__label,
+.app-shell[data-theme='dark'] .backend-lifecycle-node__label,
+.app-shell[data-theme='dark'] .rag-pipeline-node__label {
+  color: #f8fafc;
+}
+
+.app-shell[data-theme='dark'] .static-node__type,
+.app-shell[data-theme='dark'] .runtime-node__type,
+.app-shell[data-theme='dark'] .backend-lifecycle-node__type,
+.app-shell[data-theme='dark'] .rag-pipeline-node__type,
+.app-shell[data-theme='dark'] dt {
+  color: #9fb1c5;
+}
+
+.app-shell[data-theme='dark'] pre,
+.app-shell[data-theme='dark'] code,
+.app-shell[data-theme='dark'] .graph-debug pre,
+.app-shell[data-theme='dark'] .runtime-output__section pre,
+.app-shell[data-theme='dark'] .node-inspector pre {
+  background: #0f172a;
+  color: #dbeafe;
+}
+
+.app-shell[data-theme='dark'] input,
+.app-shell[data-theme='dark'] select,
+.app-shell[data-theme='dark'] textarea {
+  border-color: #33445c;
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.app-shell[data-theme='dark'] .ai-mentor-panel__context span,
+.app-shell[data-theme='dark'] .ai-mentor-panel__response,
+.app-shell[data-theme='dark'] .ai-mentor-panel__misconception,
+.app-shell[data-theme='dark'] .timeline-controls__position,
+.app-shell[data-theme='dark'] .runtime-output__empty-message,
+.app-shell[data-theme='dark'] .timeline-event--empty {
+  border-color: #26364c;
+  background: #0f172a;
+  color: #dbe7f3;
+}
+
+.app-shell[data-theme='dark'] .lesson-validation-summary.validation-state--correct,
+.app-shell[data-theme='dark'] .lesson-validation-summary.validation-state--partially_correct,
+.app-shell[data-theme='dark'] .lesson-validation-summary.validation-state--incorrect,
+.app-shell[data-theme='dark'] .lesson-validation-summary.validation-state--not_evaluated {
+  background: #111827;
 }
 
 @media (max-width: 820px) {

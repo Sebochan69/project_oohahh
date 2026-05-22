@@ -19,6 +19,7 @@ export type WorkspaceFile = {
 };
 
 export type PythonVisualizationMode = 'structure' | 'call_flow' | 'runtime_flow';
+export type ThemeMode = 'light' | 'dark';
 
 type WorkspaceState = {
   activeFileName: string;
@@ -28,6 +29,7 @@ type WorkspaceState = {
   files: Record<string, WorkspaceFile>;
   graphData: StaticGraphData | null;
   pythonVisualizationMode: PythonVisualizationMode;
+  themeMode: ThemeMode;
   currentEventIndex: number;
   activeLesson: Lesson | null;
   activeLessonStarterFiles: Record<string, WorkspaceFile> | null;
@@ -54,6 +56,7 @@ type WorkspaceState = {
   selectFile: (fileName: string) => void;
   setLearningMode: (mode: LessonMode) => void;
   setPythonVisualizationMode: (mode: PythonVisualizationMode) => void;
+  setThemeMode: (mode: ThemeMode) => void;
   updateFileContent: (fileName: string, content: string) => void;
 };
 
@@ -122,6 +125,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   },
   graphData: null,
   pythonVisualizationMode: 'structure',
+  themeMode: 'light',
   currentEventIndex: 0,
   activeLesson: null,
   activeLessonStarterFiles: null,
@@ -398,6 +402,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setPythonVisualizationMode: (mode) =>
     set({
       pythonVisualizationMode: mode,
+    }),
+  setThemeMode: (mode) =>
+    set({
+      themeMode: mode,
     }),
   updateFileContent: (fileName, content) =>
     set((state) => {
