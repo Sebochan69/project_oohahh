@@ -41,6 +41,10 @@ function variableChangeText(event: RuntimeTraceEvent) {
   }
 
   if (event.type === 'variable_created') {
+    if (typeof newValue === 'string' && newValue.startsWith('<function ') && newValue.endsWith('>')) {
+      return `Function ${newValue.replace('<function ', '').replace('>', '')} was defined`;
+    }
+
     return `${String(variableName ?? 'A variable')} became ${formatJson(newValue)}`;
   }
 

@@ -13,6 +13,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useEffect, useMemo } from 'react';
+import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { RuntimeGraphData, RuntimeGraphNode, RuntimeGraphNodeData } from '../../types/graph';
 import { ValidationLegend } from './ValidationLegend';
 import { RuntimeEventNode } from './nodes/RuntimeEventNode';
@@ -70,15 +71,31 @@ function toReactFlowEdges(graphData: RuntimeGraphData): Edge[] {
 }
 
 export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
+  const setCodeHighlight = useWorkspaceStore((state) => state.setCodeHighlight);
   const initialNodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
   const initialEdges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   useEffect(() => {
+    setCodeHighlight(null);
     setNodes(initialNodes);
     setEdges(initialEdges);
-  }, [initialNodes, initialEdges, setEdges, setNodes]);
+  }, [initialNodes, initialEdges, setCodeHighlight, setEdges, setNodes]);
+
+  function highlightRuntimeNode(nodeData: RuntimeGraphNodeData) {
+    if (!nodeData.file_path || !nodeData.line_number) {
+      setCodeHighlight(null);
+      return;
+    }
+
+    setCodeHighlight({
+      filePath: nodeData.file_path,
+      lineNumber: nodeData.line_number,
+      lineNumbers: nodeData.related_lines ?? [],
+      label: `step ${nodeData.step}: ${nodeData.event_type.replace(/_/g, ' ')}`,
+    });
+  }
 
   return (
     <div className="runtime-graph-workspace">
@@ -93,6 +110,8 @@ export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
             fitView
             fitViewOptions={{ padding: 0.22 }}
             minZoom={0.25}
+            onNodeClick={(_, node) => highlightRuntimeNode(node.data as RuntimeGraphNodeData)}
+            onNodeMouseEnter={(_, node) => highlightRuntimeNode(node.data as RuntimeGraphNodeData)}
           >
             <Background />
             <MiniMap pannable zoomable />

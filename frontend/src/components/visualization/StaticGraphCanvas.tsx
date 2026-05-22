@@ -13,6 +13,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useEffect, useMemo, useState } from 'react';
+import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { StaticGraphData, StaticGraphNode, StaticGraphNodeData } from '../../types/graph';
 import { NodeInspectionPanel } from './NodeInspectionPanel';
 import { ValidationLegend } from './ValidationLegend';
@@ -97,6 +98,7 @@ function toReactFlowEdges(graphData: StaticGraphData): Edge[] {
 
 export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
   const [inspectedNode, setInspectedNode] = useState<StaticGraphNodeData | null>(null);
+  const setCodeHighlight = useWorkspaceStore((state) => state.setCodeHighlight);
   const initialNodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
   const initialEdges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -104,9 +106,25 @@ export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
 
   useEffect(() => {
     setInspectedNode(null);
+    setCodeHighlight(null);
     setNodes(initialNodes);
     setEdges(initialEdges);
-  }, [graphData, initialNodes, initialEdges, setEdges, setNodes]);
+  }, [graphData, initialNodes, initialEdges, setCodeHighlight, setEdges, setNodes]);
+
+  function inspectNode(nodeData: StaticGraphNodeData) {
+    setInspectedNode(nodeData);
+
+    if (nodeData.file_path && nodeData.line_number) {
+      setCodeHighlight({
+        filePath: nodeData.file_path,
+        lineNumber: nodeData.line_number,
+        label: `${nodeData.type.replace(/_/g, ' ')}: ${nodeData.name}`,
+      });
+      return;
+    }
+
+    setCodeHighlight(null);
+  }
 
   return (
     <div className="static-graph-workspace">
@@ -121,8 +139,8 @@ export function StaticGraphCanvas({ graphData }: StaticGraphCanvasProps) {
             fitView
             fitViewOptions={{ padding: 0.08 }}
             minZoom={0.35}
-            onNodeClick={(_, node) => setInspectedNode(node.data as StaticGraphNodeData)}
-            onNodeMouseEnter={(_, node) => setInspectedNode(node.data as StaticGraphNodeData)}
+            onNodeClick={(_, node) => inspectNode(node.data as StaticGraphNodeData)}
+            onNodeMouseEnter={(_, node) => inspectNode(node.data as StaticGraphNodeData)}
           >
             <Background />
             <MiniMap pannable zoomable />

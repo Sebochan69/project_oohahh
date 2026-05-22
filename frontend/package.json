@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "test:runtime-graph": "tsc -p tsconfig.test.json && node -e \"require('fs').writeFileSync('dist-tests/package.json', '{\\\"type\\\":\\\"commonjs\\\"}')\" && node dist-tests/utils/buildRuntimeGraph.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

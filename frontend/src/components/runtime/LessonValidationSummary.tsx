@@ -6,6 +6,31 @@ export function LessonValidationSummary() {
   const lessonValidationResult = useWorkspaceStore((state) => state.lessonValidationResult);
   const statusClassName = validationStateClassName(lessonValidationResult.status);
 
+  if (!activeLesson) {
+    return (
+      <section className="lesson-validation-summary lesson-validation-summary--sandbox" aria-label="Sandbox mode">
+        <div>
+          <span>Sandbox Mode</span>
+          <h3>Execution health</h3>
+        </div>
+        <p>
+          Runtime Flow grades whether execution completed cleanly. Load a lesson when you want goal-based
+          correctness checks.
+        </p>
+        <dl>
+          <div>
+            <dt>Output</dt>
+            <dd>Captured</dd>
+          </div>
+          <div>
+            <dt>Runtime errors</dt>
+            <dd>{lessonValidationResult.has_runtime_error ? 'Present' : 'None'}</dd>
+          </div>
+        </dl>
+      </section>
+    );
+  }
+
   return (
     <section className={`lesson-validation-summary ${statusClassName}`} aria-label="Lesson validation result">
       <div>

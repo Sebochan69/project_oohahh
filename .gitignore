@@ -29,6 +29,7 @@ venv/
 # Node and frontend tooling
 node_modules/
 dist/
+dist-tests/
 build/
 coverage/
 .next/

@@ -48,7 +48,10 @@ export function RuntimeOutputPanel() {
         <div className="runtime-output__empty-message">
           <span>Runtime output</span>
           <h3>No trace yet</h3>
-          <p>Press Run / Verify to see stdout, stderr, lesson validation, and step-by-step events.</p>
+          <p>
+            Press Run / Verify to see stdout, stderr, execution-health grading, and step-by-step
+            events. Load a lesson when you want goal-based correctness validation.
+          </p>
         </div>
       </div>
     );

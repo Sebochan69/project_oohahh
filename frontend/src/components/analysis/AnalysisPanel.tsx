@@ -32,6 +32,7 @@ export function AnalysisPanel() {
   const pythonVisualizationMode = useWorkspaceStore((state) => state.pythonVisualizationMode);
   const runtimeGraphData = useWorkspaceStore((state) => state.runtimeGraphData);
   const setPythonVisualizationMode = useWorkspaceStore((state) => state.setPythonVisualizationMode);
+  const traceError = useWorkspaceStore((state) => state.traceError);
   const activeLesson = useWorkspaceStore((state) => state.activeLesson);
   const activeTrack = activeLesson ? getLessonTrackKey(activeLesson) : 'python_foundation';
   const activeTrackInfo = activeLesson ? getLessonTrackInfo(activeLesson) : null;
@@ -41,6 +42,18 @@ export function AnalysisPanel() {
 
   function renderPythonVisualization() {
     if (pythonVisualizationMode === 'runtime_flow') {
+      if (traceError) {
+        return (
+          <div className="analysis-panel analysis-panel--error">
+            <div className="empty-state-card empty-state-card--error">
+              <span>Run / Verify needs attention</span>
+              <h3>Runtime trace did not finish</h3>
+              <p>{traceError}</p>
+            </div>
+          </div>
+        );
+      }
+
       if (runtimeGraphData && runtimeGraphData.nodes.length > 0) {
         return <RuntimeGraphCanvas graphData={runtimeGraphData} />;
       }

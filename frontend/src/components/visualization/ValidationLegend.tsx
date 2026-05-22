@@ -6,7 +6,10 @@ export function ValidationLegend() {
       <div>
         <span>Graph guide</span>
         <h3>Correctness states</h3>
-        <p>Node badges show whether a step is waiting, running, correct, partial, or blocked by an error.</p>
+        <p>
+          Badges show lesson validation when a lesson is loaded. In Sandbox Mode, they show execution
+          health: completed steps are correct unless a runtime error occurs.
+        </p>
       </div>
       <ul>
         {VALIDATION_STATES.map((state) => (

@@ -1,4 +1,4 @@
-import { BookOpen, RotateCcw } from 'lucide-react';
+import { BookOpen, Code2, RotateCcw } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { getLessonTrackInfo, lessonsByTrack } from '../../lessons/lessonTracks';
 import { DEFAULT_SAMPLE_LESSON, SAMPLE_LESSONS } from '../../lessons/sampleLessons';
@@ -8,6 +8,7 @@ export function LessonPanel() {
   const activeLesson = useWorkspaceStore((state) => state.activeLesson);
   const loadLesson = useWorkspaceStore((state) => state.loadLesson);
   const resetLesson = useWorkspaceStore((state) => state.resetLesson);
+  const startSandboxMode = useWorkspaceStore((state) => state.startSandboxMode);
   const [selectedLessonId, setSelectedLessonId] = useState(
     activeLesson?.id ?? DEFAULT_SAMPLE_LESSON.id,
   );
@@ -28,10 +29,14 @@ export function LessonPanel() {
     <section className="lesson-panel" aria-label="Lesson loader">
       <div className="lesson-panel__header">
         <div>
-          <span className="lesson-panel__kicker">Lesson library</span>
-          <h3>{lesson.title}</h3>
+          <span className="lesson-panel__kicker">{activeLesson ? 'Lesson library' : 'Free practice'}</span>
+          <h3>{activeLesson ? lesson.title : 'Sandbox Mode'}</h3>
         </div>
         <div className="lesson-panel__actions">
+          <button type="button" onClick={startSandboxMode} disabled={!activeLesson}>
+            <Code2 size={15} aria-hidden="true" />
+            <span>Sandbox</span>
+          </button>
           <button type="button" onClick={() => loadLesson(lesson)}>
             <BookOpen size={15} aria-hidden="true" />
             <span>{isActiveLessonSelected ? 'Reload' : 'Load'}</span>
@@ -75,24 +80,36 @@ export function LessonPanel() {
 
       {!activeLesson && (
         <div className="lesson-panel__empty-state">
-          No lesson loaded yet. Pick one from the library and press Load to replace the in-memory
-          files.
+          Sandbox Mode is active. You can write and run any supported Python snippet without lesson
+          goals. Runtime Flow will still grade execution health and flag runtime errors.
         </div>
       )}
 
       <p className="lesson-panel__description">{lesson.description}</p>
 
-      <div className="lesson-panel__track-card">
-        <div className="lesson-panel__track-card-header">
-          <span>Current track</span>
-          <em>{trackInfo.behaviorLabel}</em>
+      {!activeLesson ? (
+        <div className="lesson-panel__track-card lesson-panel__track-card--sandbox">
+          <div className="lesson-panel__track-card-header">
+            <span>Current mode</span>
+            <em>Ungraded runtime</em>
+          </div>
+          <strong>Sandbox Mode</strong>
+          <p>Explore Python execution, runtime events, stdout, errors, and graph highlighting without a lesson rubric.</p>
+          <small>Correctness badges show execution health here, not lesson-goal correctness.</small>
         </div>
-        <strong>{trackInfo.label}</strong>
-        <p>{trackInfo.description}</p>
-        {trackInfo.isStaticPrototype && (
-          <small>This track uses lesson-defined mock data. It does not run a real service or pipeline.</small>
-        )}
-      </div>
+      ) : (
+        <div className="lesson-panel__track-card">
+          <div className="lesson-panel__track-card-header">
+            <span>Current track</span>
+            <em>{trackInfo.behaviorLabel}</em>
+          </div>
+          <strong>{trackInfo.label}</strong>
+          <p>{trackInfo.description}</p>
+          {trackInfo.isStaticPrototype && (
+            <small>This track uses lesson-defined mock data. It does not run a real service or pipeline.</small>
+          )}
+        </div>
+      )}
 
       {isBackendLifecycleLesson && (
         <dl className="lesson-panel__backend-meta">

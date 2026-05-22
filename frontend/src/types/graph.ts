@@ -60,6 +60,7 @@ export type RuntimeGraphNodeData = {
   step: number;
   file_path: string;
   line_number: number | null;
+  related_lines?: number[];
   scope: Record<string, unknown>;
   payload: Record<string, unknown>;
   is_active: boolean;

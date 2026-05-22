@@ -27,13 +27,29 @@ RUNNER_SCRIPT = dedent(
     source = sys.stdin.read()
     step = 0
     tracing_suppressed = False
-    last_line_number = None
-    last_locals_snapshot = {{}}
+    last_line_numbers = {{}}
+    locals_snapshots = {{}}
 
     def now_iso():
         return datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00", "Z")
 
-    def make_event(event_type, line_number=None, payload=None, visual=None, validation=None):
+    def scope_for_frame(frame):
+        if frame.f_code.co_name == "<module>":
+            return {{
+                "id": f"module:{{file_path}}",
+                "name": file_path,
+                "kind": "module",
+                "parent_id": None,
+            }}
+
+        return {{
+            "id": f"function:{{frame.f_code.co_name}}",
+            "name": frame.f_code.co_name,
+            "kind": "function",
+            "parent_id": f"module:{{file_path}}",
+        }}
+
+    def make_event(event_type, line_number=None, payload=None, visual=None, validation=None, scope=None):
         global step
         event = {{
             "id": f"evt-{{step:04d}}-{{event_type}}",
@@ -42,7 +58,7 @@ RUNNER_SCRIPT = dedent(
             "step": step,
             "file_path": file_path,
             "line_number": line_number,
-            "scope": {{
+            "scope": scope or {{
                 "id": f"module:{{file_path}}",
                 "name": file_path,
                 "kind": "module",
@@ -55,9 +71,9 @@ RUNNER_SCRIPT = dedent(
         step += 1
         return event
 
-    def emit_event(event_type, line_number=None, payload=None, visual=None, validation=None):
+    def emit_event(event_type, line_number=None, payload=None, visual=None, validation=None, scope=None):
         print(
-            EVENT_MARKER + json.dumps(make_event(event_type, line_number, payload, visual, validation)),
+            EVENT_MARKER + json.dumps(make_event(event_type, line_number, payload, visual, validation, scope)),
             file=sys.stderr,
         )
 
@@ -70,6 +86,10 @@ RUNNER_SCRIPT = dedent(
         print(ERROR_MARKER + json.dumps(payload), file=sys.stderr)
 
     def safe_value(value):
+        if callable(value):
+            name = getattr(value, "__name__", type(value).__name__)
+            return f"<function {{name}}>"
+
         try:
             json.dumps(value)
         except (TypeError, ValueError):
@@ -89,16 +109,20 @@ RUNNER_SCRIPT = dedent(
         }}
 
     def emit_variable_changes(frame, completed_line_number):
-        global last_locals_snapshot
+        frame_key = id(frame)
+        last_locals_snapshot = locals_snapshots.get(frame_key, {{}})
         current_snapshot = snapshot_locals(frame)
+        scope = scope_for_frame(frame)
+        scope_name = scope["name"]
 
         for name, new_value in current_snapshot.items():
             if name not in last_locals_snapshot:
                 emit_event(
                     "variable_created",
                     completed_line_number,
-                    {{"name": name, "old_value": None, "new_value": new_value, "scope": "module"}},
+                    {{"name": name, "old_value": None, "new_value": new_value, "scope": scope_name}},
                     {{"category": "data", "label": f"Created {{name}}", "emphasis": "highlight"}},
+                    scope=scope,
                 )
                 continue
 
@@ -107,20 +131,25 @@ RUNNER_SCRIPT = dedent(
                 emit_event(
                     "variable_updated",
                     completed_line_number,
-                    {{"name": name, "old_value": old_value, "new_value": new_value, "scope": "module"}},
+                    {{"name": name, "old_value": old_value, "new_value": new_value, "scope": scope_name}},
                     {{"category": "data", "label": f"Updated {{name}}", "emphasis": "highlight"}},
+                    scope=scope,
                 )
 
-        last_locals_snapshot = current_snapshot
+        locals_snapshots[frame_key] = current_snapshot
 
     def trace_lines(frame, event, arg):
-        global last_line_number, tracing_suppressed
+        global tracing_suppressed
         if frame.f_code.co_filename != file_path:
             return trace_lines
 
+        frame_key = id(frame)
+        scope = scope_for_frame(frame)
+
         if event == "line":
-            if last_line_number is not None:
-                emit_variable_changes(frame, last_line_number)
+            previous_line_number = last_line_numbers.get(frame_key)
+            if previous_line_number is not None:
+                emit_variable_changes(frame, previous_line_number)
 
             if step >= MAX_TRACE_EVENTS:
                 if not tracing_suppressed:
@@ -130,20 +159,23 @@ RUNNER_SCRIPT = dedent(
                         frame.f_lineno,
                         {{"line_number": frame.f_lineno, "truncated": True}},
                         {{"category": "execution", "label": "Trace event limit reached", "emphasis": "muted"}},
+                        scope=scope,
                     )
                 return None
 
-            last_line_number = frame.f_lineno
+            last_line_numbers[frame_key] = frame.f_lineno
             emit_event(
                 "line_executed",
                 frame.f_lineno,
                 {{"line_number": frame.f_lineno}},
                 {{"category": "execution", "label": f"Line {{frame.f_lineno}}", "emphasis": "normal"}},
+                scope=scope,
             )
 
-        if event == "return" and last_line_number is not None:
-            emit_variable_changes(frame, last_line_number)
-            last_line_number = None
+        if event == "return":
+            previous_line_number = last_line_numbers.pop(frame_key, None)
+            if previous_line_number is not None:
+                emit_variable_changes(frame, previous_line_number)
 
         return trace_lines
 

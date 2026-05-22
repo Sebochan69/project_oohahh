@@ -18,6 +18,14 @@ export type WorkspaceFile = {
   content: string;
 };
 
+export type CodeHighlight = {
+  filePath: string;
+  lineNumber: number;
+  endLineNumber?: number;
+  lineNumbers?: number[];
+  label?: string;
+};
+
 export type PythonVisualizationMode = 'structure' | 'call_flow' | 'runtime_flow';
 export type ThemeMode = 'light' | 'dark';
 
@@ -31,6 +39,7 @@ type WorkspaceState = {
   pythonVisualizationMode: PythonVisualizationMode;
   themeMode: ThemeMode;
   currentEventIndex: number;
+  codeHighlight: CodeHighlight | null;
   activeLesson: Lesson | null;
   activeLessonStarterFiles: Record<string, WorkspaceFile> | null;
   learningMode: LessonMode;
@@ -54,9 +63,11 @@ type WorkspaceState = {
   runRuntimeTrace: () => Promise<void>;
   runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
+  setCodeHighlight: (highlight: CodeHighlight | null) => void;
   setLearningMode: (mode: LessonMode) => void;
   setPythonVisualizationMode: (mode: PythonVisualizationMode) => void;
   setThemeMode: (mode: ThemeMode) => void;
+  startSandboxMode: () => void;
   updateFileContent: (fileName: string, content: string) => void;
 };
 
@@ -102,6 +113,7 @@ function resetDerivedWorkspaceState(message = 'Run / Verify to evaluate the curr
     analysisError: null,
     analysisResult: null,
     callFlowGraphData: null,
+    codeHighlight: null,
     currentEventIndex: 0,
     graphData: null,
     isTimelinePlaying: false,
@@ -127,6 +139,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   pythonVisualizationMode: 'structure',
   themeMode: 'light',
   currentEventIndex: 0,
+  codeHighlight: null,
   activeLesson: null,
   activeLessonStarterFiles: null,
   learningMode: 'beginner',
@@ -175,9 +188,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
       if (eventCount === 0) {
         return {
+          codeHighlight: null,
           currentEventIndex: 0,
           isTimelinePlaying: false,
-          runtimeGraphData: buildRuntimeGraph([], 0),
+          runtimeGraphData: buildRuntimeGraph([], 0, undefined, state.files),
         };
       }
 
@@ -185,9 +199,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       const events = state.traceResult?.events ?? [];
 
       return {
+        codeHighlight: null,
         currentEventIndex: nextIndex,
         isTimelinePlaying: nextIndex < eventCount - 1 ? state.isTimelinePlaying : false,
-        runtimeGraphData: buildRuntimeGraph(events, nextIndex, state.lessonValidationResult),
+        runtimeGraphData: buildRuntimeGraph(events, nextIndex, state.lessonValidationResult, state.files),
       };
     }),
   goToPreviousTimelineEvent: () =>
@@ -196,9 +211,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       const events = state.traceResult?.events ?? [];
 
       return {
+        codeHighlight: null,
         currentEventIndex: previousIndex,
         isTimelinePlaying: false,
-        runtimeGraphData: buildRuntimeGraph(events, previousIndex, state.lessonValidationResult),
+        runtimeGraphData: buildRuntimeGraph(events, previousIndex, state.lessonValidationResult, state.files),
       };
     }),
   pauseTimeline: () =>
@@ -237,6 +253,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       analysisError: null,
       analysisResult: null,
       callFlowGraphData: null,
+      codeHighlight: null,
       currentEventIndex: 0,
       files: starterFiles,
       graphData: null,
@@ -279,9 +296,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     const { activeFileName, activeLesson, files } = useWorkspaceStore.getState();
 
     set({
+      codeHighlight: null,
       currentEventIndex: 0,
       isTimelinePlaying: false,
       isTracing: true,
+      pythonVisualizationMode: 'runtime_flow',
       runtimeGraphData: null,
       lessonValidationResult: notEvaluatedLessonValidation('Runtime execution is in progress.'),
       traceError: null,
@@ -295,11 +314,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       const lessonValidationResult = validateLessonOutput(activeLesson, traceResult, files);
 
       set({
+        codeHighlight: null,
         currentEventIndex: 0,
         isTimelinePlaying: false,
         isTracing: false,
         lessonValidationResult,
-        runtimeGraphData: buildRuntimeGraph(traceResult.events, 0, lessonValidationResult),
+        runtimeGraphData: buildRuntimeGraph(traceResult.events, 0, lessonValidationResult, files),
         traceResult,
       });
     } catch (error) {
@@ -316,9 +336,15 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   },
   resetTimeline: () =>
     set((state) => ({
+      codeHighlight: null,
       currentEventIndex: 0,
       isTimelinePlaying: false,
-      runtimeGraphData: buildRuntimeGraph(state.traceResult?.events ?? [], 0, state.lessonValidationResult),
+      runtimeGraphData: buildRuntimeGraph(
+        state.traceResult?.events ?? [],
+        0,
+        state.lessonValidationResult,
+        state.files,
+      ),
     })),
   resetLesson: () =>
     set((state) => {
@@ -340,6 +366,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         analysisError: null,
         analysisResult: null,
         callFlowGraphData: null,
+        codeHighlight: null,
         currentEventIndex: 0,
         files,
         graphData: null,
@@ -356,6 +383,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     set({
       analysisError: null,
       callFlowGraphData: null,
+      codeHighlight: null,
       graphData: null,
       isAnalyzing: true,
       isTimelinePlaying: false,
@@ -395,6 +423,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         activeFileName: fileName,
       };
     }),
+  setCodeHighlight: (highlight) =>
+    set((state) => ({
+      activeFileName: highlight?.filePath && state.files[highlight.filePath] ? highlight.filePath : state.activeFileName,
+      codeHighlight: highlight,
+    })),
   setLearningMode: (mode) =>
     set({
       learningMode: mode,
@@ -406,6 +439,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setThemeMode: (mode) =>
     set({
       themeMode: mode,
+    }),
+  startSandboxMode: () =>
+    set({
+      activeLesson: null,
+      activeLessonStarterFiles: null,
+      lessonValidationResult: notEvaluatedLessonValidation(
+        'Sandbox Mode is active. Run / Verify will grade execution health and show runtime flow, stdout, and errors.',
+      ),
+      runtimeGraphData: null,
+      traceError: null,
+      traceResult: null,
     }),
   updateFileContent: (fileName, content) =>
     set((state) => {
