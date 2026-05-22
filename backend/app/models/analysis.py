@@ -41,6 +41,15 @@ class ClassSummary(BaseModel):
     line_number: int | None = None
 
 
+class FunctionCallSummary(BaseModel):
+    file_path: str
+    caller_name: str | None = None
+    caller_type: Literal["top_level", "function", "class"] = "top_level"
+    callee_name: str
+    line_number: int | None = None
+    argument_count: int = 0
+
+
 class AnalysisError(BaseModel):
     file_path: str | None = None
     message: str
@@ -52,4 +61,5 @@ class StaticAnalysisResponse(BaseModel):
     imports: list[ImportSummary]
     functions: list[FunctionSummary]
     classes: list[ClassSummary]
+    calls: list[FunctionCallSummary] = Field(default_factory=list)
     errors: list[AnalysisError]

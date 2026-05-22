@@ -6,6 +6,7 @@ import type { RuntimeGraphData, StaticGraphData } from '../types/graph';
 import type { Lesson, LessonMode } from '../types/lesson';
 import type { RuntimeTraceResult } from '../types/trace';
 import type { LessonValidationResult } from '../types/validation';
+import { buildCallFlowGraph } from '../utils/buildCallFlowGraph';
 import { buildRuntimeGraph } from '../utils/buildRuntimeGraph';
 import { buildStaticGraph } from '../utils/buildStaticGraph';
 import { validateLessonOutput } from '../utils/validateLessonOutput';
@@ -17,12 +18,16 @@ export type WorkspaceFile = {
   content: string;
 };
 
+export type PythonVisualizationMode = 'structure' | 'call_flow' | 'runtime_flow';
+
 type WorkspaceState = {
   activeFileName: string;
   analysisError: string | null;
   analysisResult: StaticAnalysisResult | null;
+  callFlowGraphData: StaticGraphData | null;
   files: Record<string, WorkspaceFile>;
   graphData: StaticGraphData | null;
+  pythonVisualizationMode: PythonVisualizationMode;
   currentEventIndex: number;
   activeLesson: Lesson | null;
   activeLessonStarterFiles: Record<string, WorkspaceFile> | null;
@@ -48,6 +53,7 @@ type WorkspaceState = {
   runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
   setLearningMode: (mode: LessonMode) => void;
+  setPythonVisualizationMode: (mode: PythonVisualizationMode) => void;
   updateFileContent: (fileName: string, content: string) => void;
 };
 
@@ -92,6 +98,7 @@ function resetDerivedWorkspaceState(message = 'Run / Verify to evaluate the curr
   return {
     analysisError: null,
     analysisResult: null,
+    callFlowGraphData: null,
     currentEventIndex: 0,
     graphData: null,
     isTimelinePlaying: false,
@@ -106,6 +113,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   activeFileName: 'main.py',
   analysisError: null,
   analysisResult: null,
+  callFlowGraphData: null,
   files: {
     'main.py': {
       name: 'main.py',
@@ -113,6 +121,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     },
   },
   graphData: null,
+  pythonVisualizationMode: 'structure',
   currentEventIndex: 0,
   activeLesson: null,
   activeLessonStarterFiles: null,
@@ -223,6 +232,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       activeLessonStarterFiles: starterFiles,
       analysisError: null,
       analysisResult: null,
+      callFlowGraphData: null,
       currentEventIndex: 0,
       files: starterFiles,
       graphData: null,
@@ -270,7 +280,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       isTracing: true,
       runtimeGraphData: null,
       lessonValidationResult: notEvaluatedLessonValidation('Runtime execution is in progress.'),
-      graphData: null,
       traceError: null,
     });
 
@@ -326,6 +335,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         activeFileName: state.activeLesson?.starter_files[0]?.path ?? Object.keys(files)[0] ?? 'main.py',
         analysisError: null,
         analysisResult: null,
+        callFlowGraphData: null,
         currentEventIndex: 0,
         files,
         graphData: null,
@@ -341,6 +351,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
     set({
       analysisError: null,
+      callFlowGraphData: null,
       graphData: null,
       isAnalyzing: true,
       isTimelinePlaying: false,
@@ -353,15 +364,18 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
         files: Object.values(files),
       });
       const graphData = buildStaticGraph(analysisResult);
+      const callFlowGraphData = buildCallFlowGraph(analysisResult);
 
       set({
         analysisResult,
+        callFlowGraphData,
         graphData,
         isAnalyzing: false,
       });
     } catch (error) {
       set({
         analysisError: error instanceof Error ? error.message : 'Static analysis request failed.',
+        callFlowGraphData: null,
         graphData: null,
         isAnalyzing: false,
       });
@@ -380,6 +394,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setLearningMode: (mode) =>
     set({
       learningMode: mode,
+    }),
+  setPythonVisualizationMode: (mode) =>
+    set({
+      pythonVisualizationMode: mode,
     }),
   updateFileContent: (fileName, content) =>
     set((state) => {

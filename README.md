@@ -25,10 +25,12 @@ Implemented prototype capabilities:
 - Multi-track lesson selector with Python, Backend Lifecycle, and AI/RAG lessons
 - FastAPI backend with `/health`
 - Static AST analysis for files, imports, functions, classes, and syntax errors
+- Static function-call detection for Python call-flow visualization
 - Controlled Python execution prototype with timeout protection
 - Runtime trace events for execution start/finish, line execution, variable
   create/update, and errors
 - Static and runtime React Flow graph rendering
+- Python visualization modes for Structure, Call Flow, and Runtime Flow
 - Static backend lifecycle graph rendering from lesson-defined mock lifecycle
   data
 - Static AI/RAG graph rendering with lesson-defined mock pipeline data and risk
@@ -159,6 +161,9 @@ Never commit real API keys.
 - Runtime imports are blocked; static analysis can still detect import syntax.
 - Runtime tracing is entry-file focused and does not yet emit function call,
   function return, loop-specific, or condition-specific events.
+- Call Flow is static analysis only. It shows which functions call which local
+  functions or call targets, but it does not yet show live argument or return
+  values.
 - Lesson validation is intentionally simple: stdout matching, runtime error
   presence, and basic concept detection.
 - Backend lifecycle visualization is static and lesson-defined. It does not

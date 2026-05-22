@@ -26,6 +26,15 @@ export type StaticAnalysisClass = {
   line_number: number | null;
 };
 
+export type StaticAnalysisCall = {
+  file_path: string;
+  caller_name: string | null;
+  caller_type: 'top_level' | 'function' | 'class';
+  callee_name: string;
+  line_number: number | null;
+  argument_count: number;
+};
+
 export type StaticAnalysisError = {
   file_path: string | null;
   message: string;
@@ -37,5 +46,6 @@ export type StaticAnalysisResult = {
   imports: StaticAnalysisImport[];
   functions: StaticAnalysisFunction[];
   classes?: StaticAnalysisClass[];
+  calls?: StaticAnalysisCall[];
   errors: StaticAnalysisError[];
 };

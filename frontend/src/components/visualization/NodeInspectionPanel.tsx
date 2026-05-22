@@ -8,6 +8,8 @@ const explanations: Record<StaticGraphNodeData['type'], string> = {
   file: 'This represents a Python file in your workspace.',
   function: 'This represents a function definition found by static analysis.',
   class: 'This represents a class definition found by static analysis.',
+  top_level: 'This represents code that runs at the top of the file, outside a function.',
+  builtin_call: 'This represents a call target that is not defined as a local function in this workspace.',
   external_module: 'This represents an imported module outside the current workspace.',
 };
 

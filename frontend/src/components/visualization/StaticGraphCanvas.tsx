@@ -28,6 +28,8 @@ const nodeTypes: NodeTypes = {
   file: FileNode,
   function: FunctionNode,
   class: ClassNode,
+  top_level: FunctionNode,
+  builtin_call: FunctionNode,
   external_module: FileNode,
 };
 
@@ -44,8 +46,16 @@ function positionForNode(node: StaticGraphNode, index: number, fileIndexes: Map<
     return { x: 250, y: rowY + 12 + index * 6 };
   }
 
+  if (node.type === 'top_level') {
+    return { x: 250, y: rowY + 12 };
+  }
+
   if (node.type === 'class') {
     return { x: 480, y: rowY + 56 + index * 6 };
+  }
+
+  if (node.type === 'builtin_call') {
+    return { x: 700, y: rowY + 36 + index * 10 };
   }
 
   return { x: 700, y: 28 + index * 110 };
@@ -71,15 +81,15 @@ function toReactFlowEdges(graphData: StaticGraphData): Edge[] {
     id: edge.id,
     source: edge.source,
     target: edge.target,
-    label: edge.type === 'imports' ? 'imports' : undefined,
+    label: edge.type === 'imports' ? 'imports' : edge.type === 'calls' ? 'calls' : undefined,
     type: 'smoothstep',
-    animated: edge.type === 'imports',
+    animated: edge.type === 'imports' || edge.type === 'calls',
     markerEnd: {
       type: MarkerType.ArrowClosed,
     },
     style: {
-      stroke: edge.type === 'imports' ? '#3b82f6' : '#94a3b8',
-      strokeWidth: edge.type === 'imports' ? 2 : 1.5,
+      stroke: edge.type === 'imports' ? '#3b82f6' : edge.type === 'calls' ? '#0f766e' : '#94a3b8',
+      strokeWidth: edge.type === 'imports' || edge.type === 'calls' ? 2 : 1.5,
     },
     data: edge.data,
   }));

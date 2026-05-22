@@ -1,8 +1,8 @@
 import type { ValidationState } from './validation';
 
-export type StaticGraphNodeType = 'file' | 'function' | 'class' | 'external_module';
+export type StaticGraphNodeType = 'file' | 'function' | 'class' | 'top_level' | 'builtin_call' | 'external_module';
 
-export type StaticGraphEdgeType = 'contains' | 'imports';
+export type StaticGraphEdgeType = 'contains' | 'imports' | 'calls';
 
 export type StaticGraphNodeData = {
   file_path?: string;
@@ -12,6 +12,7 @@ export type StaticGraphNodeData = {
   validation_state: ValidationState;
   is_entry?: boolean;
   import_type?: string;
+  argument_count?: number;
 };
 
 export type StaticGraphEdgeData = {
@@ -20,6 +21,7 @@ export type StaticGraphEdgeData = {
   module?: string;
   name?: string | null;
   type: StaticGraphEdgeType;
+  argument_count?: number;
 };
 
 export type StaticGraphNode = {
