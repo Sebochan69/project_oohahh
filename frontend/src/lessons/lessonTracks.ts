@@ -7,6 +7,8 @@ export type LessonTrackInfo = {
   label: string;
   shortLabel: string;
   description: string;
+  behaviorLabel: string;
+  isStaticPrototype: boolean;
 };
 
 export const LESSON_TRACKS: Record<LessonTrackKey, LessonTrackInfo> = {
@@ -14,25 +16,33 @@ export const LESSON_TRACKS: Record<LessonTrackKey, LessonTrackInfo> = {
     key: 'python_foundation',
     label: 'Python Foundations',
     shortLabel: 'Python',
-    description: 'Write Python code, analyze structure, run traces, and validate beginner fundamentals.',
+    description: 'Learn code execution and runtime behavior.',
+    behaviorLabel: 'Editable code runtime',
+    isStaticPrototype: false,
   },
   backend_lifecycle: {
     key: 'backend_lifecycle',
     label: 'Backend Lifecycle',
     shortLabel: 'Backend',
-    description: 'Inspect static request flow through route, validation, service, repository, and response nodes.',
+    description: 'Visualize backend request/response flow.',
+    behaviorLabel: 'Static/mock visualization',
+    isStaticPrototype: true,
   },
   ai_rag_pipeline: {
     key: 'ai_rag_pipeline',
     label: 'AI/RAG Pipeline',
     shortLabel: 'AI/RAG',
-    description: 'Explore static retrieval, context, response, citation, and hallucination-risk concepts.',
+    description: 'Visualize retrieval-augmented generation flow and hallucination risk.',
+    behaviorLabel: 'Static/mock visualization',
+    isStaticPrototype: true,
   },
   unsupported: {
     key: 'unsupported',
     label: 'Unsupported Track',
     shortLabel: 'Unsupported',
     description: 'This lesson type is not supported by the current OOH-AHH prototype.',
+    behaviorLabel: 'Unsupported',
+    isStaticPrototype: true,
   },
 };
 

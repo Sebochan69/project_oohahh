@@ -23,8 +23,9 @@ export function AnalysisPanel() {
       <div className="backend-lifecycle-view">
         <div className="backend-lifecycle-view__toolbar">
           <div>
-            <span>V2 backend lesson</span>
+            <span>Backend Lifecycle - static/mock</span>
             <h3>{activeLesson.title}</h3>
+            <p>{activeTrackInfo?.description}</p>
           </div>
         </div>
         <BackendLifecycleCanvas lesson={activeLesson} />
@@ -37,8 +38,9 @@ export function AnalysisPanel() {
       <div className="rag-pipeline-view">
         <div className="rag-pipeline-view__toolbar">
           <div>
-            <span>AI/RAG lesson</span>
+            <span>AI/RAG Pipeline - static/mock</span>
             <h3>{activeLesson.title}</h3>
+            <p>{activeTrackInfo?.description}</p>
           </div>
         </div>
         <RagPipelineCanvas lesson={activeLesson} />

@@ -17,6 +17,7 @@ import { useWorkspaceStore } from '../../stores/workspaceStore';
 import type { BackendLifecycleNodeType, Lesson } from '../../types/lesson';
 import { VALIDATION_STATE_LABELS, type BackendLifecycleValidationResult, type ValidationState, validationStateClassName } from '../../types/validation';
 import { validateBackendLifecycleLesson } from '../../utils/validateBackendLifecycleLesson';
+import { ValidationLegend } from './ValidationLegend';
 import { BackendLifecycleNode, type BackendLifecycleNodeData } from './nodes/BackendLifecycleNode';
 
 type BackendLifecycleCanvasProps = {
@@ -276,13 +277,23 @@ export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) 
       </div>
 
       <aside className="backend-lifecycle-inspector">
-        <span>Backend lifecycle lesson</span>
+        <span>Backend lifecycle lesson - static/mock</span>
         <h3>{lesson.title}</h3>
         <p>
           {isEngineerMode
             ? 'This graph is rendered from static lesson metadata. It does not execute FastAPI code or send an HTTP request.'
             : 'This graph shows how the lesson request moves through backend lifecycle steps.'}
         </p>
+        <dl className="track-summary-grid">
+          <div>
+            <dt>Request</dt>
+            <dd>{`${lesson.request_method ?? 'GET'} ${lesson.request_path ?? '(missing path)'}`}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{lesson.expected_status_code ?? '(missing status)'}</dd>
+          </div>
+        </dl>
         <div className={`backend-lifecycle-validation ${validationStateClassName(validationResult.status)}`}>
           <span>Validation</span>
           <h4>{VALIDATION_STATE_LABELS[validationResult.status]}</h4>
@@ -298,33 +309,28 @@ export function BackendLifecycleCanvas({ lesson }: BackendLifecycleCanvasProps) 
             </ul>
           )}
         </div>
-        <dl>
-          <div>
-            <dt>Request</dt>
-            <dd>{`${lesson.request_method ?? 'GET'} ${lesson.request_path ?? '(missing path)'}`}</dd>
-          </div>
-          <div>
-            <dt>Request body</dt>
-            <dd>{formatValue(lesson.request_body, isEngineerMode ? 'null' : 'No body needed')}</dd>
-          </div>
-          <div>
-            <dt>Query params</dt>
-            <dd>{formatValue(lesson.query_params, '{}')}</dd>
-          </div>
-          <div>
-            <dt>Validated payload</dt>
-            <dd>{formatValue(lesson.request_body ?? lesson.query_params, isEngineerMode ? '{}' : 'The request is allowed')}</dd>
-          </div>
-          <div>
-            <dt>Response payload</dt>
-            <dd>{formatValue(lesson.expected_response, '(missing expected response)')}</dd>
-          </div>
-          <div>
-            <dt>Status</dt>
-            <dd>{lesson.expected_status_code ?? '(missing status)'}</dd>
-          </div>
-        </dl>
+        {isEngineerMode && (
+          <dl>
+            <div>
+              <dt>Request body</dt>
+              <dd>{formatValue(lesson.request_body, 'null')}</dd>
+            </div>
+            <div>
+              <dt>Query params</dt>
+              <dd>{formatValue(lesson.query_params, '{}')}</dd>
+            </div>
+            <div>
+              <dt>Validated payload</dt>
+              <dd>{formatValue(lesson.request_body ?? lesson.query_params, '{}')}</dd>
+            </div>
+            <div>
+              <dt>Response payload</dt>
+              <dd>{formatValue(lesson.expected_response, '(missing expected response)')}</dd>
+            </div>
+          </dl>
+        )}
       </aside>
+      <ValidationLegend />
     </div>
   );
 }

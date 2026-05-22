@@ -22,6 +22,7 @@ import {
   validationStateClassName,
 } from '../../types/validation';
 import { validateRagPipelineLesson } from '../../utils/validateRagPipelineLesson';
+import { ValidationLegend } from './ValidationLegend';
 import { RagPipelineNode, type RagPipelineNodeData } from './nodes/RagPipelineNode';
 
 type RagPipelineCanvasProps = {
@@ -333,13 +334,23 @@ export function RagPipelineCanvas({ lesson }: RagPipelineCanvasProps) {
       </div>
 
       <aside className="rag-pipeline-inspector">
-        <span>AI/RAG lesson</span>
+        <span>AI/RAG lesson - static/mock</span>
         <h3>{lesson.title}</h3>
         <p>
           {isEngineerMode
             ? 'This graph is rendered from static lesson metadata. It does not call embeddings, query a vector database, or generate an LLM response.'
             : 'This graph shows how a question can move through sources, retrieval, context, and a grounded answer.'}
         </p>
+        <dl className="track-summary-grid">
+          <div>
+            <dt>Documents</dt>
+            <dd>{lesson.documents?.length ?? 0}</dd>
+          </div>
+          <div>
+            <dt>Risk points</dt>
+            <dd>{lesson.hallucination_risk_points?.length ?? 0}</dd>
+          </div>
+        </dl>
         <div className={`rag-pipeline-validation ${validationStateClassName(validationResult.status)}`}>
           <span>Validation</span>
           <h4>{VALIDATION_STATE_LABELS[validationResult.status]}</h4>
@@ -353,41 +364,44 @@ export function RagPipelineCanvas({ lesson }: RagPipelineCanvasProps) {
             ))}
           </ul>
         </div>
-        <dl>
-          <div>
-            <dt>Query</dt>
-            <dd>{lesson.user_query ?? '(missing query)'}</dd>
-          </div>
-          <div>
-            <dt>Sample chunks</dt>
-            <dd>{formatValue(lesson.chunks, '[]')}</dd>
-          </div>
-          <div>
-            <dt>Embedding metadata</dt>
-            <dd>{formatValue(lesson.embedding_model, '(missing embedding metadata)')}</dd>
-          </div>
-          <div>
-            <dt>Vector store</dt>
-            <dd>{formatValue(lesson.vector_store, '(missing vector store metadata)')}</dd>
-          </div>
-          <div>
-            <dt>Retrieved context</dt>
-            <dd>{formatValue(lesson.retrieved_context, '[]')}</dd>
-          </div>
-          <div>
-            <dt>Expected response</dt>
-            <dd>{formatValue(lesson.expected_response, '(missing expected response)')}</dd>
-          </div>
-          <div>
-            <dt>Citations</dt>
-            <dd>{formatValue(lesson.citation_sources, '[]')}</dd>
-          </div>
-          <div>
-            <dt>Risk notes</dt>
-            <dd>{formatValue(lesson.hallucination_risk_points, '[]')}</dd>
-          </div>
-        </dl>
+        {isEngineerMode && (
+          <dl>
+            <div>
+              <dt>Query</dt>
+              <dd>{lesson.user_query ?? '(missing query)'}</dd>
+            </div>
+            <div>
+              <dt>Sample chunks</dt>
+              <dd>{formatValue(lesson.chunks, '[]')}</dd>
+            </div>
+            <div>
+              <dt>Embedding metadata</dt>
+              <dd>{formatValue(lesson.embedding_model, '(missing embedding metadata)')}</dd>
+            </div>
+            <div>
+              <dt>Vector store</dt>
+              <dd>{formatValue(lesson.vector_store, '(missing vector store metadata)')}</dd>
+            </div>
+            <div>
+              <dt>Retrieved context</dt>
+              <dd>{formatValue(lesson.retrieved_context, '[]')}</dd>
+            </div>
+            <div>
+              <dt>Expected response</dt>
+              <dd>{formatValue(lesson.expected_response, '(missing expected response)')}</dd>
+            </div>
+            <div>
+              <dt>Citations</dt>
+              <dd>{formatValue(lesson.citation_sources, '[]')}</dd>
+            </div>
+            <div>
+              <dt>Risk notes</dt>
+              <dd>{formatValue(lesson.hallucination_risk_points, '[]')}</dd>
+            </div>
+          </dl>
+        )}
       </aside>
+      <ValidationLegend />
     </div>
   );
 }

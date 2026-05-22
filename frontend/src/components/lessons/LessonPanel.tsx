@@ -44,7 +44,7 @@ export function LessonPanel() {
       </div>
 
       <label className="lesson-panel__selector">
-        <span>Choose lesson</span>
+        <span>Choose track and lesson</span>
         <select
           value={selectedLessonId}
           onChange={(event) => setSelectedLessonId(event.target.value)}
@@ -61,6 +61,18 @@ export function LessonPanel() {
         </select>
       </label>
 
+      <div className="lesson-panel__track-list" aria-label="Available learning tracks">
+        {lessonGroups.map((group) => (
+          <div
+            key={group.track.key}
+            className={`lesson-panel__track-pill ${group.track.key === trackInfo.key ? 'is-active' : ''}`}
+          >
+            <strong>{group.track.label}</strong>
+            <span>{group.track.description}</span>
+          </div>
+        ))}
+      </div>
+
       {!activeLesson && (
         <div className="lesson-panel__empty-state">
           No lesson loaded yet. Pick one from the library and press Load to replace the in-memory
@@ -71,9 +83,15 @@ export function LessonPanel() {
       <p className="lesson-panel__description">{lesson.description}</p>
 
       <div className="lesson-panel__track-card">
-        <span>Current track</span>
+        <div className="lesson-panel__track-card-header">
+          <span>Current track</span>
+          <em>{trackInfo.behaviorLabel}</em>
+        </div>
         <strong>{trackInfo.label}</strong>
         <p>{trackInfo.description}</p>
+        {trackInfo.isStaticPrototype && (
+          <small>This track uses lesson-defined mock data. It does not run a real service or pipeline.</small>
+        )}
       </div>
 
       {isBackendLifecycleLesson && (
