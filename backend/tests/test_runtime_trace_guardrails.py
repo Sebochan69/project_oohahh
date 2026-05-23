@@ -74,6 +74,21 @@ print(result)"""
         self.assertTrue(line_numbers)
         self.assertLessEqual(max(line_numbers), 5)
 
+    def test_simple_assignment_steps_map_to_expected_code_lines(self):
+        events = self.run_code(
+            """x = 1
+x = x + 1
+print(x)"""
+        )
+        step_to_line = {event.step: event.line_number for event in events}
+
+        self.assertEqual(step_to_line[1], 1)
+        self.assertEqual(step_to_line[2], 1)
+        self.assertEqual(step_to_line[3], 2)
+        self.assertEqual(step_to_line[4], 2)
+        self.assertEqual(step_to_line[5], 3)
+        self.assertEqual(step_to_line[6], 3)
+
 
 if __name__ == "__main__":
     unittest.main()

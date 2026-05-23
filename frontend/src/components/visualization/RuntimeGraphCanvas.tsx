@@ -71,6 +71,7 @@ function toReactFlowEdges(graphData: RuntimeGraphData): Edge[] {
 }
 
 export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
+  const selectRuntimeEventStep = useWorkspaceStore((state) => state.selectRuntimeEventStep);
   const setCodeHighlight = useWorkspaceStore((state) => state.setCodeHighlight);
   const initialNodes = useMemo(() => toReactFlowNodes(graphData), [graphData]);
   const initialEdges = useMemo(() => toReactFlowEdges(graphData), [graphData]);
@@ -83,18 +84,14 @@ export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
     setEdges(initialEdges);
   }, [initialNodes, initialEdges, setCodeHighlight, setEdges, setNodes]);
 
-  function highlightRuntimeNode(nodeData: RuntimeGraphNodeData) {
-    if (!nodeData.file_path || !nodeData.line_number) {
-      setCodeHighlight(null);
+  function selectRuntimeNode(nodeId: string) {
+    const nodeData = graphData.nodes.find((node) => node.id === nodeId)?.data;
+
+    if (!nodeData) {
       return;
     }
 
-    setCodeHighlight({
-      filePath: nodeData.file_path,
-      lineNumber: nodeData.line_number,
-      lineNumbers: nodeData.related_lines ?? [],
-      label: `step ${nodeData.step}: ${nodeData.event_type.replace(/_/g, ' ')}`,
-    });
+    selectRuntimeEventStep(nodeData.step);
   }
 
   return (
@@ -110,8 +107,7 @@ export function RuntimeGraphCanvas({ graphData }: RuntimeGraphCanvasProps) {
             fitView
             fitViewOptions={{ padding: 0.22 }}
             minZoom={0.25}
-            onNodeClick={(_, node) => highlightRuntimeNode(node.data as RuntimeGraphNodeData)}
-            onNodeMouseEnter={(_, node) => highlightRuntimeNode(node.data as RuntimeGraphNodeData)}
+            onNodeClick={(_, node) => selectRuntimeNode(node.id)}
           >
             <Background />
             <MiniMap pannable zoomable />

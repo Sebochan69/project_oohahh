@@ -29,6 +29,7 @@ RUNNER_SCRIPT = dedent(
     tracing_suppressed = False
     last_line_numbers = {{}}
     locals_snapshots = {{}}
+    last_executed_line_number = None
 
     def now_iso():
         return datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00", "Z")
@@ -139,7 +140,7 @@ RUNNER_SCRIPT = dedent(
         locals_snapshots[frame_key] = current_snapshot
 
     def trace_lines(frame, event, arg):
-        global tracing_suppressed
+        global last_executed_line_number, tracing_suppressed
         if frame.f_code.co_filename != file_path:
             return trace_lines
 
@@ -163,6 +164,7 @@ RUNNER_SCRIPT = dedent(
                     )
                 return None
 
+            last_executed_line_number = frame.f_lineno
             last_line_numbers[frame_key] = frame.f_lineno
             emit_event(
                 "line_executed",
@@ -268,7 +270,7 @@ RUNNER_SCRIPT = dedent(
 
     emit_event(
         "execution_finished",
-        None,
+        last_executed_line_number,
         {{"status": "completed"}},
         {{"category": "system", "label": "Execution finished", "emphasis": "highlight"}},
     )

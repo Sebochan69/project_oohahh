@@ -63,6 +63,7 @@ type WorkspaceState = {
   runRuntimeTrace: () => Promise<void>;
   runStaticAnalysis: () => Promise<void>;
   selectFile: (fileName: string) => void;
+  selectRuntimeEventStep: (step: number) => void;
   setCodeHighlight: (highlight: CodeHighlight | null) => void;
   setLearningMode: (mode: LessonMode) => void;
   setPythonVisualizationMode: (mode: PythonVisualizationMode) => void;
@@ -421,6 +422,22 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
 
       return {
         activeFileName: fileName,
+      };
+    }),
+  selectRuntimeEventStep: (step) =>
+    set((state) => {
+      const events = state.traceResult?.events ?? [];
+      const nextIndex = events.findIndex((event) => event.step === step);
+
+      if (nextIndex < 0) {
+        return state;
+      }
+
+      return {
+        codeHighlight: null,
+        currentEventIndex: nextIndex,
+        isTimelinePlaying: false,
+        runtimeGraphData: buildRuntimeGraph(events, nextIndex, state.lessonValidationResult, state.files),
       };
     }),
   setCodeHighlight: (highlight) =>

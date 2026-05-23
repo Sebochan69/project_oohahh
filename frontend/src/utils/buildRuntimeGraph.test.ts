@@ -216,11 +216,79 @@ function testSandboxModeMarksRuntimeErrorsIncorrect() {
   );
 }
 
+function testSimpleAssignmentGraphKeepsStepLinesStable() {
+  const source = `x = 1
+x = x + 1
+print(x)`;
+  const graph = buildRuntimeGraph(
+    [
+      event(1, 'line_executed', 1, { line_number: 1 }),
+      event(2, 'variable_created', 1, { name: 'x', new_value: 1 }),
+      event(3, 'line_executed', 2, { line_number: 2 }),
+      event(4, 'variable_updated', 2, { name: 'x', old_value: 1, new_value: 2 }),
+      event(5, 'line_executed', 3, { line_number: 3 }),
+      event(6, 'execution_finished', 3, { status: 'completed' }),
+    ],
+    0,
+    null,
+    {
+      'main.py': {
+        content: source,
+      },
+    },
+  );
+
+  assertDeepEqual(
+    graph.nodes.map((node) => [node.data.step, node.data.line_number, node.data.related_lines]),
+    [
+      [1, 1, [1]],
+      [2, 1, [1]],
+      [3, 2, [2]],
+      [4, 2, [2]],
+      [5, 3, [3]],
+      [6, 3, [3]],
+    ],
+  );
+}
+
+function testCompletedExecutionCanUsePreviousValidLineForStaleBackendEvents() {
+  const source = `x = 1
+x = x + 1
+print(x)`;
+  const graph = buildRuntimeGraph(
+    [
+      event(1, 'line_executed', 1, { line_number: 1 }),
+      event(2, 'variable_created', 1, { name: 'x', new_value: 1 }),
+      event(3, 'line_executed', 2, { line_number: 2 }),
+      event(4, 'variable_updated', 2, { name: 'x', old_value: 1, new_value: 2 }),
+      event(5, 'line_executed', 3, { line_number: 3 }),
+      event(6, 'execution_finished', null, { status: 'completed' }),
+    ],
+    0,
+    null,
+    {
+      'main.py': {
+        content: source,
+      },
+    },
+  );
+  const finalNode = graph.nodes.find((node) => node.data.step === 6);
+
+  if (!finalNode) {
+    throw new Error('Expected final execution node');
+  }
+
+  assertEqual(finalNode.data.line_number, 3);
+  assertDeepEqual(finalNode.data.related_lines, [3]);
+}
+
 testFunctionDefinitionsUseSourceDefinitionLines();
 testNonexistentSourceLinesAreRejected();
 testBlockHighlightsSkipTrailingBlankLines();
 testCorrectLessonStatusColorsRuntimeNodes();
 testSandboxModeGradesExecutionHealth();
 testSandboxModeMarksRuntimeErrorsIncorrect();
+testSimpleAssignmentGraphKeepsStepLinesStable();
+testCompletedExecutionCanUsePreviousValidLineForStaleBackendEvents();
 
 console.log('runtime graph guardrails passed');

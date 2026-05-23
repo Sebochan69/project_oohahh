@@ -115,6 +115,17 @@ function validLineNumberForEvent(event: RuntimeTraceEvent, files?: RuntimeGraphF
   return lineIndex >= 0 && lineIndex < lines.length ? event.line_number : null;
 }
 
+function eventWithFallbackLine(event: RuntimeTraceEvent, fallbackLineNumber: number | null): RuntimeTraceEvent {
+  if (event.line_number || event.type !== 'execution_finished' || event.payload.status !== 'completed') {
+    return event;
+  }
+
+  return {
+    ...event,
+    line_number: fallbackLineNumber,
+  };
+}
+
 function relatedLinesForEvent(event: RuntimeTraceEvent, lineNumber: number | null, files?: RuntimeGraphFiles) {
   if (!lineNumber) {
     return [];
@@ -199,9 +210,11 @@ export function buildRuntimeGraph(
   const activeEvent = normalizedCurrentIndex >= 0 ? events[normalizedCurrentIndex] : undefined;
   const activeNodeId = activeEvent ? runtimeNodeId(activeEvent) : null;
   const terminalValidationEvent = [...events].reverse().find(isTerminalExecutionEvent);
+  let previousValidLineNumber: number | null = null;
   const nodes: RuntimeGraphNode[] = events.map((event) => {
+    const normalizedEvent = eventWithFallbackLine(event, previousValidLineNumber);
     const nodeId = runtimeNodeId(event);
-    const lineNumber = validLineNumberForEvent(event, files);
+    const lineNumber = validLineNumberForEvent(normalizedEvent, files);
     const isActive = nodeId === activeNodeId;
     const isValidatedTerminalEvent = Boolean(terminalValidationEvent && event.id === terminalValidationEvent.id);
     const validationState = validationStateForEvent(
@@ -210,6 +223,10 @@ export function buildRuntimeGraph(
       isValidatedTerminalEvent,
       lessonValidationResult,
     );
+
+    if (lineNumber) {
+      previousValidLineNumber = lineNumber;
+    }
 
     return {
       id: nodeId,
@@ -220,7 +237,7 @@ export function buildRuntimeGraph(
         step: event.step,
         file_path: event.file_path,
         line_number: lineNumber,
-        related_lines: relatedLinesForEvent(event, lineNumber, files),
+        related_lines: relatedLinesForEvent(normalizedEvent, lineNumber, files),
         scope: event.scope,
         payload: event.payload,
         is_active: isActive,
